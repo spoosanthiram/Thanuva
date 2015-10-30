@@ -1,0 +1,76 @@
+/**
+ * Author: Saravanan Poosanthiram
+ * $LastChangedBy: ps $
+ * $LastChangedDate: 2015-03-29 02:53:27 -0400 (Sun, 29 Mar 2015) $
+ */
+
+#ifndef GLVIEWER_GLPROJECT_H
+#define GLVIEWER_GLPROJECT_H
+
+#include <memory>
+#include <vector>
+
+#include <QObject>
+
+#include "GfxProject.h"
+#include "GlViewObject.h"
+#include "nano_signal_slot.h"
+#include "ShaderProgram.h"
+
+namespace GfxModel { class GraphicsObject; }
+
+namespace GlViewer {
+
+class GlProject : public QObject, public Nano::Observer {
+    Q_OBJECT
+
+public:
+    static const int kNTransformMatrixElements = 16;
+
+public:
+    GlProject();
+
+    const std::unique_ptr<GfxModel::GfxProject>& gfxProject() const { return m_gfxProject; }
+    const std::unique_ptr<ShaderProgram>& shaderProgram() const { return m_shaderProgram; }
+    const std::array<int, 4>& glViewportTransform() const { return m_glViewportTransform; }
+
+    void setViewportTransform(const std::array<int, 4>& values)
+    {
+        std::copy(values.cbegin(), values.cend(), m_glViewportTransform.begin());
+    }
+
+    void activate(Model::Project* project);
+    void deactivate();
+    void loadShaders();
+    void render() const;
+    std::vector<const GlViewer::GlViewObject*> probe(int x, int y) const;
+
+signals:
+    void viewChanged();
+
+protected: // slots
+    void add(GfxModel::GraphicsObject& graphicsObject);
+    void handleExtentChanged();
+    void emitViewChanged() { emit viewChanged(); } // needed for connecting Nano signal to Qt signal
+
+private:
+    std::unique_ptr<GfxModel::GfxProject> m_gfxProject;
+
+    std::vector<GlViewer::GlViewObject> m_glViewObjectList;
+    std::unique_ptr<ShaderProgram> m_shaderProgram;
+
+    float m_ambientLight[4];
+
+    float m_light0Position[4];
+    float m_light0DiffuseColor[4];
+    float m_light0SpecularColor[4];
+
+    std::array<int, 4> m_glViewportTransform;
+
+    static const char* kVertexShaderSource;
+    static const char* kFragmentShaderSource;
+};
+
+} // namespace GlViewer
+
+#endif // GLVIEWER_GLPROJECT_H
