@@ -5,7 +5,7 @@ project(GlViewer CXX)
 add_definitions(-DGLEW_STATIC)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON) # to inclue moc and ui files
-set(CMAKE_AUTOMOC ON)
+#set(CMAKE_AUTOMOC ON)
 
 find_package(Qt5OpenGL)
 find_package(Qt5Widgets)
