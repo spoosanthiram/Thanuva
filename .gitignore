@@ -1,2 +1,5 @@
 Build
 CMakeLists.txt.user*
+*.7z
+*.gfx
+*.stl
