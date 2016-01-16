@@ -1,7 +1,7 @@
 /**
+ * Exception class to be used for the graphics project.
+ *
  * Author: Saravanan Poosanthiram
- * $LastChangedBy: ps $
- * $LastChangedDate: 2015-03-14 12:57:44 -0400 (Sat, 14 Mar 2015) $
  */
 
 #ifndef CORE_GRAPHICSEXCEPTION_H

@@ -1,8 +1,8 @@
 /**
-* Author: Saravanan Poosanthiram
-* $LastChangedBy: ps $
-* $LastChangedDate: 2015-03-20 18:08:01 -0400 (Fri, 20 Mar 2015) $
-*/
+ * This file contains common definitions like enums, consts
+ *
+ * Author: Saravanan Poosanthiram
+ */
 
 #ifndef CORE_COREDEF_H
 #define CORE_COREDEF_H

@@ -1,20 +1,23 @@
 /**
-* Author: Saravanan Poosanthiram
-* $LastChangedBy: ps $
-* $LastChangedDate: 2015-10-23 21:50:42 -0400 (Fri, 23 Oct 2015) $
-*/
+ * Color class source file.
+ *
+ * Author: Saravanan Poosanthiram
+ */
 
 #include "Color.h"
 
 #include "Algo.h"
-
 #ifdef UNIT_TEST
 #include "gtest/gtest.h"
 #endif
 
 namespace Core {
 
-int Color::rgb() const
+#ifdef WINDOWS
+    long long Color::rgb() const
+#else
+    long Color::rgb() const
+#endif
 {
     int rgb = static_cast<int>(m_r * kMaxColorValue);
     rgb <<= kBitsPerComponent;
@@ -39,7 +42,7 @@ void Color::set(const std::string& str)
 
 #ifdef UNIT_TEST
 
-TEST(ColorTest, Creation)
+TEST(ColorTest, Simple)
 {
     Color black{};
     EXPECT_EQ(0.0f, black.r());
@@ -51,7 +54,7 @@ TEST(ColorTest, Creation)
     EXPECT_EQ(1.0f, white.g());
     EXPECT_EQ(1.0f, white.b());
 
-    Color grey{0.5f};
+    Color grey{0.5f, 0.5f, 0.5f};
     EXPECT_EQ(127, grey.rInt());
     EXPECT_EQ(127, grey.gInt());
     EXPECT_EQ(127, grey.bInt());
@@ -65,7 +68,7 @@ TEST(ColorTest, Creation)
     EXPECT_EQ(240.0f / 255.0f, c.b());
     EXPECT_EQ(240, c.bInt());
     EXPECT_EQ(0x0a78f0, c.rgb());
-    std::string strExpected{"10, 120, 240"};
+    std::string strExpected{"a78f0"};
     EXPECT_EQ(strExpected, c.str());
 
     Color c2{0.3f, 0.7f, 0.05f};
