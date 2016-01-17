@@ -1,8 +1,8 @@
 /**
-* Author: Saravanan Poosanthiram
-* $LastChangedBy: ps $
-* $LastChangedDate: 2015-04-01 16:35:03 -0400 (Wed, 01 Apr 2015) $
-*/
+ * Header file for HVector class.
+ *
+ * Author: Saravanan Poosanthiram
+ */
 
 #ifndef CORE_HVECTOR_H
 #define CORE_HVECTOR_H

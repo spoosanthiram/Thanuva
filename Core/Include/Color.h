@@ -1,7 +1,7 @@
 /**
+ * Color class header file.
+ *
  * Author: Saravanan Poosanthiram
- * $LastChangedBy: ps $
- * $LastChangedDate: 2015-03-20 18:08:01 -0400 (Fri, 20 Mar 2015) $
  */
 
 #ifndef CORE_COLOR_H
@@ -24,17 +24,16 @@ public:
         , m_g{0.0f}
         , m_b{0.0f}
     {}
-    explicit Color(int rgb)
+#ifdef WINDOWS
+    explicit Color(long long rgb)
+#else
+    explicit Color(long rgb)
+#endif
     {
         m_b = static_cast<float>(rgb & kMaxColorValue) / kMaxColorValue;
         m_g = static_cast<float>((rgb >> kBitsPerComponent) & kMaxColorValue) / kMaxColorValue;
         m_r = static_cast<float>((rgb >> (2 * kBitsPerComponent)) & kMaxColorValue) /kMaxColorValue;
     }
-    explicit Color(float value)
-        : m_r{value}
-        , m_g{value}
-        , m_b{value}
-    {}
     Color(int r, int g, int b)
         : m_r{static_cast<float>(r) / kMaxColorValue}
         , m_g{static_cast<float>(g) / kMaxColorValue}
@@ -52,7 +51,11 @@ public:
     int rInt() const { return static_cast<int>(m_r * kMaxColorValue); }
     int gInt() const { return static_cast<int>(m_g * kMaxColorValue); }
     int bInt() const { return static_cast<int>(m_b * kMaxColorValue); }
-    int rgb() const;
+#ifdef WINDOWS
+    long long rgb() const;
+#else
+    long rgb() const;
+#endif
     std::string str() const;
 
     void setR(float r) { m_r = r; }
