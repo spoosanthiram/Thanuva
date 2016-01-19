@@ -1,8 +1,7 @@
 /**
-* Author: Saravanan Poosanthiram
-* $LastChangedBy: ps $
-* $LastChangedDate: 2015-03-20 18:08:01 -0400 (Fri, 20 Mar 2015) $
-*/
+ * Header file for 4x4 matrix class.
+ * Author: Saravanan Poosanthiram
+ */
 
 #ifndef CORE_MATRIX4X4_H
 #define CORE_MATRIX4X4_H

@@ -1,15 +1,14 @@
 /**
-* Author: Saravanan Poosanthiram
-* $LastChangedBy: ps $
-* $LastChangedDate: 2015-04-01 16:35:03 -0400 (Wed, 01 Apr 2015) $
-*/
+ * Source file for Quaternion class.
+ *
+ * Author: Saravanan Poosanthiram
+ */
 
 #include "Quaternion.h"
 
-#include "AlgoBase.h"
-
+#include <AlgoBase.h>
 #ifdef UNIT_TEST
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #endif
 
 #include "Vector3d.h"

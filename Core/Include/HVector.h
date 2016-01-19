@@ -9,7 +9,7 @@
 
 #include <vector>
 
-#include "AlgoBase.h"
+#include <AlgoBase.h>
 
 namespace Core {
 
@@ -109,7 +109,7 @@ private:
         m_elements[3] -= hv.m_elements[3];
     }
 
-    double m_elements[4];
+    double m_elements[kDimension];
 };
 
 } // namespace Core
