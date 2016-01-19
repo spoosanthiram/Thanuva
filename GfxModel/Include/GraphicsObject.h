@@ -11,7 +11,7 @@
 #include <memory>
 #include <vector>
 
-#include "nano_signal_slot.h"
+#include "nano_signal_slot.hpp"
 
 #include "CoreDef.h"
 #include "Extent.h"

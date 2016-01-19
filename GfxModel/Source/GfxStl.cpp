@@ -204,8 +204,8 @@ void GfxStl::initialize()
     this->initializeBoundingBox();
 
     // emit signals
-    graphicsObjectChanged();
-    extentChanged();
+    graphicsObjectChanged.emit_signal();
+    extentChanged.emit_signal();
 }
 
 } // namespace GfxModel

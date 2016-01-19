@@ -7,7 +7,7 @@ include_directories(
     ${Model_SOURCE_DIR}/../Core/Include
     ${Model_SOURCE_DIR}/../../Algorithms/Include
     ${Model_SOURCE_DIR}/../../3rdParty/boost_1_57_0/include
-    ${Model_SOURCE_DIR}/../../3rdParty/google-glog/include
+    ${Model_SOURCE_DIR}/../../3rdParty/glog/src
     ${Model_SOURCE_DIR}/../../3rdParty/nano-signal-slot
 )
 

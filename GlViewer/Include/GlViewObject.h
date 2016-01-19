@@ -9,9 +9,7 @@
 
 #include <vector>
 
-#include "GL/glew.h"
-
-#include "nano_signal_slot.h"
+#include "nano_signal_slot.hpp"
 
 #include "Vector3d.h"
 

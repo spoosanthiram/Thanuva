@@ -72,7 +72,7 @@ void GfxProject::add(Model::Geometry* geometry)
 
     m_graphicsObjectList.push_back(graphicsObject);
     graphicsObject->extentChanged.connect<GfxProject, &GfxProject::updateExtent>(this);
-    graphicsObjectAdded(*graphicsObject); // emit signal
+    graphicsObjectAdded.emit_signal(*graphicsObject); // emit signal
 
     this->updateExtent();
 }
@@ -87,7 +87,7 @@ void GfxProject::updateExtent()
         m_extent = extent;
         m_project->viewpointCameraModel().setViewportTranslation(m_extent.maxLength() * 2.0);
         this->updateProjectionMatrix();
-        extentChanged(); // emit signal
+        extentChanged.emit_signal(); // emit signal
     }
 }
 

@@ -54,7 +54,7 @@ void Box::setLimiter(const Limiter& limiter, Core::EmitSignal emitSignal)
     m_limiter = limiter;
 
     if (Core::EmitSignal::Emit == emitSignal)
-        geometryChanged(); // emit signal
+        geometryChanged.emit_signal(); // emit signal
 }
 
 void Box::load(const boost::property_tree::ptree& geometryPropTree)

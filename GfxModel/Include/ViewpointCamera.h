@@ -10,7 +10,7 @@
 #include "Matrix4x4.h"
 #include "ViewpointCameraModel.h"
 
-#include "nano_signal_slot.h"
+#include "nano_signal_slot.hpp"
 
 namespace GfxModel {
 

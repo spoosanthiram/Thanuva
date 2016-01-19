@@ -32,7 +32,7 @@ void GraphicsObject::setExtent(const Extent& extent, Core::EmitSignal emitSignal
 
     m_extent = extent;
     if (Core::EmitSignal::Emit == emitSignal)
-        extentChanged(); // emit signal
+        extentChanged.emit_signal(); // emit signal
 }
 
 bool GraphicsObject::intersectBoundingBox(const Core::Vector3d& nearPoint, const Core::Vector3d& farPoint)

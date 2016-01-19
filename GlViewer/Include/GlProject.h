@@ -12,9 +12,10 @@
 
 #include <QObject>
 
+#include "nano_signal_slot.hpp"
+
 #include "GfxProject.h"
 #include "GlViewObject.h"
-#include "nano_signal_slot.h"
 #include "ShaderProgram.h"
 
 namespace GfxModel { class GraphicsObject; }

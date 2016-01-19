@@ -48,7 +48,7 @@ void ViewpointCamera::updateViewMatrix()
         , u.z(), v.z(), w.z(), 0.0
         , negativeEye.dot(u), negativeEye.dot(v), negativeEye.dot(w), 1.0};
 
-    viewpointCameraChanged(); // emit signal
+    viewpointCameraChanged.emit_signal(); // emit signal
 }
 
 } // namespace GfxModel

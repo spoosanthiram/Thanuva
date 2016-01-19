@@ -36,7 +36,7 @@ void Stl::setFilePath(const std::string& filePath, Core::EmitSignal emitSignal)
     m_filePath = filePath;
 
     if (Core::EmitSignal::Emit == emitSignal)
-        geometryChanged(); // emit signal
+        geometryChanged.emit_signal(); // emit signal
 }
 
 void Stl::load(const boost::property_tree::ptree& geometryPropTree)

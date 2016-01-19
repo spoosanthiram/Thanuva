@@ -26,7 +26,7 @@ void Geometry::setMaterial(const Core::Material& material, Core::EmitSignal emit
 
     m_material = material;
     if (Core::EmitSignal::Emit == emitSignal)
-        materialChanged(); // emit signal
+        materialChanged.emit_signal(); // emit signal
 }
 
 void Geometry::setTransformMatrix(const Core::Matrix4x4& transformMatrix, Core::EmitSignal emitSignal)
@@ -36,7 +36,7 @@ void Geometry::setTransformMatrix(const Core::Matrix4x4& transformMatrix, Core::
 
     m_transformMatrix = transformMatrix;
     if (Core::EmitSignal::Emit == emitSignal)
-        transformMatrixChanged(); // emit signal
+        transformMatrixChanged.emit_signal(); // emit signal
 }
 
 void Geometry::loadGeometry(const boost::property_tree::ptree& geometryPropTree)

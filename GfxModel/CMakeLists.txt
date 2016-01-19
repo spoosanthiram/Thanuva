@@ -7,8 +7,8 @@ include_directories(
     ${GfxModel_SOURCE_DIR}/../Core/Include
     ${GfxModel_SOURCE_DIR}/../Model/Include
     ${GfxModel_SOURCE_DIR}/../../Algorithms/Include
+    ${GfxModel_SOURCE_DIR}/../../3rdParty/glog/src
     ${GfxModel_SOURCE_DIR}/../../3rdParty/nano-signal-slot
-    ${GfxModel_SOURCE_DIR}/../../3rdParty/google-glog/include
 )
 
 set(SOURCE_FILES

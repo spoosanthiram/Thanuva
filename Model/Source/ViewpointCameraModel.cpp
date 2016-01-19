@@ -33,7 +33,7 @@ ViewpointCameraModel::ViewpointCameraModel()
 void ViewpointCameraModel::setViewportTranslation(double viewportTranslation)
 {
     m_viewpointTranslation = viewportTranslation;
-    rotationChanged(); // emit signal
+    rotationChanged.emit_signal(); // emit signal
 }
 
 void ViewpointCameraModel::load(const boost::property_tree::ptree& cameraPropTree)
@@ -60,13 +60,13 @@ void ViewpointCameraModel::rotate(const Location& startLocation, const Location&
 
     m_eyeRotationMatrix.rotate(Core::Quaternion{axis, -angle});
 
-    rotationChanged(); // emit signal
+    rotationChanged.emit_signal(); // emit signal
 }
 
 void ViewpointCameraModel::zoom(int steps)
 {
     m_zoomLevel += steps * kZoomIncrement;
-    zoomChanged(); // emit signal
+    zoomChanged.emit_signal(); // emit signal
 }
 
 Core::Vector3d ViewpointCameraModel::projectToSphere(const Location& location)

@@ -106,7 +106,7 @@ void Project::setDirty(bool dirty)
     if (dirty == m_dirty)
         return;
     m_dirty = dirty;
-    dirtyChanged();
+    dirtyChanged.emit_signal();
 }
 
 void Project::add(const std::shared_ptr<Geometry>& geometry)
@@ -114,7 +114,7 @@ void Project::add(const std::shared_ptr<Geometry>& geometry)
     LOG(INFO) << "Adding geometry to the list";
 
     m_geometryList.push_back(geometry);
-    geometryAdded(geometry.get()); // emit signal
+    geometryAdded.emit_signal(geometry.get()); // emit signal
 
     this->setDirty(true);
     geometry->geometryChanged.connect<Project, &Project::handleGeometryChanged>(this);

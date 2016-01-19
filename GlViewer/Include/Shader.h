@@ -9,8 +9,6 @@
 
 #include <string>
 
-#include "GL/glew.h"
-
 namespace GlViewer {
 
 class Shader {

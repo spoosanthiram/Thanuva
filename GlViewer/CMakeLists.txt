@@ -2,8 +2,6 @@ cmake_minimum_required (VERSION 2.8.11)
 
 project(GlViewer CXX)
 
-add_definitions(-DGLEW_STATIC)
-
 set(CMAKE_INCLUDE_CURRENT_DIR ON) # to inclue moc and ui files
 #set(CMAKE_AUTOMOC ON)
 
@@ -17,9 +15,8 @@ include_directories(
     ${GlViewer_SOURCE_DIR}/../Model/Include
     ${GlViewer_SOURCE_DIR}/../GfxModel/Include
     ${GlViewer_SOURCE_DIR}/../../Algorithms/Include
+    ${GlViewer_SOURCE_DIR}/../../3rdParty/glog/src
     ${GlViewer_SOURCE_DIR}/../../3rdParty/nano-signal-slot
-    ${GlViewer_SOURCE_DIR}/../../3rdParty/google-glog/include
-    ${GlViewer_SOURCE_DIR}/../../3rdParty/glew/include
 )
 
 set(SOURCE_FILES
@@ -48,8 +45,7 @@ qt5_wrap_cpp(MOC_FILES
 link_directories(
     ${GlViewer_SOURCE_DIR}/../../Algorithms
     ${GlViewer_SOURCE_DIR}/../../3rdParty/boost_1_57_0/lib
-    ${GlViewer_SOURCE_DIR}/../../3rdParty/google-glog/lib
-    ${GlViewer_SOURCE_DIR}/../../3rdParty/glew/lib
+    ${GlViewer_SOURCE_DIR}/../../3rdParty/glog
 )
 
 add_executable(GlViewer ${SOURCE_FILES} ${UI_FILES} ${MOC_FILES})

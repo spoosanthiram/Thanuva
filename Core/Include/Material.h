@@ -1,8 +1,8 @@
 /**
-* Author: Saravanan Poosanthiram
-* $LastChangedBy: ps $
-* $LastChangedDate: 2015-03-20 18:08:01 -0400 (Fri, 20 Mar 2015) $
-*/
+ * Material class header file.
+ *
+ * Author: Saravanan Poosanthiram
+ */
 
 #ifndef CORE_MATERIAL_H
 #define CORE_MATERIAL_H

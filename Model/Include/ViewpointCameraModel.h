@@ -11,7 +11,7 @@
 
 #include <boost/property_tree/ptree_fwd.hpp>
 
-#include "nano_signal_slot.h"
+#include "nano_signal_slot.hpp"
 
 namespace Model {
 

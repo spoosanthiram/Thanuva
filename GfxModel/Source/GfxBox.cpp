@@ -9,7 +9,7 @@
 #include <chrono>
 
 #include "glog/logging.h"
-#include "nano_signal_slot.h"
+#include "nano_signal_slot.hpp"
 
 #include "Box.h"
 
@@ -102,8 +102,8 @@ void GfxBox::initialize()
     this->initializeBoundingBox();
 
     // emit signals
-    graphicsObjectChanged();
-    extentChanged();
+    graphicsObjectChanged.emit_signal();
+    extentChanged.emit_signal();
 }
 
 } // namespace GfxModel
