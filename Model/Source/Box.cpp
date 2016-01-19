@@ -1,20 +1,21 @@
 /**
+ * Source file for Box and Limiter classes.
+ *
  * Author: Saravanan Poosanthiram
- * $LastChangedBy: ps $
- * $LastChangedDate: 2015-04-01 16:35:03 -0400 (Wed, 01 Apr 2015) $
  */
 
 #include "Box.h"
 
 #include <boost/property_tree/ptree.hpp>
-
 #include <glog/logging.h>
-
 #ifdef UNIT_TEST
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #endif
 
 #include "GeometryException.h"
+#ifdef UNIT_TEST
+#include "Project.h"
+#endif
 
 namespace {
 
@@ -83,20 +84,25 @@ void Box::save(boost::property_tree::ptree& geometryPropTree)
 
 #ifdef UNIT_TEST
 
-TEST(BoxTest, CreationDefault)
+struct BoxTest : public ::testing::Test
 {
-    Box b{};
+    Project m_project;
+};
 
-    Extent extentExcepted{-1.0, 1.0, -1.0, 1.0, -1.0, 1.0};
-    EXPECT_EQ(extentExcepted, b.extent());
+TEST_F(BoxTest, CreationDefault)
+{
+    Box b{m_project};
+
+    Box::Limiter expected{-1.0, 1.0, -1.0, 1.0, -1.0, 1.0};
+    EXPECT_EQ(expected, b.limiter());
 }
 
-TEST(BoxTest, CreationWithLimiter)
+TEST_F(BoxTest, CreationWithLimiter)
 {
-    Box b{Box::Limiter{0.1, 10.7, -2.8, 9.8, -20.4, -11.5}};
+    Box b{m_project, Box::Limiter{0.1, 10.7, -2.8, 9.8, -20.4, -11.5}};
 
-    Extent extentExcepted{0.1, 10.7, -2.8, 9.8, -20.4, -11.5};
-    EXPECT_EQ(extentExcepted, b.extent());
+    Box::Limiter expected{0.1, 10.7, -2.8, 9.8, -20.4, -11.5};
+    EXPECT_EQ(expected, b.limiter());
 }
 
 #endif // UNIT_TEST

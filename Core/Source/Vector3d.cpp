@@ -1,15 +1,15 @@
 /**
-* Author: Saravanan Poosanthiram
-* $LastChangedBy: ps $
-* $LastChangedDate: 2015-10-23 21:50:42 -0400 (Fri, 23 Oct 2015) $
-*/
+ * Source file for 3D Vector class.
+ *
+ * Author: Saravanan Poosanthiram
+ */
 
 #include "Vector3d.h"
 
 #include <sstream>
 
 #ifdef UNIT_TEST
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #endif
 
 #include "HVector.h"

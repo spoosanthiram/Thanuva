@@ -1,8 +1,8 @@
 /**
-* Author: Saravanan Poosanthiram
-* $LastChangedBy: ps $
-* $LastChangedDate: 2015-03-20 18:08:01 -0400 (Fri, 20 Mar 2015) $
-*/
+ * Header file for 3x3 matrix class.
+ *
+ * Author: Saravanan Poosanthiram
+ */
 
 #ifndef CORE_MATRIX3X3_H
 #define CORE_MATRIX3X3_H
@@ -17,7 +17,7 @@ class Quaternion;
 class Vector3d;
 
 /**
-* Column based matrix
+* Column based 3x3 matrix
 */
 class Matrix3x3 {
 public:

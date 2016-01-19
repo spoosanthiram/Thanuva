@@ -1,15 +1,15 @@
 /**
-* Author: Saravanan Poosanthiram
-* $LastChangedBy: ps $
-* $LastChangedDate: 2015-10-23 21:50:42 -0400 (Fri, 23 Oct 2015) $
-*/
+ * Header file for 3D Vector class.
+ *
+ * Author: Saravanan Poosanthiram
+ */
 
 #ifndef CORE_VECTOR3D_H
 #define CORE_VECTOR3D_H
 
 #include <string>
 
-#include "AlgoBase.h"
+#include <AlgoBase.h>
 
 namespace Core {
 

@@ -1,18 +1,17 @@
 /**
-* Author: Saravanan Poosanthiram
-* $LastChangedBy: ps $
-* $LastChangedDate: 2015-10-23 21:50:42 -0400 (Fri, 23 Oct 2015) $
-*/
+ * Source file for 3x3 Matrix class
+ *
+ * Author: Saravanan Poosanthiram
+ */
 
 #include "Matrix3x3.h"
 
 #include <regex>
 #include <sstream>
 
-#include "AlgoBase.h"
-
+#include <AlgoBase.h>
 #ifdef UNIT_TEST
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #endif
 
 #include "CoreDef.h"

@@ -6,9 +6,9 @@
 
 #include "Color.h"
 
-#include "Algo.h"
+#include <Algo.h>
 #ifdef UNIT_TEST
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #endif
 
 namespace Core {

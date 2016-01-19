@@ -1,8 +1,8 @@
 /**
-* Author: Saravanan Poosanthiram
-* $LastChangedBy: ps $
-* $LastChangedDate: 2015-03-14 12:57:44 -0400 (Sat, 14 Mar 2015) $
-*/
+ * Header file for Quaternion class.
+ *
+ * Author: Saravanan Poosanthiram
+ */
 
 #ifndef CORE_QUATERNION_H
 #define CORE_QUATERNION_H

@@ -2,14 +2,12 @@
  * Header file for Box class and the Limiter inner class
  *
  * Author: Saravanan Poosanthiram
- * $LastChangedBy: ps $
- * $LastChangedDate: 2015-04-01 16:35:03 -0400 (Wed, 01 Apr 2015) $
  */
 
 #ifndef MODEL_BOX_H
 #define MODEL_BOX_H
 
-#include "AlgoBase.h"
+#include <AlgoBase.h>
 
 #include "Geometry.h"
 

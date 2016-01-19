@@ -7,7 +7,7 @@
 #include "HVector.h"
 
 #ifdef UNIT_TEST
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #endif
 
 #include "Vector3d.h"

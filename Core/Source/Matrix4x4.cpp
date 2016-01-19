@@ -1,18 +1,17 @@
 /**
-* Author: Saravanan Poosanthiram
-* $LastChangedBy: ps $
-* $LastChangedDate: 2015-04-01 16:35:03 -0400 (Wed, 01 Apr 2015) $
-*/
+ * Source file for 4x4 Matrix class.
+ *
+ * Author: Saravanan Poosanthiram
+ */
 
 #include "Matrix4x4.h"
 
 #include <regex>
 #include <sstream>
 
-#include "AlgoBase.h"
-
+#include <AlgoBase.h>
 #ifdef UNIT_TEST
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #endif
 
 #include "CoreDef.h"

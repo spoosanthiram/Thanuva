@@ -10,6 +10,7 @@ set(SOURCE_FILES
     ${Core_SOURCE_DIR}/Include/Matrix4x4.h
     ${Core_SOURCE_DIR}/Include/Quaternion.h
     ${Core_SOURCE_DIR}/Include/Vector3d.h
+
     ${Core_SOURCE_DIR}/Source/Color.cpp
     ${Core_SOURCE_DIR}/Source/CoreDef.cpp
     ${Core_SOURCE_DIR}/Source/HVector.cpp

@@ -6,10 +6,10 @@
 
 #include "ViewpointCameraModel.h"
 
+#include <boost/property_tree/ptree.hpp>
+
 #include "Quaternion.h"
 #include "Vector3d.h"
-
-#include <boost/property_tree/ptree.hpp>
 
 namespace {
 

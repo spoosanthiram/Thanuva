@@ -1,5 +1,3 @@
-cmake_minimum_required (VERSION 2.8.11)
-
 project(GlViewer CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON) # to inclue moc and ui files
@@ -20,6 +18,16 @@ include_directories(
 )
 
 set(SOURCE_FILES
+    ${GlViewer_SOURCE_DIR}/Include/AppSettings.h
+    ${GlViewer_SOURCE_DIR}/Include/BoxDialog.h
+    ${GlViewer_SOURCE_DIR}/Include/GlProject.h
+    ${GlViewer_SOURCE_DIR}/Include/GlViewerException.h
+    ${GlViewer_SOURCE_DIR}/Include/GlViewObject.h
+    ${GlViewer_SOURCE_DIR}/Include/GlWidget.h
+    ${GlViewer_SOURCE_DIR}/Include/MainWindow.h
+    ${GlViewer_SOURCE_DIR}/Include/Shader.h
+    ${GlViewer_SOURCE_DIR}/Include/ShaderProgram.h
+
     ${GlViewer_SOURCE_DIR}/Source/AppSettings.cpp
     ${GlViewer_SOURCE_DIR}/Source/BoxDialog.cpp
     ${GlViewer_SOURCE_DIR}/Source/GlProject.cpp
