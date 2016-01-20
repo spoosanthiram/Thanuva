@@ -57,4 +57,4 @@ link_directories(
 )
 
 add_executable(GlViewer ${SOURCE_FILES} ${UI_FILES} ${MOC_FILES})
-target_link_libraries(GlViewer GfxModel Model Core Algo glog GLEW Qt5::Widgets Qt5::OpenGL GLU stdc++)
+target_link_libraries(GlViewer GfxModel Model Core Algo glog Qt5::Widgets Qt5::OpenGL GLU stdc++)

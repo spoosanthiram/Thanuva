@@ -9,8 +9,7 @@
 #include <memory>
 
 #include <glog/logging.h>
-
-#include <nano_signal_slot.h>
+#include <nano_signal_slot.hpp>
 
 #include <QApplication>
 #include <QCloseEvent>
@@ -18,6 +17,7 @@
 #include <QMessageBox>
 #include <QMenuBar>
 #include <QStatusBar>
+#include <QSurfaceFormat>
 
 #include "AppSettings.h"
 #include "GlWidget.h"
@@ -29,6 +29,11 @@ MainWindow::MainWindow(QWidget* parent)
     : QMainWindow{parent}
 {
     this->setupUi();
+
+    //QSurfaceFormat format;
+    //format.setVersion(4, 3);
+    //format.setProfile(QSurfaceFormat::CoreProfile);
+    //QSurfaceFormat::setDefaultFormat(format);
 
     m_glWidget = new GlWidget{this};
     this->setCentralWidget(m_glWidget);

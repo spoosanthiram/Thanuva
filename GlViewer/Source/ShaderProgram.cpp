@@ -6,6 +6,10 @@
 
 #include "ShaderProgram.h"
 
+#define Q_ENABLE_OPENGL_FUNCTIONS_DEBUG
+#include <QOpenGLFunctions_3_3_Core>
+
+#include "GlProject.h"
 #include "GlViewerException.h"
 
 namespace GlViewer {
@@ -24,8 +28,9 @@ const char* ShaderProgram::kDiffuseColorUniformName = "diffuseColor";
 const char* ShaderProgram::kSpecularColorUniformName = "specularColor";
 const char* ShaderProgram::kShininessUniformName = "shininess";
 
-ShaderProgram::ShaderProgram()
-    : m_handle{0}
+ShaderProgram::ShaderProgram(const GlProject* glProject)
+    : m_glProject{glProject}
+    , m_handle{0}
     , m_shaders{}
     , m_ambientLightLocation{-1}
     , m_light0PositionLocation{-1}
@@ -38,7 +43,7 @@ ShaderProgram::ShaderProgram()
     , m_specularColorLocation{-1}
     , m_shininessLocation{-1}
 {
-    m_handle = glCreateProgram();
+    m_handle = m_glProject->glFuncsPtr()->glCreateProgram();
     if (0 == m_handle)
         throw GlViewerException{GlViewerException::kCreateProgram};
 }
@@ -46,15 +51,15 @@ ShaderProgram::ShaderProgram()
 ShaderProgram::~ShaderProgram()
 {
     for (auto shader : m_shaders)
-        glDetachShader(m_handle, shader.handle());
+        m_glProject->glFuncsPtr()->glDetachShader(m_handle, shader.handle());
 
-    glDeleteProgram(m_handle);
+    m_glProject->glFuncsPtr()->glDeleteProgram(m_handle);
 }
 
 void ShaderProgram::attachShader(const Shader& shader)
 {
-    glAttachShader(m_handle, shader.handle());
-    if (glGetError() != GL_NO_ERROR)
+    m_glProject->glFuncsPtr()->glAttachShader(m_handle, shader.handle());
+    if (m_glProject->glFuncsPtr()->glGetError() != GL_NO_ERROR)
         throw GlViewerException{GlViewerException::kAttachShader};
     m_shaders.push_back(shader);
 }
@@ -64,17 +69,17 @@ void ShaderProgram::link()
     if (m_shaders.size() <= 0)
         return;
 
-    glLinkProgram(m_handle);
+    m_glProject->glFuncsPtr()->glLinkProgram(m_handle);
 
     GLint isLinked;
-    glGetProgramiv(m_handle, GL_LINK_STATUS, &isLinked);
+    m_glProject->glFuncsPtr()->glGetProgramiv(m_handle, GL_LINK_STATUS, &isLinked);
     if (!isLinked)
     {
         GLsizei len;
-        glGetProgramiv(m_handle, GL_INFO_LOG_LENGTH, &len);
+        m_glProject->glFuncsPtr()->glGetProgramiv(m_handle, GL_INFO_LOG_LENGTH, &len);
 
         char log[kLogBufLen + 1];
-        glGetProgramInfoLog(m_handle, kLogBufLen, &len, log);
+        m_glProject->glFuncsPtr()->glGetProgramInfoLog(m_handle, kLogBufLen, &len, log);
 
         throw GlViewerException{std::string{GlViewerException::kLinkProgram} + log};
     }
@@ -84,19 +89,19 @@ void ShaderProgram::link()
 
 void ShaderProgram::updateLocations()
 {
-    m_ambientLightLocation = glGetUniformLocation(m_handle, kAmbientLightUniformName);
+    m_ambientLightLocation = m_glProject->glFuncsPtr()->glGetUniformLocation(m_handle, kAmbientLightUniformName);
 
-    m_light0PositionLocation = glGetUniformLocation(m_handle, kLight0PositionUniformName);
-    m_light0DiffuseColorLocation = glGetUniformLocation(m_handle, kLight0DiffuseColorUniformName);
-    m_light0SpecularColorLocation = glGetUniformLocation(m_handle, kLight0SpecularColorUniformName);
+    m_light0PositionLocation = m_glProject->glFuncsPtr()->glGetUniformLocation(m_handle, kLight0PositionUniformName);
+    m_light0DiffuseColorLocation = m_glProject->glFuncsPtr()->glGetUniformLocation(m_handle, kLight0DiffuseColorUniformName);
+    m_light0SpecularColorLocation = m_glProject->glFuncsPtr()->glGetUniformLocation(m_handle, kLight0SpecularColorUniformName);
 
-    m_projectionMatrixLocation = glGetUniformLocation(m_handle, kProjectionMatrixUniformName);
-    m_modelViewMatrixLocation = glGetUniformLocation(m_handle, kModelViewMatrixUniformName);
-    m_normalMatrixLocation = glGetUniformLocation(m_handle, kNormalMatrixUniformName);
+    m_projectionMatrixLocation = m_glProject->glFuncsPtr()->glGetUniformLocation(m_handle, kProjectionMatrixUniformName);
+    m_modelViewMatrixLocation = m_glProject->glFuncsPtr()->glGetUniformLocation(m_handle, kModelViewMatrixUniformName);
+    m_normalMatrixLocation = m_glProject->glFuncsPtr()->glGetUniformLocation(m_handle, kNormalMatrixUniformName);
 
-    m_diffuseColorLocation = glGetUniformLocation(m_handle, kDiffuseColorUniformName);
-    m_specularColorLocation = glGetUniformLocation(m_handle, kSpecularColorUniformName);
-    m_shininessLocation = glGetUniformLocation(m_handle, kShininessUniformName);
+    m_diffuseColorLocation = m_glProject->glFuncsPtr()->glGetUniformLocation(m_handle, kDiffuseColorUniformName);
+    m_specularColorLocation = m_glProject->glFuncsPtr()->glGetUniformLocation(m_handle, kSpecularColorUniformName);
+    m_shininessLocation = m_glProject->glFuncsPtr()->glGetUniformLocation(m_handle, kShininessUniformName);
 }
 
 } // namespace GlViewer

@@ -8,6 +8,10 @@
 
 #include <fstream>
 
+#define Q_ENABLE_OPENGL_FUNCTIONS_DEBUG
+#include <QOpenGLFunctions_3_3_Core>
+
+#include "GlProject.h"
 #include "GlViewerException.h"
 
 namespace GlViewer {
@@ -24,35 +28,36 @@ std::string Shader::shaderTypeStr(GLenum shaderType)
     return shaderStr;
 }
 
-Shader::Shader(GLenum shaderType)
-    : m_shaderType{shaderType}
+Shader::Shader(const GlProject* glProject, GLenum shaderType)
+    : m_glProject{glProject}
+    , m_shaderType{shaderType}
     , m_handle{0}
 {
-    m_handle = glCreateShader(shaderType);
+    m_handle = m_glProject->glFuncsPtr()->glCreateShader(shaderType);
     if (0 == m_handle)
         throw GlViewerException{GlViewerException::kCreateShader + Shader::shaderTypeStr(shaderType)};
 }
 
 Shader::~Shader()
 {
-    glDeleteShader(m_handle);
+    //m_glProject->glFuncsPtr()->glDeleteShader(m_handle);
 }
 
 void Shader::compile(const char* shaderSource)
 {
-    glShaderSource(m_handle, 1, &shaderSource, NULL);
+    m_glProject->glFuncsPtr()->glShaderSource(m_handle, 1, &shaderSource, NULL);
 
-    glCompileShader(m_handle);
+    m_glProject->glFuncsPtr()->glCompileShader(m_handle);
 
     GLint isCompiled;
-    glGetShaderiv(m_handle, GL_COMPILE_STATUS, &isCompiled);
+    m_glProject->glFuncsPtr()->glGetShaderiv(m_handle, GL_COMPILE_STATUS, &isCompiled);
     if (!isCompiled)
     {
         GLsizei len;
-        glGetShaderiv(m_handle, GL_INFO_LOG_LENGTH, &len);
+        m_glProject->glFuncsPtr()->glGetShaderiv(m_handle, GL_INFO_LOG_LENGTH, &len);
 
         char log[kLogLen + 1];
-        glGetShaderInfoLog(m_handle, kLogLen, &len, log);
+        m_glProject->glFuncsPtr()->glGetShaderInfoLog(m_handle, kLogLen, &len, log);
 
         throw GlViewerException{std::string{GlViewerException::kCompileShader} + log};
     }

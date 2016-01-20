@@ -9,7 +9,8 @@
 
 #include <vector>
 
-#include "nano_signal_slot.hpp"
+#include <GL/gl.h>
+#include <nano_signal_slot.hpp>
 
 #include "Vector3d.h"
 
@@ -19,7 +20,7 @@ namespace GlViewer {
 
 class GlProject;
 
-class GlViewObject : public Nano::Observer {
+class GlViewObject {
 public:
     static const int kVertexBuffer = 0;
     static const int kNormalBuffer = 1;

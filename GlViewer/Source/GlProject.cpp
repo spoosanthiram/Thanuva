@@ -1,21 +1,24 @@
 /**
+ * Source file Viewer Project class.
+ *
  * Author: Saravanan Poosanthiram
- * $LastChangedBy: ps $
- * $LastChangedDate: 2015-03-29 02:53:27 -0400 (Sun, 29 Mar 2015) $
  */
 
 #include "GlProject.h"
 
+#include <glog/logging.h>
+#include <nano_signal_slot.hpp>
+#define Q_ENABLE_OPENGL_FUNCTIONS_DEBUG
+#include <QOpenGLFunctions_3_3_Core>
+
 #include "GlViewObject.h"
-
-#include "glog/logging.h"
-
 
 namespace GlViewer {
 
 GlProject::GlProject()
     : m_gfxProject{}
     , m_glViewObjectList{}
+    , m_glFuncsPtr{nullptr}
     , m_shaderProgram{}
     , m_glViewportTransform{}
 {
@@ -59,16 +62,16 @@ void GlProject::loadShaders()
 {
     try {
         LOG(INFO) << "Creating ShaderProgram.";
-        m_shaderProgram = std::make_unique<ShaderProgram>();
+        m_shaderProgram = std::make_unique<ShaderProgram>(this);
 
         LOG(INFO) << "Creating Vertex Shader, compiling and attaching to ShaderProgram.";
-        Shader vertexShader{GL_VERTEX_SHADER};
+        Shader vertexShader{this, GL_VERTEX_SHADER};
         vertexShader.compile(kVertexShaderSource);
 
         m_shaderProgram->attachShader(vertexShader);
 
         LOG(INFO) << "Creating Fragment Shader, compiling and attaching to ShaderProgram.";
-        Shader fragmentShader{GL_FRAGMENT_SHADER};
+        Shader fragmentShader{this, GL_FRAGMENT_SHADER};
         fragmentShader.compile(kFragmentShaderSource);
 
         m_shaderProgram->attachShader(fragmentShader);
@@ -87,29 +90,29 @@ void GlProject::render() const
     if (!m_gfxProject)
         return;
 
-    glUseProgram(m_shaderProgram->handle());
+    m_glFuncsPtr->glUseProgram(m_shaderProgram->handle());
 
-    glUniform4fv(m_shaderProgram->ambientLightLocation(), 1, m_ambientLight);
+    m_glFuncsPtr->glUniform4fv(m_shaderProgram->ambientLightLocation(), 1, m_ambientLight);
 
-    glUniform4fv(m_shaderProgram->light0PositionLocation(), 1, m_light0Position);
-    glUniform4fv(m_shaderProgram->light0DiffuseColorLocation(), 1, m_light0DiffuseColor);
-    glUniform4fv(m_shaderProgram->light0SpecularColorLocation(), 1, m_light0SpecularColor);
+    m_glFuncsPtr->glUniform4fv(m_shaderProgram->light0PositionLocation(), 1, m_light0Position);
+    m_glFuncsPtr->glUniform4fv(m_shaderProgram->light0DiffuseColorLocation(), 1, m_light0DiffuseColor);
+    m_glFuncsPtr->glUniform4fv(m_shaderProgram->light0SpecularColorLocation(), 1, m_light0SpecularColor);
 
     float matrixData[16]; // 4x4 matrix
     const Core::Matrix4x4& projectionMatrix = m_gfxProject->projectionMatrix();
     projectionMatrix.data(matrixData);
-    glUniformMatrix4fv(m_shaderProgram->projectionMatrixLocation(), 1, GL_FALSE, matrixData);
+    m_glFuncsPtr->glUniformMatrix4fv(m_shaderProgram->projectionMatrixLocation(), 1, GL_FALSE, matrixData);
 
     for (const auto& glViewObject : m_glViewObjectList)
-        glViewObject.render();
+        glViewObject->render();
 }
 
 std::vector<const GlViewer::GlViewObject*> GlProject::probe(int x, int y) const
 {
     std::vector<const GlViewer::GlViewObject*> result{};
     for (const auto& glViewObject : m_glViewObjectList) {
-        if (glViewObject.probe(x, y))
-            result.push_back(&glViewObject);
+        if (glViewObject->probe(x, y))
+            result.push_back(glViewObject);
     }
     return result;
 }
@@ -118,8 +121,9 @@ void GlProject::add(GfxModel::GraphicsObject& graphicsObject)
 {
     LOG(INFO) << "Adding GfxModel::GraphicsObject into viewObjectList.";
 
-    m_glViewObjectList.emplace_back(*this, graphicsObject);
-    m_glViewObjectList.back().glViewObjectChanged.connect<GlProject, &GlProject::emitViewChanged>(this);
+    GlViewObject* viewObject = new GlViewObject{*this, graphicsObject};
+    m_glViewObjectList.push_back(viewObject);
+    m_glViewObjectList.back()->glViewObjectChanged.connect<GlProject, &GlProject::emitViewChanged>(this);
 
     emit viewChanged();
 }

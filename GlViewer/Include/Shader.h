@@ -9,7 +9,11 @@
 
 #include <string>
 
+#include <GL/gl.h>
+
 namespace GlViewer {
+
+class GlProject;
 
 class Shader {
 public:
@@ -18,7 +22,7 @@ public:
     static std::string shaderTypeStr(GLenum shaderType);
 
 public:
-    Shader(GLenum shaderType);
+    Shader(const GlProject* glProject, GLenum shaderType);
     ~Shader();
 
     GLenum shaderType() const { return m_shaderType; }
@@ -28,6 +32,9 @@ public:
 
 protected:
     //std::string readSource(const std::string& filePath);
+
+protected:
+    const GlProject* m_glProject;
 
     GLenum m_shaderType;
     GLuint m_handle;

@@ -10,8 +10,8 @@
 #include <memory>
 #include <vector>
 
-#include "GL/glew.h"
-#include <QGLWidget>
+#define Q_ENABLE_OPENGL_FUNCTIONS_DEBUG
+#include <QOpenGLWidget>
 #include <QMenu>
 
 #include "GlProject.h"
@@ -21,7 +21,7 @@ namespace Model { class Project; }
 
 namespace GlViewer {
 
-class GlWidget : public QGLWidget {
+class GlWidget : public QOpenGLWidget {
     Q_OBJECT
 
 public:
@@ -48,6 +48,7 @@ public:
     void deactivate();
 
 protected slots:
+    void handleViewChanged() { this->paintGL(); }
     void addBox();
     void addStl();
 

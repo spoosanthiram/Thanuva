@@ -8,11 +8,16 @@
 
 #include <memory>
 
+#define GLOG_NO_ABBREVIATED_SEVERITIES
+#include "glog/logging.h"
+
 #include <QDir>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QMouseEvent>
+#define Q_ENABLE_OPENGL_FUNCTIONS_DEBUG
 #include <QOpenGLContext>
+#include <QOpenGLFunctions_3_3_Core>
 
 #include "AppSettings.h"
 #include "Box.h"
@@ -20,13 +25,10 @@
 #include "Project.h"
 #include "Stl.h"
 
-#define GLOG_NO_ABBREVIATED_SEVERITIES
-#include "glog/logging.h"
-
 namespace GlViewer {
 
 GlWidget::GlWidget(QWidget* parent)
-    : QGLWidget{parent}
+    : QOpenGLWidget{parent}
     , m_glProject{}
     , m_project{nullptr}
     , m_width{0}
@@ -37,22 +39,21 @@ GlWidget::GlWidget(QWidget* parent)
     this->setFocusPolicy(Qt::StrongFocus);
 
     m_contextMenu = new QMenu(this);
-    m_contextMenu->setWindowOpacity(AppSettings().windowOpacity());
+    //m_contextMenu->setWindowOpacity(AppSettings().windowOpacity());
     m_contextMenu->addAction(tr("Add Box"), this, SLOT(addBox()));
     m_contextMenu->addAction(tr("Add STL"), this, SLOT(addStl()));
 
-    QOpenGLContext* context = this->context()->contextHandle();
-
-    QSurfaceFormat format;
-    format.setMajorVersion(kOpenGLMajorVersion);
-    format.setMinorVersion(kOpenGLMinorVersion);
+    QSurfaceFormat format = this->format();
+    format.setDepthBufferSize(24);
+    format.setStencilBufferSize(8);
+    format.setVersion(3, 3);
     format.setProfile(QSurfaceFormat::CoreProfile);
     format.setOptions(QSurfaceFormat::StereoBuffers);
     format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
 
-    LOG(INFO) << "Setting OpenGL context with version "
-              << kOpenGLMajorVersion << "." << kOpenGLMinorVersion << " core profile.";
-    context->setFormat(format);
+    //LOG(INFO) << "Setting OpenGL context with version "
+    //          << kOpenGLMajorVersion << "." << kOpenGLMinorVersion << " core profile.";
+    this->setFormat(format);
 }
 
 void GlWidget::activate(Model::Project* project)
@@ -62,7 +63,7 @@ void GlWidget::activate(Model::Project* project)
     m_project = project;
     m_glProject.activate(m_project);
 
-    connect(&m_glProject, &GlProject::viewChanged, this, &GlWidget::updateGL);
+    connect(&m_glProject, &GlProject::viewChanged, this, &GlWidget::handleViewChanged);
 }
 
 void GlWidget::deactivate()
@@ -110,6 +111,7 @@ void GlWidget::addStl()
 
 void GlWidget::initializeGL()
 {
+/*
     GLenum err = glewInit();
     if (err != GLEW_OK) {
         std::string msg = std::string{"Could not initialize OpenGL "}
@@ -119,16 +121,26 @@ void GlWidget::initializeGL()
         QMessageBox::critical(this, qApp->applicationName(), QString(msg.c_str()));
         qApp->closeAllWindows();
     }
+*/
 
-    LOG(INFO) << "GL_VENDER: " << glGetString(GL_VENDOR);
-    LOG(INFO) << "GL_RENDERER: " << glGetString(GL_RENDERER);
-    LOG(INFO) << "GL_VERSION: " << glGetString(GL_VERSION);
-    LOG(INFO) << "GL_SHADING_LANGUAGE_VERSION: " << glGetString(GL_SHADING_LANGUAGE_VERSION);
+    QOpenGLFunctions_3_3_Core* glFuncsPtr =
+            this->context()->versionFunctions<QOpenGLFunctions_3_3_Core>();
+    if (!glFuncsPtr) {
+        QMessageBox::critical(this, qApp->applicationName(), "context()->versionFunctions<QOpenGLFunctions_3_3_Core>() failed!");
+        qApp->closeAllWindows();
+    }
+    glFuncsPtr->initializeOpenGLFunctions();
+    m_glProject.setGlFuncsPtr(glFuncsPtr);;
 
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LEQUAL);
+    LOG(INFO) << "GL_VENDER: " << glFuncsPtr->glGetString(GL_VENDOR);
+    LOG(INFO) << "GL_RENDERER: " << glFuncsPtr->glGetString(GL_RENDERER);
+    LOG(INFO) << "GL_VERSION: " << glFuncsPtr->glGetString(GL_VERSION);
+    LOG(INFO) << "GL_SHADING_LANGUAGE_VERSION: " << glFuncsPtr->glGetString(GL_SHADING_LANGUAGE_VERSION);
 
-    glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
+    glFuncsPtr->glEnable(GL_DEPTH_TEST);
+    glFuncsPtr->glDepthFunc(GL_LEQUAL);
+
+    glFuncsPtr->glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 
     LOG(INFO) << "Loading shaders...";
     try {
@@ -153,16 +165,16 @@ void GlWidget::resizeGL(int width, int height)
 
     LOG(INFO) << "Adjusting Projection and Viewport for window resize.";
     m_glProject.gfxProject()->adjustProjection(m_width, m_height);
-    glViewport(0, 0, m_width, m_height);
+    m_glProject.glFuncsPtr()->glViewport(0, 0, m_width, m_height);
 
     std::array<int, 4> glViewport;
-    glGetIntegerv(GL_VIEWPORT, &glViewport[0]);
+    m_glProject.glFuncsPtr()->glGetIntegerv(GL_VIEWPORT, &glViewport[0]);
     m_glProject.setViewportTransform(glViewport);
 }
 
 void GlWidget::paintGL()
 {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    m_glProject.glFuncsPtr()->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     m_glProject.render();
 }

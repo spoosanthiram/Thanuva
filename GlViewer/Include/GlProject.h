@@ -1,7 +1,7 @@
 /**
+ * Header file Viewer Project class.
+ *
  * Author: Saravanan Poosanthiram
- * $LastChangedBy: ps $
- * $LastChangedDate: 2015-03-29 02:53:27 -0400 (Sun, 29 Mar 2015) $
  */
 
 #ifndef GLVIEWER_GLPROJECT_H
@@ -12,17 +12,16 @@
 
 #include <QObject>
 
-#include "nano_signal_slot.hpp"
-
 #include "GfxProject.h"
 #include "GlViewObject.h"
 #include "ShaderProgram.h"
 
+class QOpenGLFunctions_3_3_Core;
 namespace GfxModel { class GraphicsObject; }
 
 namespace GlViewer {
 
-class GlProject : public QObject, public Nano::Observer {
+class GlProject : public QObject {
     Q_OBJECT
 
 public:
@@ -32,9 +31,11 @@ public:
     GlProject();
 
     const std::unique_ptr<GfxModel::GfxProject>& gfxProject() const { return m_gfxProject; }
+    QOpenGLFunctions_3_3_Core* glFuncsPtr() const { return m_glFuncsPtr; }
     const std::unique_ptr<ShaderProgram>& shaderProgram() const { return m_shaderProgram; }
     const std::array<int, 4>& glViewportTransform() const { return m_glViewportTransform; }
 
+    void setGlFuncsPtr(QOpenGLFunctions_3_3_Core* funcsPtr) { m_glFuncsPtr = funcsPtr; }
     void setViewportTransform(const std::array<int, 4>& values)
     {
         std::copy(values.cbegin(), values.cend(), m_glViewportTransform.begin());
@@ -56,8 +57,9 @@ protected: // slots
 
 private:
     std::unique_ptr<GfxModel::GfxProject> m_gfxProject;
+    std::vector<GlViewObject*> m_glViewObjectList;
 
-    std::vector<GlViewer::GlViewObject> m_glViewObjectList;
+    QOpenGLFunctions_3_3_Core* m_glFuncsPtr;
     std::unique_ptr<ShaderProgram> m_shaderProgram;
 
     float m_ambientLight[4];

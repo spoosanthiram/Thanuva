@@ -14,6 +14,8 @@
 
 namespace GlViewer {
 
+class GlProject;
+
 class ShaderProgram {
 public:
     static const int kLogBufLen = 1000;
@@ -33,7 +35,7 @@ public:
     static const char* kShininessUniformName;
 
 public:
-    ShaderProgram();
+    ShaderProgram(const GlProject* glProject);
     ~ShaderProgram();
 
     GLuint handle() const { return m_handle; }
@@ -57,6 +59,9 @@ public:
 
 protected:
     void updateLocations();
+
+protected:
+    const GlProject* m_glProject;
 
     GLuint m_handle;
     std::vector<Shader> m_shaders;
