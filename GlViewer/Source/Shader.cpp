@@ -8,8 +8,7 @@
 
 #include <fstream>
 
-#define Q_ENABLE_OPENGL_FUNCTIONS_DEBUG
-#include <QOpenGLFunctions_3_3_Core>
+#include <QOpenGLFunctions_4_3_Core>
 
 #include "GlProject.h"
 #include "GlViewerException.h"

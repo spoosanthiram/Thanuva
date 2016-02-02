@@ -3,7 +3,8 @@ project(GlViewer CXX)
 set(CMAKE_INCLUDE_CURRENT_DIR ON) # to inclue moc and ui files
 #set(CMAKE_AUTOMOC ON)
 
-find_package(Qt5OpenGL)
+find_package(Qt5Core)
+find_package(Qt5Gui)
 find_package(Qt5Widgets)
 
 include_directories(
@@ -57,4 +58,4 @@ link_directories(
 )
 
 add_executable(GlViewer ${SOURCE_FILES} ${UI_FILES} ${MOC_FILES})
-target_link_libraries(GlViewer GfxModel Model Core Algo glog Qt5::Widgets Qt5::OpenGL GLU stdc++)
+target_link_libraries(GlViewer GfxModel Model Core Algo glog Qt5::Widgets Qt5::Gui Qt5::Core GLU stdc++)

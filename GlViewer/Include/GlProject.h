@@ -16,7 +16,7 @@
 #include "GlViewObject.h"
 #include "ShaderProgram.h"
 
-class QOpenGLFunctions_3_3_Core;
+class QOpenGLFunctions_4_3_Core;
 namespace GfxModel { class GraphicsObject; }
 
 namespace GlViewer {
@@ -31,11 +31,11 @@ public:
     GlProject();
 
     const std::unique_ptr<GfxModel::GfxProject>& gfxProject() const { return m_gfxProject; }
-    QOpenGLFunctions_3_3_Core* glFuncsPtr() const { return m_glFuncsPtr; }
+    QOpenGLFunctions_4_3_Core* glFuncsPtr() const { return m_glFuncsPtr; }
     const std::unique_ptr<ShaderProgram>& shaderProgram() const { return m_shaderProgram; }
     const std::array<int, 4>& glViewportTransform() const { return m_glViewportTransform; }
 
-    void setGlFuncsPtr(QOpenGLFunctions_3_3_Core* funcsPtr) { m_glFuncsPtr = funcsPtr; }
+    void setGlFuncsPtr(QOpenGLFunctions_4_3_Core* funcsPtr) { m_glFuncsPtr = funcsPtr; }
     void setViewportTransform(const std::array<int, 4>& values)
     {
         std::copy(values.cbegin(), values.cend(), m_glViewportTransform.begin());
@@ -59,7 +59,7 @@ private:
     std::unique_ptr<GfxModel::GfxProject> m_gfxProject;
     std::vector<GlViewObject*> m_glViewObjectList;
 
-    QOpenGLFunctions_3_3_Core* m_glFuncsPtr;
+    QOpenGLFunctions_4_3_Core* m_glFuncsPtr;
     std::unique_ptr<ShaderProgram> m_shaderProgram;
 
     float m_ambientLight[4];

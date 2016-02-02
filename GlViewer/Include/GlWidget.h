@@ -1,7 +1,7 @@
 /**
+ * Header file for graphics diplay
+ *
  * Author: Saravanan Poosanthiram
- * $LastChangedBy: ps $
- * $LastChangedDate: 2015-03-20 18:08:01 -0400 (Fri, 20 Mar 2015) $
  */
 
 #ifndef GLVIEWER_GLWIDGET_H
@@ -10,7 +10,6 @@
 #include <memory>
 #include <vector>
 
-#define Q_ENABLE_OPENGL_FUNCTIONS_DEBUG
 #include <QOpenGLWidget>
 #include <QMenu>
 
@@ -25,7 +24,7 @@ class GlWidget : public QOpenGLWidget {
     Q_OBJECT
 
 public:
-    static const int kOpenGLMajorVersion = 3;
+    static const int kOpenGLMajorVersion = 4;
     static const int kOpenGLMinorVersion = 3;
 
     struct Location
@@ -48,7 +47,7 @@ public:
     void deactivate();
 
 protected slots:
-    void handleViewChanged() { this->paintGL(); }
+    void handleViewChanged() { this->update(); }
     void addBox();
     void addStl();
 

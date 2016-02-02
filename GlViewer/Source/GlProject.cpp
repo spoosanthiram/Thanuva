@@ -8,8 +8,7 @@
 
 #include <glog/logging.h>
 #include <nano_signal_slot.hpp>
-#define Q_ENABLE_OPENGL_FUNCTIONS_DEBUG
-#include <QOpenGLFunctions_3_3_Core>
+#include <QOpenGLFunctions_4_3_Core>
 
 #include "GlViewObject.h"
 
@@ -136,9 +135,10 @@ void GlProject::handleExtentChanged()
     m_light0Position[2] = m_gfxProject->extent().maxLength() * 2.0;
 }
 
+
 const char* GlProject::kVertexShaderSource =
 R"VERT(
-#version 330 core
+#version 430 core
 
 layout(location = 0) in vec4 vertexPosition;
 layout(location = 1) in vec3 vertexNormal;
@@ -152,16 +152,17 @@ out vec3 normal;
 
 void main()
 {
-    vertex  = modelViewMatrix * vertexPosition;
+    vertex = modelViewMatrix * vertexPosition;
     normal = normalMatrix * vertexNormal;
 
     gl_Position = projectionMatrix * vertex;
 }
 )VERT";
 
+
 const char* GlProject::kFragmentShaderSource =
 R"FRAG(
-#version 330 core
+#version 430 core
 
 in vec4 vertex;
 in vec3 normal;

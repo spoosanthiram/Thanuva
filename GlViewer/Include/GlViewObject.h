@@ -9,7 +9,7 @@
 
 #include <vector>
 
-#include <GL/gl.h>
+#include <QOpenGLFunctions>
 #include <nano_signal_slot.hpp>
 
 #include "Vector3d.h"

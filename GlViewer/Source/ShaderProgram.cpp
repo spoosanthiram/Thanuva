@@ -6,8 +6,7 @@
 
 #include "ShaderProgram.h"
 
-#define Q_ENABLE_OPENGL_FUNCTIONS_DEBUG
-#include <QOpenGLFunctions_3_3_Core>
+#include <QOpenGLFunctions_4_3_Core>
 
 #include "GlProject.h"
 #include "GlViewerException.h"
@@ -89,15 +88,15 @@ void ShaderProgram::link()
 
 void ShaderProgram::updateLocations()
 {
+    m_projectionMatrixLocation = m_glProject->glFuncsPtr()->glGetUniformLocation(m_handle, kProjectionMatrixUniformName);
+    m_modelViewMatrixLocation = m_glProject->glFuncsPtr()->glGetUniformLocation(m_handle, kModelViewMatrixUniformName);
+    m_normalMatrixLocation = m_glProject->glFuncsPtr()->glGetUniformLocation(m_handle, kNormalMatrixUniformName);
+
     m_ambientLightLocation = m_glProject->glFuncsPtr()->glGetUniformLocation(m_handle, kAmbientLightUniformName);
 
     m_light0PositionLocation = m_glProject->glFuncsPtr()->glGetUniformLocation(m_handle, kLight0PositionUniformName);
     m_light0DiffuseColorLocation = m_glProject->glFuncsPtr()->glGetUniformLocation(m_handle, kLight0DiffuseColorUniformName);
     m_light0SpecularColorLocation = m_glProject->glFuncsPtr()->glGetUniformLocation(m_handle, kLight0SpecularColorUniformName);
-
-    m_projectionMatrixLocation = m_glProject->glFuncsPtr()->glGetUniformLocation(m_handle, kProjectionMatrixUniformName);
-    m_modelViewMatrixLocation = m_glProject->glFuncsPtr()->glGetUniformLocation(m_handle, kModelViewMatrixUniformName);
-    m_normalMatrixLocation = m_glProject->glFuncsPtr()->glGetUniformLocation(m_handle, kNormalMatrixUniformName);
 
     m_diffuseColorLocation = m_glProject->glFuncsPtr()->glGetUniformLocation(m_handle, kDiffuseColorUniformName);
     m_specularColorLocation = m_glProject->glFuncsPtr()->glGetUniformLocation(m_handle, kSpecularColorUniformName);

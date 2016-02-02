@@ -8,8 +8,7 @@
 
 #include <GL/glu.h>
 #include <glog/logging.h>
-#define Q_ENABLE_OPENGL_FUNCTIONS_DEBUG
-#include <QOpenGLFunctions_3_3_Core>
+#include <QOpenGLFunctions_4_3_Core>
 
 #include "GlProject.h"
 #include "GraphicsObject.h"

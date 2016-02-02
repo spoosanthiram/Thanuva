@@ -1,7 +1,7 @@
 /**
+ * Source file for graphics diplay
+ *
  * Author: Saravanan Poosanthiram
- * $LastChangedBy: ps $
- * $LastChangedDate: 2015-10-23 21:50:42 -0400 (Fri, 23 Oct 2015) $
  */
 
 #include "GlWidget.h"
@@ -15,9 +15,8 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QMouseEvent>
-#define Q_ENABLE_OPENGL_FUNCTIONS_DEBUG
 #include <QOpenGLContext>
-#include <QOpenGLFunctions_3_3_Core>
+#include <QOpenGLFunctions_4_3_Core>
 
 #include "AppSettings.h"
 #include "Box.h"
@@ -44,11 +43,9 @@ GlWidget::GlWidget(QWidget* parent)
     m_contextMenu->addAction(tr("Add STL"), this, SLOT(addStl()));
 
     QSurfaceFormat format = this->format();
-    format.setDepthBufferSize(24);
-    format.setStencilBufferSize(8);
-    format.setVersion(3, 3);
+    format.setVersion(kOpenGLMajorVersion, kOpenGLMinorVersion);
     format.setProfile(QSurfaceFormat::CoreProfile);
-    format.setOptions(QSurfaceFormat::StereoBuffers);
+    format.setDepthBufferSize(32);
     format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
 
     //LOG(INFO) << "Setting OpenGL context with version "
@@ -82,9 +79,13 @@ void GlWidget::addBox()
     auto box = std::make_shared<Model::Box>(*m_project);
     box->setMaterial(Core::Material::defaultMaterial());
 
+    this->makeCurrent();
+
     m_project->add(box);
 
     BoxDialog(this, box).exec();
+
+    this->doneCurrent();
 }
 
 void GlWidget::addStl()
@@ -101,7 +102,9 @@ void GlWidget::addStl()
         auto stl = std::make_shared<Model::Stl>(*m_project, std::string{filePath.toUtf8().data()});
         stl->setMaterial(Core::Material::defaultMaterial());
 
+        this->makeCurrent();
         m_project->add(stl);
+        this->doneCurrent();
     }
     catch (const std::exception& e) {
         LOG(WARNING) << e.what();
@@ -111,26 +114,14 @@ void GlWidget::addStl()
 
 void GlWidget::initializeGL()
 {
-/*
-    GLenum err = glewInit();
-    if (err != GLEW_OK) {
-        std::string msg = std::string{"Could not initialize OpenGL "}
-            + std::to_string(kOpenGLMajorVersion) + "." + std::to_string(kOpenGLMinorVersion)
-            + std::string{" core profile functions...exiting the program."};
-        LOG(ERROR) << msg;
-        QMessageBox::critical(this, qApp->applicationName(), QString(msg.c_str()));
-        qApp->closeAllWindows();
-    }
-*/
-
-    QOpenGLFunctions_3_3_Core* glFuncsPtr =
-            this->context()->versionFunctions<QOpenGLFunctions_3_3_Core>();
+    QOpenGLFunctions_4_3_Core* glFuncsPtr =
+            this->context()->versionFunctions<QOpenGLFunctions_4_3_Core>();
     if (!glFuncsPtr) {
-        QMessageBox::critical(this, qApp->applicationName(), "context()->versionFunctions<QOpenGLFunctions_3_3_Core>() failed!");
+        QMessageBox::critical(this, qApp->applicationName(), "context()->versionFunctions<QOpenGLFunctions_4_3_Core>() failed!");
         qApp->closeAllWindows();
     }
     glFuncsPtr->initializeOpenGLFunctions();
-    m_glProject.setGlFuncsPtr(glFuncsPtr);;
+    m_glProject.setGlFuncsPtr(glFuncsPtr);
 
     LOG(INFO) << "GL_VENDER: " << glFuncsPtr->glGetString(GL_VENDOR);
     LOG(INFO) << "GL_RENDERER: " << glFuncsPtr->glGetString(GL_RENDERER);
