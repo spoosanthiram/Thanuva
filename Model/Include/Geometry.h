@@ -9,13 +9,12 @@
 
 #include <vector>
 
+#include <boost/property_tree/ptree_fwd.hpp>
+#include <nano_signal_slot.hpp>
+
 #include "CoreDef.h"
 #include "Material.h"
 #include "Matrix4x4.h"
-
-#include <boost/property_tree/ptree_fwd.hpp>
-
-#include "nano_signal_slot.hpp"
 
 namespace Model {
 

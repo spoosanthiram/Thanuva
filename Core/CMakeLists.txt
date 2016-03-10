@@ -26,11 +26,6 @@ include_directories(
     ${Graphics_SOURCE_DIR}/../Algorithms/Include
 )
 
-link_directories(
-    ${Graphics_SOURCE_DIR}/../Algorithms
-    ${Graphics_SOURCE_DIR}/../3rdParty/googletest/googletest
-)
-
 # TARGET for library
 add_library(Core ${SOURCE_FILES})
 
@@ -40,4 +35,9 @@ target_compile_definitions(CoreTest PUBLIC UNIT_TEST)
 target_include_directories(CoreTest PUBLIC
     ${Graphics_SOURCE_DIR}/../3rdParty/googletest/googletest/include
 )
-target_link_libraries(CoreTest Algo gtest pthread stdc++)
+target_link_libraries(CoreTest
+    ${Graphics_SOURCE_DIR}/../Algorithms/libAlgo.a
+    ${Graphics_SOURCE_DIR}/../3rdParty/googletest/googletest/libgtest.a
+    pthread
+    stdc++
+)

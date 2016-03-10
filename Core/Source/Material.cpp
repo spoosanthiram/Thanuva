@@ -7,6 +7,9 @@
 #include "Material.h"
 
 #include <regex>
+#ifdef UNIT_TEST
+#include <gtest/gtest.h>
+#endif
 
 #include "CoreDef.h"
 
@@ -58,5 +61,13 @@ void Material::set(const std::string& str)
             m_shininess = std::stof(colorStr.substr(2));
     }
 }
+
+#ifdef UNIT_TEST
+
+TEST(MaterialTest, Simple)
+{
+}
+
+#endif // UNIT_TEST
 
 } // namespace Core
