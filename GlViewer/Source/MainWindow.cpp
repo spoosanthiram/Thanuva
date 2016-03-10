@@ -22,6 +22,7 @@
 #include "AppSettings.h"
 #include "GlWidget.h"
 #include "Project.h"
+#include "StartUpPage.h"
 
 namespace GlViewer {
 
@@ -35,10 +36,11 @@ MainWindow::MainWindow(QWidget* parent)
     //format.setProfile(QSurfaceFormat::CoreProfile);
     //QSurfaceFormat::setDefaultFormat(format);
 
-    m_glWidget = new GlWidget{this};
-    this->setCentralWidget(m_glWidget);
+    m_startUpPage = new StartUpPage{this};
+    //m_glWidget = new GlWidget{this};
+    this->setCentralWidget(m_startUpPage);
 
-    this->create(); // TODO: for now create newProject()...sometime down the road I need to change such that
+    //this->create(); // TODO: for now create newProject()...sometime down the road I need to change such that
                     // we have startup page that shows recent project like Microsoft Word or Apple Pages
 }
 

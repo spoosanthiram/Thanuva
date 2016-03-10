@@ -1,7 +1,11 @@
 project(GlViewer CXX)
 
+set(CMAKE_PREFIX_PATH $ENV{QTDIR})
+
 set(CMAKE_INCLUDE_CURRENT_DIR ON) # to inclue moc and ui files
-#set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOMOC ON)
+#set(CMAKE_AUTOUIC ON)
+#set(AUTOUIC_SEARCH_PATH ${GlViewer_SOURCE_DIR}/Form)
 
 find_package(Qt5Core)
 find_package(Qt5Gui)
@@ -28,6 +32,7 @@ set(SOURCE_FILES
     ${GlViewer_SOURCE_DIR}/Include/MainWindow.h
     ${GlViewer_SOURCE_DIR}/Include/Shader.h
     ${GlViewer_SOURCE_DIR}/Include/ShaderProgram.h
+    ${GlViewer_SOURCE_DIR}/Include/StartUpPage.h
 
     ${GlViewer_SOURCE_DIR}/Source/AppSettings.cpp
     ${GlViewer_SOURCE_DIR}/Source/BoxDialog.cpp
@@ -39,16 +44,12 @@ set(SOURCE_FILES
     ${GlViewer_SOURCE_DIR}/Source/MainWindow.cpp
     ${GlViewer_SOURCE_DIR}/Source/Shader.cpp
     ${GlViewer_SOURCE_DIR}/Source/ShaderProgram.cpp
+    ${GlViewer_SOURCE_DIR}/Source/StartUpPage.cpp
 )
 
 qt5_wrap_ui(UI_FILES
-    Form/BoxDialog.ui
-)
-
-qt5_wrap_cpp(MOC_FILES
-    ${GlViewer_SOURCE_DIR}/Include/BoxDialog.h
-    ${GlViewer_SOURCE_DIR}/Include/GlProject.h
-    ${GlViewer_SOURCE_DIR}/Include/GlWidget.h
+    ${GlViewer_SOURCE_DIR}/Form/BoxDialog.ui
+    ${GlViewer_SOURCE_DIR}/Form/StartUpPage.ui
 )
 
 link_directories(
@@ -57,5 +58,5 @@ link_directories(
     ${GlViewer_SOURCE_DIR}/../../3rdParty/glog
 )
 
-add_executable(GlViewer ${SOURCE_FILES} ${UI_FILES} ${MOC_FILES})
+add_executable(GlViewer ${SOURCE_FILES} ${UI_FILES})
 target_link_libraries(GlViewer GfxModel Model Core Algo glog Qt5::Widgets Qt5::Gui Qt5::Core GLU stdc++)

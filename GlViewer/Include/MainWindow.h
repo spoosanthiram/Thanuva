@@ -16,6 +16,7 @@ namespace Model { class Project; }
 namespace GlViewer {
 
 class GlWidget;
+class StartUpPage;
 
 class MainWindow : public QMainWindow/*, public Nano::Observer*/
 {
@@ -42,8 +43,10 @@ private:
     Model::Project* m_project = nullptr;
     std::string m_lastFileOpLocation{};
 
-    QAction* m_saveAction = nullptr;
+    StartUpPage* m_startUpPage = nullptr;
     GlWidget* m_glWidget = nullptr;
+
+    QAction* m_saveAction = nullptr;
 };
 
 } // namespace GlViewer
