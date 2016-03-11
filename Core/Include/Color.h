@@ -1,7 +1,8 @@
-/**
- * Color class header file.
+/*
+ * Core: Common Code used by other modules of Thanuva
  *
- * Author: Saravanan Poosanthiram
+ * Copyright 2016, Saravanan Poosanthiram
+ * All rights reserved.
  */
 
 #ifndef CORE_COLOR_H
@@ -11,8 +12,20 @@
 
 namespace Core {
 
+/**
+ * @brief The Color class abstracts the RGB colors. The values are stored as floats.
+ */
 class Color {
 public:
+    // rgbint_t for representing RGB values as integer.
+    // using long so we could potentially move to 16 bit per color components
+#ifdef WINDOWS
+    using rgbint_t = long long;
+#else
+    using rgbint_t = long;
+#endif
+
+    // constants for 8-bit RGB
     static const int kMaxColorValue = 0xff;
     static const int kBitsPerComponent = 8;
 
@@ -24,11 +37,7 @@ public:
         , m_g{0.0f}
         , m_b{0.0f}
     {}
-#ifdef WINDOWS
-    explicit Color(long long rgb)
-#else
-    explicit Color(long rgb)
-#endif
+    explicit Color(rgbint_t rgb)
     {
         m_b = static_cast<float>(rgb & kMaxColorValue) / kMaxColorValue;
         m_g = static_cast<float>((rgb >> kBitsPerComponent) & kMaxColorValue) / kMaxColorValue;
@@ -51,11 +60,13 @@ public:
     int rInt() const { return static_cast<int>(m_r * kMaxColorValue); }
     int gInt() const { return static_cast<int>(m_g * kMaxColorValue); }
     int bInt() const { return static_cast<int>(m_b * kMaxColorValue); }
-#ifdef WINDOWS
-    long long rgb() const;
-#else
-    long rgb() const;
-#endif
+    /**
+     * @return Integer representation of RGB values with R in MSB and G in LSB. Ex: 0x0RRRGGGBBB
+     */
+    rgbint_t rgb() const;
+    /**
+     * @return Hexadecimal string of integener that is returned by rgb()
+     */
     std::string str() const;
 
     void setR(float r) { m_r = r; }
@@ -63,7 +74,10 @@ public:
     void setB(float b) { m_b = b; }
     void set(const std::string& str);
 
-    bool operator == (const Color& c) const { return (c.m_r == m_r && c.m_g == m_g && c.m_b == m_b); }
+    bool operator == (const Color& c) const
+    {
+        return (this->rInt() == c.rInt() && this->gInt() == c.rInt() && this->bInt() == c.bInt());
+    }
     bool operator != (const Color& c) const { return !(c == *this); }
 
 protected:

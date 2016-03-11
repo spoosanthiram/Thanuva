@@ -1,6 +1,8 @@
-/**
- * Header file for 4x4 matrix class.
- * Author: Saravanan Poosanthiram
+/*
+ * Core: Common Code used by other modules of Thanuva
+ *
+ * Copyright 2016, Saravanan Poosanthiram
+ * All rights reserved.
  */
 
 #ifndef CORE_MATRIX4X4_H

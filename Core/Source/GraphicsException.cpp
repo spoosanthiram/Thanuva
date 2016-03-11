@@ -5,15 +5,10 @@
  * All rights reserved.
  */
 
-#ifndef CORE_COREDEF_H
-#define CORE_COREDEF_H
+#include "GraphicsException.h"
 
 namespace Core {
 
-enum class EmitSignal { Emit, DontEmit };
-
-extern const char* kWhitespaceRegEx;
+const char* GraphicsException::kBadMaterialString = "Material String '{}' has unrecognizable characters!";
 
 } // namespace Core
-
-#endif // CORE_COREDEF_H

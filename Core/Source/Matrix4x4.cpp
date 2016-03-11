@@ -1,7 +1,8 @@
-/**
- * Source file for 4x4 Matrix class.
+/*
+ * Core: Common Code used by other modules of Thanuva
  *
- * Author: Saravanan Poosanthiram
+ * Copyright 2016, Saravanan Poosanthiram
+ * All rights reserved.
  */
 
 #include "Matrix4x4.h"

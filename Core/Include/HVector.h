@@ -1,7 +1,8 @@
-/**
- * Header file for HVector class.
+/*
+ * Core: Common Code used by other modules of Thanuva
  *
- * Author: Saravanan Poosanthiram
+ * Copyright 2016, Saravanan Poosanthiram
+ * All rights reserved.
  */
 
 #ifndef CORE_HVECTOR_H
@@ -16,7 +17,7 @@ namespace Core {
 class Vector3d;
 
 /**
-* HVector is an abstraction of homogeneous vector used in graphics.
+* @brief The HVector class is an abstraction of homogeneous vector used in graphics.
 * see http://en.wikipedia.org/wiki/Homogeneous_coordinates
 */
 class HVector {

@@ -1,7 +1,8 @@
-/**
- * Source file for 3D Vector class.
+/*
+ * Core: Common Code used by other modules of Thanuva
  *
- * Author: Saravanan Poosanthiram
+ * Copyright 2016, Saravanan Poosanthiram
+ * All rights reserved.
  */
 
 #include "Vector3d.h"

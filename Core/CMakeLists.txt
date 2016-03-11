@@ -13,6 +13,7 @@ set(SOURCE_FILES
 
     ${Core_SOURCE_DIR}/Source/Color.cpp
     ${Core_SOURCE_DIR}/Source/CoreDef.cpp
+    ${Core_SOURCE_DIR}/Source/GraphicsException.cpp
     ${Core_SOURCE_DIR}/Source/HVector.cpp
     ${Core_SOURCE_DIR}/Source/Material.cpp
     ${Core_SOURCE_DIR}/Source/Matrix3x3.cpp
@@ -24,6 +25,7 @@ set(SOURCE_FILES
 include_directories(
     ${Core_SOURCE_DIR}/Include
     ${Graphics_SOURCE_DIR}/../Algorithms/Include
+    ${Graphics_SOURCE_DIR}/../3rdParty/cppformat
 )
 
 # TARGET for library
@@ -37,6 +39,7 @@ target_include_directories(CoreTest PUBLIC
 )
 target_link_libraries(CoreTest
     ${Graphics_SOURCE_DIR}/../Algorithms/libAlgo.a
+    ${Graphics_SOURCE_DIR}/../3rdParty/cppformat/libcppformat.a
     ${Graphics_SOURCE_DIR}/../3rdParty/googletest/googletest/libgtest.a
     pthread
     stdc++

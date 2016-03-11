@@ -1,7 +1,8 @@
-/**
- * Color class source file.
+/*
+ * Core: Common Code used by other modules of Thanuva
  *
- * Author: Saravanan Poosanthiram
+ * Copyright 2016, Saravanan Poosanthiram
+ * All rights reserved.
  */
 
 #include "Color.h"
@@ -13,11 +14,7 @@
 
 namespace Core {
 
-#ifdef WINDOWS
-    long long Color::rgb() const
-#else
-    long Color::rgb() const
-#endif
+Color::rgbint_t Color::rgb() const
 {
     int rgb = static_cast<int>(m_r * kMaxColorValue);
     rgb <<= kBitsPerComponent;
