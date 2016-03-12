@@ -9,6 +9,6 @@
 
 namespace Core {
 
-const char* GraphicsException::kBadMaterialString = "Material String '{}' has unrecognizable characters!";
+const char* GraphicsException::kBadMaterialString = "Material String, \"{}\" contains unrecognizable characters!";
 
 } // namespace Core

@@ -1,7 +1,8 @@
-/**
- * Header file for Box class and the Limiter inner class
+/*
+ * Model: Model objects for Thanuva
  *
- * Author: Saravanan Poosanthiram
+ * Copyright 2016, Saravanan Poosanthiram
+ * All rights reserved.
  */
 
 #ifndef MODEL_BOX_H
@@ -9,11 +10,11 @@
 
 #include <AlgoBase.h>
 
-#include "Geometry.h"
+#include "ModelObject.h"
 
 namespace Model {
 
-class Box : public Geometry
+class Box : public ModelObject
 {
 public:
     struct Limiter
@@ -54,10 +55,7 @@ public:
     };
 
 public:
-    Box(const Project& project)
-        : Geometry{project}
-        , m_limiter{}
-    {}
+    Box(const Project& project) : ModelObject{project} {}
     Box(const Project& project, const Limiter& limiter);
     Box(const Box& rhs) = delete; // TODO: needs to be implemented
 
@@ -68,11 +66,12 @@ public:
 
     void setLimiter(const Limiter& limiter, Core::EmitSignal emitSignal = Core::EmitSignal::Emit);
 
-    void load(const boost::property_tree::ptree& geometryPropTree) override;
-    void save(boost::property_tree::ptree& geometryPropTree) override;
+protected:
+    void loadModel(const boost::property_tree::ptree& modelPropTree) override;
+    void saveModel(boost::property_tree::ptree& modelPropTree) override;
 
 private:
-    Limiter m_limiter;
+    Limiter m_limiter{};
 };
 
 } // namespace Model

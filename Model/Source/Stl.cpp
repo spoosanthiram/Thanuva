@@ -1,8 +1,9 @@
-/**
-* Author: Saravanan Poosanthiram
-* $LastChangedBy: ps $
-* $LastChangedDate: 2015-03-20 18:08:01 -0400 (Fri, 20 Mar 2015) $
-*/
+/*
+ * Model: Model objects for Thanuva
+ *
+ * Copyright 2016, Saravanan Poosanthiram
+ * All rights reserved.
+ */
 
 #include "Stl.h"
 
@@ -17,12 +18,8 @@ const char* kFilePathTag = "filePath";
 namespace Model {
 
 Stl::Stl(const Project& project, const std::string& filePath)
-    : Geometry{project}
-#ifndef _MSC_VER
+    : ModelObject{project}
     , m_filePath{filePath}
-#else
-    , m_filePath(filePath)
-#endif
 {
     // TODO: check if STL is exists
 }
@@ -36,21 +33,17 @@ void Stl::setFilePath(const std::string& filePath, Core::EmitSignal emitSignal)
     m_filePath = filePath;
 
     if (Core::EmitSignal::Emit == emitSignal)
-        geometryChanged.emit_signal(); // emit signal
+        modelObjectChanged.emit_signal(); // emit signal
 }
 
-void Stl::load(const boost::property_tree::ptree& geometryPropTree)
+void Stl::loadModel(const boost::property_tree::ptree& modelPropTree)
 {
-    this->loadGeometry(geometryPropTree);
-
-    m_filePath = geometryPropTree.get<std::string>(kFilePathTag);
+    m_filePath = modelPropTree.get<std::string>(kFilePathTag);
 }
 
-void Stl::save(boost::property_tree::ptree& geometryPropTree)
+void Stl::saveModel(boost::property_tree::ptree& modelPropTree)
 {
-    this->saveGeometry(geometryPropTree);
-
-    geometryPropTree.put(kFilePathTag, m_filePath);
+    modelPropTree.put(kFilePathTag, m_filePath);
 }
 
 } // namespace Model

@@ -1,8 +1,9 @@
-/**
-* Author: Saravanan Poosanthiram
-* $LastChangedBy: ps $
-* $LastChangedDate: 2015-03-20 18:08:01 -0400 (Fri, 20 Mar 2015) $
-*/
+/*
+ * Model: Model objects for Thanuva
+ *
+ * Copyright 2016, Saravanan Poosanthiram
+ * All rights reserved.
+ */
 
 #include "Project.h"
 
@@ -10,26 +11,26 @@
 
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
-
+#include <cppformat/format.h>
 #define GLOG_NO_ABBREVIATED_SEVERITIES
 #include <glog/logging.h>
 
 #include "Box.h"
-#include "ProjectException.h"
+#include "ModelException.h"
 #include "Stl.h"
 
 namespace {
 
-const char* kGeometriesTag = "geometries";
-const char* kGeometryTag = "geometry";
+const char* kModelObjectsTag = "modelobjects";
+const char* kModelObjectTag = "modelobject";
 const char* kViewpointCameraTag = "viewpointCamera";
 
 } // anonymous
 
 namespace Model {
 
-const char* Project::kDefaultName = "<unsaved>";
-const char* Project::kFileExtention = "gfx";
+const char* Project::kDefaultName = "Untitled";
+const char* Project::kFileExtention = "tha";
 
 std::string Project::defaultPath()
 {
@@ -48,13 +49,8 @@ std::string Project::defaultPath()
 }
 
 Project::Project()
-#ifndef _MSC_VER
     : m_name{kDefaultName}
     , m_path{Project::defaultPath()}
-#else
-    : m_name(kDefaultName)
-    , m_path(Project::defaultPath())
-#endif
 {
 }
 
@@ -80,7 +76,7 @@ void Project::setFilePath(const std::string& filePath)
     std::string extstr{kFileExtention};
     try {
         if (filePath.substr(filePath.size() - extstr.size()) != extstr) {
-            ProjectException e{std::string{ProjectException::kBadExtension} + kFileExtention};
+            ModelException e{fmt::format(ModelException::kBadExtension, filePath, kFileExtention)};
             LOG(ERROR) << e.what();
             throw e;
         }
@@ -109,15 +105,15 @@ void Project::setDirty(bool dirty)
     dirtyChanged.emit_signal();
 }
 
-void Project::add(const std::shared_ptr<Geometry>& geometry)
+void Project::add(const std::shared_ptr<ModelObject>& modelObject)
 {
-    LOG(INFO) << "Adding geometry to the list";
+    LOG(INFO) << "Adding ModelObject to the list";
 
-    m_geometryList.push_back(geometry);
-    geometryAdded.emit_signal(geometry.get()); // emit signal
+    m_modelObjectList.push_back(modelObject);
+    modelObjectAdded.emit_signal(modelObject.get()); // emit signal
 
     this->setDirty(true);
-    geometry->geometryChanged.connect<Project, &Project::handleGeometryChanged>(this);
+    modelObject->modelObjectChanged.connect<Project, &Project::handleModelObjectChanged>(this);
 }
 
 void Project::load()
@@ -133,8 +129,8 @@ void Project::load()
 
         read_json(this->filePath(), projectPropTree);
 
-        ptree geometiesPropTree = projectPropTree.get_child(kGeometriesTag);
-        this->loadGeometryList(geometiesPropTree);
+        ptree modelObjectsPropTree = projectPropTree.get_child(kModelObjectsTag);
+        this->loadModelObjectList(modelObjectsPropTree);
 
         ptree cameraPropTree = projectPropTree.get_child(kViewpointCameraTag);
         m_viewpointCameraModel.load(cameraPropTree);
@@ -156,9 +152,9 @@ void Project::save()
 
     ptree projectPropTree;
 
-    ptree geometiesPropTree;
-    this->saveGeometryList(geometiesPropTree);
-    projectPropTree.add_child(kGeometriesTag, geometiesPropTree);
+    ptree modelObjectsPropTree;
+    this->saveModelObjectList(modelObjectsPropTree);
+    projectPropTree.add_child(kModelObjectsTag, modelObjectsPropTree);
 
     ptree cameraPropTree;
     m_viewpointCameraModel.save(cameraPropTree);
@@ -169,38 +165,38 @@ void Project::save()
     this->setDirty(false);
 }
 
-void Project::loadGeometryList(const boost::property_tree::ptree& geometiesPropTree)
+void Project::loadModelObjectList(const boost::property_tree::ptree& modelObjectsPropTree)
 {
     using boost::property_tree::ptree;
 
-    for (const auto& it : geometiesPropTree) {
-        const ptree& geometryPropTree = it.second;
-        auto type = static_cast<Geometry::Type>(geometryPropTree.get<int>(Geometry::kTypeTag));
+    for (const auto& it : modelObjectsPropTree) {
+        const ptree& modelObjectPropTree = it.second;
+        auto type = static_cast<ModelObject::Type>(modelObjectPropTree.get<int>(ModelObject::kTypeTag));
 
-        std::shared_ptr<Geometry> geometry;
+        std::shared_ptr<ModelObject> modelObject;
 
         switch(type) {
-        case Geometry::Type::Box:
-            geometry = std::make_shared<Model::Box>(*this);
+        case ModelObject::Type::Box:
+            modelObject = std::make_shared<Model::Box>(*this);
             break;
-        case Geometry::Type::Stl:
-            geometry = std::make_shared<Model::Stl>(*this);
+        case ModelObject::Type::Stl:
+            modelObject = std::make_shared<Model::Stl>(*this);
             break;
         }
 
-        if (geometry) {
-            geometry->load(geometryPropTree);
-            this->add(geometry);
+        if (modelObject) {
+            modelObject->load(modelObjectPropTree);
+            this->add(modelObject);
         }
     }
 }
 
-void Project::saveGeometryList(boost::property_tree::ptree& geometiesPropTree)
+void Project::saveModelObjectList(boost::property_tree::ptree& modelObjectsPropTree)
 {
-    for (auto& geometry : m_geometryList) {
-        boost::property_tree::ptree geometryPropTree;
-        geometry->save(geometryPropTree);
-        geometiesPropTree.add_child(kGeometryTag, geometryPropTree);
+    for (auto& modelObject : m_modelObjectList) {
+        boost::property_tree::ptree modelObjectPropTree;
+        modelObject->save(modelObjectPropTree);
+        modelObjectsPropTree.add_child(kModelObjectTag, modelObjectPropTree);
     }
 }
 

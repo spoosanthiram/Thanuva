@@ -1,3 +1,10 @@
+/*
+ * Model: Model objects for Thanuva
+ *
+ * Copyright 2016, Saravanan Poosanthiram
+ * All rights reserved.
+ */
+
 #include <gtest/gtest.h>
 
 int main(int argc, char **argv)

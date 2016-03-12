@@ -1,8 +1,9 @@
-/**
-* Author: Saravanan Poosanthiram
-* $LastChangedBy: ps $
-* $LastChangedDate: 2015-03-20 18:08:01 -0400 (Fri, 20 Mar 2015) $
-*/
+/*
+ * Model: Model objects for Thanuva
+ *
+ * Copyright 2016, Saravanan Poosanthiram
+ * All rights reserved.
+ */
 
 #ifndef MODEL_PROJECT_H
 #define MODEL_PROJECT_H
@@ -10,15 +11,14 @@
 #include <memory>
 #include <vector>
 
-#include "ViewpointCameraModel.h"
-
 #include <boost/property_tree/ptree_fwd.hpp>
+#include <nano_signal_slot.hpp>
 
-#include "nano_signal_slot.hpp"
+#include "ViewpointCameraModel.h"
 
 namespace Model {
 
-class Geometry;
+class ModelObject;
 
 class Project {
 public:
@@ -36,32 +36,32 @@ public:
     const std::string& path() const { return m_path; }
     std::string filePath() const;
     bool isDirty() const { return m_dirty; }
-    const std::vector<std::shared_ptr<Geometry>>& geometryList() const { return m_geometryList; }
+    const std::vector<std::shared_ptr<ModelObject>>& modelObjectList() const { return m_modelObjectList; }
     const ViewpointCameraModel& viewpointCameraModel() const { return m_viewpointCameraModel; }
     ViewpointCameraModel& viewpointCameraModel() { return m_viewpointCameraModel; }
 
     void setFilePath(const std::string& filePath);
     void setDirty(bool dirty);
 
-    void add(const std::shared_ptr<Geometry>& geometry);
+    void add(const std::shared_ptr<ModelObject>& modelObject);
     void load();
     void save();
 
 public:
-    Nano::Signal<void()> dirtyChanged;
-    Nano::Signal<void(Geometry*)> geometryAdded;
+    Nano::Signal<void()> dirtyChanged{};
+    Nano::Signal<void(ModelObject*)> modelObjectAdded{};
 
 protected: // slots
-    void handleGeometryChanged() { this->setDirty(true); }
+    void handleModelObjectChanged() { this->setDirty(true); }
 
 private:
-    void loadGeometryList(const boost::property_tree::ptree& geometiesPropTree);
-    void saveGeometryList(boost::property_tree::ptree& geometiesPropTree);
+    void loadModelObjectList(const boost::property_tree::ptree& modelObjectsPropTree);
+    void saveModelObjectList(boost::property_tree::ptree& modelObjectsPropTree);
 
     std::string m_name;
     std::string m_path;
     bool m_dirty{false};
-    std::vector<std::shared_ptr<Geometry>> m_geometryList{};
+    std::vector<std::shared_ptr<ModelObject>> m_modelObjectList{};
     ViewpointCameraModel m_viewpointCameraModel{};
 };
 

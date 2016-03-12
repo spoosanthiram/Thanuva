@@ -1,8 +1,9 @@
-/**
-* Author: Saravanan Poosanthiram
-* $LastChangedBy: ps $
-* $LastChangedDate: 2015-10-23 21:50:42 -0400 (Fri, 23 Oct 2015) $
-*/
+/*
+ * Model: Model objects for Thanuva
+ *
+ * Copyright 2016, Saravanan Poosanthiram
+ * All rights reserved.
+ */
 
 #include "ViewpointCameraModel.h"
 

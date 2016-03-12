@@ -1,7 +1,8 @@
-/**
- * Source file for Box and Limiter classes.
+/*
+ * Model: Model objects for Thanuva
  *
- * Author: Saravanan Poosanthiram
+ * Copyright 2016, Saravanan Poosanthiram
+ * All rights reserved.
  */
 
 #include "Box.h"
@@ -12,7 +13,7 @@
 #include <gtest/gtest.h>
 #endif
 
-#include "GeometryException.h"
+#include "ModelException.h"
 #ifdef UNIT_TEST
 #include "Project.h"
 #endif
@@ -31,11 +32,11 @@ const char* kZHighTag = "zhigh";
 namespace Model {
 
 Box::Box(const Project& project, const Limiter& limiter)
-    : Geometry{project}
+    : ModelObject{project}
     , m_limiter{limiter}
 {
     if (!m_limiter.isValid()) {
-        GeometryException e{GeometryException::kBoxLimiterInvalid};
+        ModelException e{ModelException::kInvalidBoxLimiter};
         LOG(ERROR) << e.what();
         throw e;
     }
@@ -44,7 +45,7 @@ Box::Box(const Project& project, const Limiter& limiter)
 void Box::setLimiter(const Limiter& limiter, Core::EmitSignal emitSignal)
 {
     if (!limiter.isValid()) {
-        GeometryException e{GeometryException::kBoxLimiterInvalid};
+        ModelException e{ModelException::kInvalidBoxLimiter};
         LOG(ERROR) << e.what();
         throw e;
     }
@@ -55,31 +56,27 @@ void Box::setLimiter(const Limiter& limiter, Core::EmitSignal emitSignal)
     m_limiter = limiter;
 
     if (Core::EmitSignal::Emit == emitSignal)
-        geometryChanged.emit_signal(); // emit signal
+        modelObjectChanged.emit_signal(); // emit signal
 }
 
-void Box::load(const boost::property_tree::ptree& geometryPropTree)
+void Box::loadModel(const boost::property_tree::ptree& modelPropTree)
 {
-    this->loadGeometry(geometryPropTree);
-
-    m_limiter.xlow = geometryPropTree.get<double>(kXLowTag);
-    m_limiter.xhigh = geometryPropTree.get<double>(kXHighTag);
-    m_limiter.ylow = geometryPropTree.get<double>(kYLowTag);
-    m_limiter.yhigh = geometryPropTree.get<double>(kYHighTag);
-    m_limiter.zlow = geometryPropTree.get<double>(kZLowTag);
-    m_limiter.zhigh = geometryPropTree.get<double>(kZHighTag);
+    m_limiter.xlow = modelPropTree.get<double>(kXLowTag);
+    m_limiter.xhigh = modelPropTree.get<double>(kXHighTag);
+    m_limiter.ylow = modelPropTree.get<double>(kYLowTag);
+    m_limiter.yhigh = modelPropTree.get<double>(kYHighTag);
+    m_limiter.zlow = modelPropTree.get<double>(kZLowTag);
+    m_limiter.zhigh = modelPropTree.get<double>(kZHighTag);
 }
 
-void Box::save(boost::property_tree::ptree& geometryPropTree)
+void Box::saveModel(boost::property_tree::ptree& modelPropTree)
 {
-    this->saveGeometry(geometryPropTree);
-
-    geometryPropTree.put(kXLowTag, m_limiter.xlow);
-    geometryPropTree.put(kXHighTag, m_limiter.xhigh);
-    geometryPropTree.put(kYLowTag, m_limiter.ylow);
-    geometryPropTree.put(kYHighTag, m_limiter.yhigh);
-    geometryPropTree.put(kZLowTag, m_limiter.zlow);
-    geometryPropTree.put(kZHighTag, m_limiter.zhigh);
+    modelPropTree.put(kXLowTag, m_limiter.xlow);
+    modelPropTree.put(kXHighTag, m_limiter.xhigh);
+    modelPropTree.put(kYLowTag, m_limiter.ylow);
+    modelPropTree.put(kYHighTag, m_limiter.yhigh);
+    modelPropTree.put(kZLowTag, m_limiter.zlow);
+    modelPropTree.put(kZHighTag, m_limiter.zhigh);
 }
 
 #ifdef UNIT_TEST
