@@ -6,15 +6,15 @@
 
 #include "GraphicsObject.h"
 
-#include "Geometry.h"
+#include "ModelObject.h"
 
 #include "glog/logging.h"
 
 namespace GfxModel {
 
-GraphicsObject::GraphicsObject(const GfxProject& gfxProject, Model::Geometry* geometry)
+GraphicsObject::GraphicsObject(const GfxProject& gfxProject, Model::ModelObject* modelObject)
     : m_gfxProject{gfxProject}
-    , m_geometry{geometry}
+    , m_modelObject{modelObject}
     , m_vertices{}
     , m_normals{}
     , m_indices{}
@@ -22,7 +22,7 @@ GraphicsObject::GraphicsObject(const GfxProject& gfxProject, Model::Geometry* ge
     , m_boundingBoxVertices{}
     , m_boundingBoxNormals{}
 {
-    CHECK(geometry) << "GraphicsObject::ctor: Model::Geometry nullptr!";
+    CHECK(modelObject) << "GraphicsObject::ctor: Model::ModelObject nullptr!";
 }
 
 void GraphicsObject::setExtent(const Extent& extent, Core::EmitSignal emitSignal)

@@ -14,5 +14,5 @@ endif()
 
 add_subdirectory(Core)
 add_subdirectory(Model)
-add_subdirectory(GfxModel)
+add_subdirectory(Geometry)
 add_subdirectory(GlViewer)
