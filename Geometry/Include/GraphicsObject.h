@@ -15,10 +15,9 @@
 
 #include "CoreDef.h"
 #include "Extent.h"
-#include "Geometry.h"
 #include "Vector3d.h"
 
-namespace Model { class Geometry; }
+namespace Model { class ModelObject; }
 
 namespace GfxModel {
 
@@ -30,10 +29,10 @@ public:
     static const int kVerticesPerTriangle = 3;
 
 public:
-    GraphicsObject(const GfxProject& gfxProject, Model::Geometry* geometry);
+    GraphicsObject(const GfxProject& gfxProject, Model::ModelObject* modelObject);
     virtual ~GraphicsObject() {}
 
-    Model::Geometry* geometry() const { return m_geometry; }
+    Model::ModelObject* modelObject() const { return m_modelObject; }
     const std::vector<float>& vertices() const { return m_vertices; }
     const std::vector<float>& normals() const { return m_normals; }
     const std::vector<int>& indices() const { return m_indices; }
@@ -170,7 +169,7 @@ protected:
 private:
     const GfxProject& m_gfxProject;
 
-    Model::Geometry* m_geometry;
+    Model::ModelObject* m_modelObject;
 
     std::vector<float> m_vertices;
     std::vector<float> m_normals;

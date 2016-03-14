@@ -22,7 +22,7 @@ GfxBox::GfxBox(const GfxProject& gfxProject, Model::Box* box)
 
     this->initialize();
 
-    box->geometryChanged.connect<GfxBox, &GfxBox::initialize>(this);
+    box->modelObjectChanged.connect<GfxBox, &GfxBox::initialize>(this);
 }
 
 bool GfxBox::intersect(const Core::Vector3d& nearPoint, const Core::Vector3d& farPoint, std::vector<Core::Vector3d>* points)
@@ -78,7 +78,7 @@ void GfxBox::initialize()
 
     this->reserve(24 * GraphicsObject::kValuesPerVertex, 24 * GraphicsObject::kValuesPerVertex, 36);
 
-    auto box = dynamic_cast<Model::Box*>(this->geometry());
+    auto box = dynamic_cast<Model::Box*>(this->modelObject());
     const Model::Box::Limiter& limiter = box->limiter();
 
     Core::Vector3d a{limiter.xlow, limiter.ylow, limiter.zlow};

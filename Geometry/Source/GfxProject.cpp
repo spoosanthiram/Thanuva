@@ -29,15 +29,15 @@ GfxProject::GfxProject(Model::Project* project)
 {
     CHECK(m_project) << "GfxProject::ctor: Model::Project nullptr!";
 
-    for (auto& geometry : m_project->geometryList())
-        this->add(geometry.get());
+    for (auto& modelObject : m_project->modelObjectList())
+        this->add(modelObject.get());
 
-    m_project->geometryAdded.connect<GfxProject, &GfxProject::add>(this);
+    m_project->modelObjectAdded.connect<GfxProject, &GfxProject::add>(this);
 }
 
 GfxProject::~GfxProject()
 {
-    m_project->geometryAdded.disconnect<GfxProject, &GfxProject::add>(this);
+    m_project->modelObjectAdded.disconnect<GfxProject, &GfxProject::add>(this);
 
     for (auto graphicsObject : m_graphicsObjectList) {
         graphicsObject->extentChanged.disconnect<GfxProject, &GfxProject::updateExtent>(this);
@@ -51,19 +51,19 @@ void GfxProject::adjustProjection(int width, int height)
     this->updateProjectionMatrix();
 }
 
-void GfxProject::add(Model::Geometry* geometry)
+void GfxProject::add(Model::Geometry* modelObject)
 {
-    if (!geometry)
+    if (!modelObject)
         return;
 
     GraphicsObject* graphicsObject = nullptr;
 
-    switch (geometry->type()) {
+    switch (modelObject->type()) {
     case Model::Geometry::Type::Box:
-        graphicsObject = new GfxBox{*this, dynamic_cast<Model::Box*>(geometry)};
+        graphicsObject = new GfxBox{*this, dynamic_cast<Model::Box*>(modelObject)};
         break;
     case Model::Geometry::Type::Stl:
-        graphicsObject = new GfxStl{*this, dynamic_cast<Model::Stl*>(geometry)};
+        graphicsObject = new GfxStl{*this, dynamic_cast<Model::Stl*>(modelObject)};
         break;
     }
 
