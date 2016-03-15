@@ -5,7 +5,7 @@
  * All rights reserved.
  */
 
-#include "Stl.h"
+#include "StlModel.h"
 
 #include <boost/property_tree/ptree.hpp>
 
@@ -17,14 +17,14 @@ const char* kFilePathTag = "filePath";
 
 namespace Model {
 
-Stl::Stl(const Project& project, const std::string& filePath)
+StlModel::StlModel(const Project& project, const std::string& filePath)
     : ModelObject{project}
     , m_filePath{filePath}
 {
     // TODO: check if STL is exists
 }
 
-void Stl::setFilePath(const std::string& filePath, Core::EmitSignal emitSignal)
+void StlModel::setFilePath(const std::string& filePath, Core::EmitSignal emitSignal)
 {
     if (filePath == m_filePath)
         return;
@@ -36,12 +36,12 @@ void Stl::setFilePath(const std::string& filePath, Core::EmitSignal emitSignal)
         modelObjectChanged.emit_signal(); // emit signal
 }
 
-void Stl::loadModel(const boost::property_tree::ptree& modelPropTree)
+void StlModel::loadModel(const boost::property_tree::ptree& modelPropTree)
 {
     m_filePath = modelPropTree.get<std::string>(kFilePathTag);
 }
 
-void Stl::saveModel(boost::property_tree::ptree& modelPropTree)
+void StlModel::saveModel(boost::property_tree::ptree& modelPropTree)
 {
     modelPropTree.put(kFilePathTag, m_filePath);
 }

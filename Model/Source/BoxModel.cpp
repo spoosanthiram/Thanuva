@@ -5,7 +5,7 @@
  * All rights reserved.
  */
 
-#include "Box.h"
+#include "BoxModel.h"
 
 #include <boost/property_tree/ptree.hpp>
 #include <glog/logging.h>
@@ -31,7 +31,7 @@ const char* kZHighTag = "zhigh";
 
 namespace Model {
 
-Box::Box(const Project& project, const Limiter& limiter)
+BoxModel::BoxModel(const Project& project, const Limiter& limiter)
     : ModelObject{project}
     , m_limiter{limiter}
 {
@@ -42,7 +42,7 @@ Box::Box(const Project& project, const Limiter& limiter)
     }
 }
 
-void Box::setLimiter(const Limiter& limiter, Core::EmitSignal emitSignal)
+void BoxModel::setLimiter(const Limiter& limiter, Core::EmitSignal emitSignal)
 {
     if (!limiter.isValid()) {
         ModelException e{ModelException::kInvalidBoxLimiter};
@@ -59,7 +59,7 @@ void Box::setLimiter(const Limiter& limiter, Core::EmitSignal emitSignal)
         modelObjectChanged.emit_signal(); // emit signal
 }
 
-void Box::loadModel(const boost::property_tree::ptree& modelPropTree)
+void BoxModel::loadModel(const boost::property_tree::ptree& modelPropTree)
 {
     m_limiter.xlow = modelPropTree.get<double>(kXLowTag);
     m_limiter.xhigh = modelPropTree.get<double>(kXHighTag);
@@ -69,7 +69,7 @@ void Box::loadModel(const boost::property_tree::ptree& modelPropTree)
     m_limiter.zhigh = modelPropTree.get<double>(kZHighTag);
 }
 
-void Box::saveModel(boost::property_tree::ptree& modelPropTree)
+void BoxModel::saveModel(boost::property_tree::ptree& modelPropTree)
 {
     modelPropTree.put(kXLowTag, m_limiter.xlow);
     modelPropTree.put(kXHighTag, m_limiter.xhigh);
@@ -88,17 +88,17 @@ struct BoxTest : public ::testing::Test
 
 TEST_F(BoxTest, CreationDefault)
 {
-    Box b{m_project};
+    BoxModel b{m_project};
 
-    Box::Limiter expected{-1.0, 1.0, -1.0, 1.0, -1.0, 1.0};
+    BoxModel::Limiter expected{-1.0, 1.0, -1.0, 1.0, -1.0, 1.0};
     EXPECT_EQ(expected, b.limiter());
 }
 
 TEST_F(BoxTest, CreationWithLimiter)
 {
-    Box b{m_project, Box::Limiter{0.1, 10.7, -2.8, 9.8, -20.4, -11.5}};
+    BoxModel b{m_project, BoxModel::Limiter{0.1, 10.7, -2.8, 9.8, -20.4, -11.5}};
 
-    Box::Limiter expected{0.1, 10.7, -2.8, 9.8, -20.4, -11.5};
+    BoxModel::Limiter expected{0.1, 10.7, -2.8, 9.8, -20.4, -11.5};
     EXPECT_EQ(expected, b.limiter());
 }
 

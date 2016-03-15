@@ -5,8 +5,8 @@
  * All rights reserved.
  */
 
-#ifndef MODEL_BOX_H
-#define MODEL_BOX_H
+#ifndef MODEL_BOXMODEL_H
+#define MODEL_BOXMODEL_H
 
 #include <AlgoBase.h>
 
@@ -14,7 +14,7 @@
 
 namespace Model {
 
-class Box : public ModelObject
+class BoxModel : public ModelObject
 {
 public:
     struct Limiter
@@ -55,11 +55,11 @@ public:
     };
 
 public:
-    Box(const Project& project) : ModelObject{project} {}
-    Box(const Project& project, const Limiter& limiter);
-    Box(const Box& rhs) = delete; // TODO: needs to be implemented
+    BoxModel(const Project& project) : ModelObject{project} {}
+    BoxModel(const Project& project, const Limiter& limiter);
+    BoxModel(const BoxModel& rhs) = delete; // TODO: needs to be implemented
 
-    Box& operator=(const Box& rhs) = delete; // TODO: needs to be implemented
+    BoxModel& operator=(const BoxModel& rhs) = delete; // TODO: needs to be implemented
 
     Type type() const override { return Type::Box; }
     const Limiter& limiter() const { return m_limiter; }
@@ -76,4 +76,4 @@ private:
 
 } // namespace Model
 
-#endif // MODEL_BOX_H
+#endif // MODEL_BOXMODEL_H

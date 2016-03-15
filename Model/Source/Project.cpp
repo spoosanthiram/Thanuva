@@ -15,9 +15,9 @@
 #define GLOG_NO_ABBREVIATED_SEVERITIES
 #include <glog/logging.h>
 
-#include "Box.h"
+#include "BoxModel.h"
 #include "ModelException.h"
-#include "Stl.h"
+#include "StlModel.h"
 
 namespace {
 
@@ -177,10 +177,10 @@ void Project::loadModelObjectList(const boost::property_tree::ptree& modelObject
 
         switch(type) {
         case ModelObject::Type::Box:
-            modelObject = std::make_shared<Model::Box>(*this);
+            modelObject = std::make_shared<BoxModel>(*this);
             break;
         case ModelObject::Type::Stl:
-            modelObject = std::make_shared<Model::Stl>(*this);
+            modelObject = std::make_shared<StlModel>(*this);
             break;
         }
 

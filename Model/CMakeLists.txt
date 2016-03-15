@@ -1,18 +1,18 @@
 project(Model CXX)
 
 set(SOURCE_FILES
-    ${Model_SOURCE_DIR}/Include/Box.h
+    ${Model_SOURCE_DIR}/Include/BoxModel.h
     ${Model_SOURCE_DIR}/Include/ModelException.h
     ${Model_SOURCE_DIR}/Include/ModelObject.h
     ${Model_SOURCE_DIR}/Include/Project.h
-    ${Model_SOURCE_DIR}/Include/Stl.h
+    ${Model_SOURCE_DIR}/Include/StlModel.h
     ${Model_SOURCE_DIR}/Include/ViewpointCameraModel.h
 
-    ${Model_SOURCE_DIR}/Source/Box.cpp
+    ${Model_SOURCE_DIR}/Source/BoxModel.cpp
     ${Model_SOURCE_DIR}/Source/ModelException.cpp
     ${Model_SOURCE_DIR}/Source/ModelObject.cpp
     ${Model_SOURCE_DIR}/Source/Project.cpp
-    ${Model_SOURCE_DIR}/Source/Stl.cpp
+    ${Model_SOURCE_DIR}/Source/StlModel.cpp
     ${Model_SOURCE_DIR}/Source/ViewpointCameraModel.cpp
 )
 

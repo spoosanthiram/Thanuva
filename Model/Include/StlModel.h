@@ -5,8 +5,8 @@
  * All rights reserved.
  */
 
-#ifndef MODEL_STL_H
-#define MODEL_STL_H
+#ifndef MODEL_STLMODEL_H
+#define MODEL_STLMODEL_H
 
 #include <cstdint>
 #include <string>
@@ -15,14 +15,14 @@
 
 namespace Model {
 
-class Stl : public ModelObject
+class StlModel : public ModelObject
 {
 public:
-    Stl(const Project& project) : ModelObject{project} {}
-    Stl(const Project& project, const std::string& filePath);
-    Stl(const Stl& rhs) = delete; // TODO: needs to be implemented
+    StlModel(const Project& project) : ModelObject{project} {}
+    StlModel(const Project& project, const std::string& filePath);
+    StlModel(const StlModel& rhs) = delete; // TODO: needs to be implemented
 
-    Stl& operator=(const Stl& rhs) = delete; // TODO: needs to be implemented
+    StlModel& operator=(const StlModel& rhs) = delete; // TODO: needs to be implemented
 
     Type type() const override { return Type::Stl; }
     const std::string& filePath() const { return m_filePath; }
@@ -40,4 +40,4 @@ private:
 
 } // namespace Model
 
-#endif // MODEL_STL_H
+#endif // MODEL_STLMODEL_H
