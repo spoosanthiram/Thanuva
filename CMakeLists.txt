@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 
-project(Graphics CXX)
+project(Thanuva CXX)
 
 add_compile_options(-Wall -std=c++14)
 
@@ -15,4 +15,5 @@ endif()
 add_subdirectory(Core)
 add_subdirectory(Model)
 add_subdirectory(Geometry)
+#add_subdirectory(Graphics)
 add_subdirectory(GlViewer)

@@ -8,7 +8,6 @@
 #ifndef MODEL_STLMODEL_H
 #define MODEL_STLMODEL_H
 
-#include <cstdint>
 #include <string>
 
 #include "ModelObject.h"

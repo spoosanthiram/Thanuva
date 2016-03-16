@@ -1,12 +1,12 @@
-/**
- * Header file for Extent class
- * Author: Saravanan Poosanthiram
- * $LastChangedBy: ps $
- * $LastChangedDate: 2015-03-14 12:57:44 -0400 (Sat, 14 Mar 2015) $
+/*
+ * Geometry: Geometry objects for Thanuva
+ *
+ * Copyright 2016, Saravanan Poosanthiram
+ * All rights reserved.
  */
 
-#ifndef GFXMODEL_EXTENT_H
-#define GFXMODEL_EXTENT_H
+#ifndef GEOMETRY_EXTENT_H
+#define GEOMETRY_EXTENT_H
 
 #include <limits>
 
@@ -14,7 +14,7 @@
 
 namespace Core { class Matrix4x4; }
 
-namespace GfxModel {
+namespace Geometry {
 
 class Extent
 {
@@ -175,6 +175,6 @@ private:
     double m_zMax;
 };
 
-} // namespace GfxModel
+} // namespace Geometry
 
-#endif // GFXMODEL_EXTENT_H
+#endif // GEOMETRY_EXTENT_H

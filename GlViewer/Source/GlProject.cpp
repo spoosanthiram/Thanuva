@@ -116,9 +116,9 @@ std::vector<const GlViewer::GlViewObject*> GlProject::probe(int x, int y) const
     return result;
 }
 
-void GlProject::add(GfxModel::GraphicsObject& graphicsObject)
+void GlProject::add(GfxModel::GeometryObject& graphicsObject)
 {
-    LOG(INFO) << "Adding GfxModel::GraphicsObject into viewObjectList.";
+    LOG(INFO) << "Adding GfxModel::GeometryObject into viewObjectList.";
 
     GlViewObject* viewObject = new GlViewObject{*this, graphicsObject};
     m_glViewObjectList.push_back(viewObject);

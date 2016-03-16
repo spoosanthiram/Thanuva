@@ -1,17 +1,18 @@
-/**
-* Author: Saravanan Poosanthiram
-* $LastChangedBy: ps $
-* $LastChangedDate: 2015-10-23 21:50:42 -0400 (Fri, 23 Oct 2015) $
-*/
+/*
+ * Geometry: Geometry objects for Thanuva
+ *
+ * Copyright 2016, Saravanan Poosanthiram
+ * All rights reserved.
+ */
 
-#ifndef GFXMODEL_GRAPHICSOBJECT_H
-#define GFXMODEL_GRAPHICSOBJECT_H
+#ifndef GEOMETRY_GEOMETRYOBJECT_H
+#define GEOMETRY_GEOMETRYOBJECT_H
 
 #include <array>
 #include <memory>
 #include <vector>
 
-#include "nano_signal_slot.hpp"
+#include <nano_signal_slot.hpp>
 
 #include "CoreDef.h"
 #include "Extent.h"
@@ -19,18 +20,37 @@
 
 namespace Model { class ModelObject; }
 
-namespace GfxModel {
+namespace Geometry {
 
 class GfxProject;
 
-class GraphicsObject : public Nano::Observer {
+class GeometryObject {
 public:
     static const int kValuesPerVertex = 3;
     static const int kVerticesPerTriangle = 3;
 
+    static bool intersectPlane(const Core::Vector3d& a,
+                        const Core::Vector3d& n,
+                        const Core::Vector3d& nearPoint,
+                        const Core::Vector3d& l,
+                        Core::Vector3d& p)
+    {
+        double nDotL = n.dot(l);
+        if (psa::iszero(nDotL)) // ray is parallel to plane (triangle) either starts outside or inside
+            return false;
+
+        double alpha = n.dot(a - nearPoint) / nDotL;
+        if (alpha < 0.0 || alpha > 1.0) // plane is beyond the ray we consider
+            return false;
+
+        p = nearPoint + alpha * l; // p intersect the plane (triangle)
+
+        return true;
+    }
+
 public:
-    GraphicsObject(const GfxProject& gfxProject, Model::ModelObject* modelObject);
-    virtual ~GraphicsObject() {}
+    GeometryObject(const GfxProject& gfxProject, Model::ModelObject* modelObject);
+    virtual ~GeometryObject() {}
 
     Model::ModelObject* modelObject() const { return m_modelObject; }
     const std::vector<float>& vertices() const { return m_vertices; }
@@ -46,8 +66,8 @@ public:
                            std::vector<Core::Vector3d>* points) = 0;
 
 public: // signals
-    Nano::Signal<void()> graphicsObjectChanged;   
-    Nano::Signal<void()> extentChanged;
+    Nano::Signal<void()> geometryObjectChanged{};
+    Nano::Signal<void()> extentChanged{};
 
 protected:
     void insertVertex(const float* vertex)
@@ -147,39 +167,20 @@ protected:
 
     void initializeBoundingBox();
 
-    bool intersect(const Core::Vector3d& a,
-                   const Core::Vector3d& n,
-                   const Core::Vector3d& nearPoint,
-                   const Core::Vector3d& l,
-                   Core::Vector3d& p)
-    {
-        double nDotL = n.dot(l);
-        if (psa::iszero(nDotL)) // ray is parallel to plane (triangle) either starts outside or inside
-            return false;
-
-        double alpha = n.dot(a - nearPoint) / nDotL;
-        if (alpha < 0.0 || alpha > 1.0) // plane is beyond the ray we consider
-            return false;
-
-        p = nearPoint + alpha * l; // // p intersect the plane (triangle)
-
-        return true;
-    }
-
 private:
     const GfxProject& m_gfxProject;
 
     Model::ModelObject* m_modelObject;
 
-    std::vector<float> m_vertices;
-    std::vector<float> m_normals;
-    std::vector<int> m_indices;
-    Extent m_extent;
-    std::array<float, 24> m_boundingBoxVertices;
-    std::array<float, 18> m_boundingBoxNormals;
-    std::array<unsigned short, 24> m_boundingBoxIndices;
+    std::vector<float> m_vertices{};
+    std::vector<float> m_normals{};
+    std::vector<int> m_indices{};
+    Extent m_extent{};
+    std::array<float, 24> m_boundingBoxVertices{};
+    std::array<float, 18> m_boundingBoxNormals{};
+    std::array<unsigned short, 24> m_boundingBoxIndices{};
 };
 
-} // namespace GfxModel
+} // namespace Geometry
 
-#endif // GFXMODEL_GRAPHICSOBJECT_H
+#endif // GEOMETRY_GEOMETRYOBJECT_H

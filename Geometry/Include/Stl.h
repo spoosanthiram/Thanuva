@@ -1,19 +1,20 @@
-/**
-* Author: Saravanan Poosanthiram
-* $LastChangedBy: ps $
-* $LastChangedDate: 2015-03-29 02:53:27 -0400 (Sun, 29 Mar 2015) $
-*/
+/*
+ * Geometry: Geometry objects for Thanuva
+ *
+ * Copyright 2016, Saravanan Poosanthiram
+ * All rights reserved.
+ */
 
-#ifndef GFXMODEL_GFXSTL_H
-#define GFXMODEL_GFXSTL_H
+#ifndef GEOMETRY_STL_H
+#define GEOMETRY_STL_H
 
-#include "GraphicsObject.h"
+#include "GeometryObject.h"
 
-namespace Model { class Stl; }
+namespace Model { class StlModel; }
 
-namespace GfxModel {
+namespace Geometry {
 
-class GfxStl : public GraphicsObject {
+class Stl : public GeometryObject {
 public:
     static const int kBinaryHeaderLength = 80;
     static const int kDataStreamReadBufferSize = 2097152;
@@ -21,7 +22,7 @@ public:
     static const int kNFacetChunk = 10000;
 
 public:
-    GfxStl(const GfxProject& gfxProject, Model::Stl* stl);
+    Stl(const GfxProject& gfxProject, Model::StlModel* stlModel);
 
     bool intersect(const Core::Vector3d& nearPoint, const Core::Vector3d& farPoint, std::vector<Core::Vector3d>* points) override;
 
@@ -29,6 +30,6 @@ protected: // slots
     void initialize();
 };
 
-} // namespace GfxModel
+} // namespace Geometry
 
-#endif // GFXMODEL_GFXSTL_H
+#endif // GEOMETRY_STL_H

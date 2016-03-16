@@ -1,14 +1,15 @@
-/**
-* Author: Saravanan Poosanthiram
-* $LastChangedBy: ps $
-* $LastChangedDate: 2015-03-20 18:08:01 -0400 (Fri, 20 Mar 2015) $
-*/
+/*
+ * Geometry: Geometry objects for Thanuva
+ *
+ * Copyright 2016, Saravanan Poosanthiram
+ * All rights reserved.
+ */
 
 #include "ViewpointCamera.h"
 
 #include "Vector3d.h"
 
-namespace GfxModel {
+namespace Geometry {
 
 ViewpointCamera::ViewpointCamera(const GfxProject& gfxProject, Model::ViewpointCameraModel& viewpointCameraModel)
     : m_gfxProject{gfxProject}
@@ -51,4 +52,4 @@ void ViewpointCamera::updateViewMatrix()
     viewpointCameraChanged.emit_signal(); // emit signal
 }
 
-} // namespace GfxModel
+} // namespace Geometry

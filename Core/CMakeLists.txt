@@ -24,8 +24,8 @@ set(SOURCE_FILES
 
 include_directories(
     ${Core_SOURCE_DIR}/Include
-    ${Graphics_SOURCE_DIR}/../Algorithms/Include
-    ${Graphics_SOURCE_DIR}/../3rdParty/cppformat
+    ${Thanuva_SOURCE_DIR}/../Algorithms/Include
+    ${Thanuva_SOURCE_DIR}/../3rdParty/cppformat
 )
 
 # TARGET for library
@@ -35,12 +35,12 @@ add_library(Core ${SOURCE_FILES})
 add_executable(CoreTest ${SOURCE_FILES} ${Core_SOURCE_DIR}/Source/main.cpp)
 target_compile_definitions(CoreTest PUBLIC UNIT_TEST)
 target_include_directories(CoreTest PUBLIC
-    ${Graphics_SOURCE_DIR}/../3rdParty/googletest/googletest/include
+    ${Thanuva_SOURCE_DIR}/../3rdParty/googletest/googletest/include
 )
 target_link_libraries(CoreTest
-    ${Graphics_SOURCE_DIR}/../Algorithms/libAlgo.a
-    ${Graphics_SOURCE_DIR}/../3rdParty/cppformat/libcppformat.a
-    ${Graphics_SOURCE_DIR}/../3rdParty/googletest/googletest/libgtest.a
+    ${Thanuva_SOURCE_DIR}/../Algorithms/libAlgo.a
+    ${Thanuva_SOURCE_DIR}/../3rdParty/cppformat/libcppformat.a
+    ${Thanuva_SOURCE_DIR}/../3rdParty/googletest/googletest/libgtest.a
     pthread
     stdc++
 )

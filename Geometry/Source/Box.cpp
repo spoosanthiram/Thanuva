@@ -1,31 +1,30 @@
-/**
-* Author: Saravanan Poosanthiram
-* $LastChangedBy: ps $
-* $LastChangedDate: 2015-03-29 02:53:27 -0400 (Sun, 29 Mar 2015) $
-*/
-
-#include "GfxBox.h"
-
-#include <chrono>
-
-#include "glog/logging.h"
-#include "nano_signal_slot.hpp"
+/*
+ * Geometry: Geometry objects for Thanuva
+ *
+ * Copyright 2016, Saravanan Poosanthiram
+ * All rights reserved.
+ */
 
 #include "Box.h"
 
-namespace GfxModel {
+#include <chrono>
 
-GfxBox::GfxBox(const GfxProject& gfxProject, Model::Box* box)
-    : GraphicsObject(gfxProject, box)
+#include <glog/logging.h>
+#include <nano_signal_slot.hpp>
+
+#include "BoxModel.h"
+
+namespace Geometry {
+
+Box::Box(const GfxProject& gfxProject, Model::BoxModel* boxModel)
+    : GeometryObject(gfxProject, boxModel)
 {
-    CHECK(box) << "GfxBox::ctor: Model::Box nullptr!";
-
     this->initialize();
 
-    box->modelObjectChanged.connect<GfxBox, &GfxBox::initialize>(this);
+    boxModel->modelObjectChanged.connect<Box, &Box::initialize>(this);
 }
 
-bool GfxBox::intersect(const Core::Vector3d& nearPoint, const Core::Vector3d& farPoint, std::vector<Core::Vector3d>* points)
+bool Box::intersect(const Core::Vector3d& nearPoint, const Core::Vector3d& farPoint, std::vector<Core::Vector3d>* points)
 {
     const std::vector<float>& vertices = this->vertices();
     const std::vector<float>& normals = this->normals();
@@ -44,7 +43,7 @@ bool GfxBox::intersect(const Core::Vector3d& nearPoint, const Core::Vector3d& fa
         a.assign(&vertices[indices[i] * 3]);
         n.assign(&normals[indices[i] * 3]);
 
-        if (!this->GraphicsObject::intersect(a, n, nearPoint, l, p))
+        if (!GeometryObject::intersectPlane(a, n, nearPoint, l, p))
             continue;
 
         b.assign(&vertices[indices[i + 1] * 3]);
@@ -63,7 +62,7 @@ bool GfxBox::intersect(const Core::Vector3d& nearPoint, const Core::Vector3d& fa
     return found;
 }
 
-void GfxBox::initialize()
+void Box::initialize()
 {
     this->clear();
 
@@ -76,10 +75,10 @@ void GfxBox::initialize()
         -std::numeric_limits<double>::infinity()
     });
 
-    this->reserve(24 * GraphicsObject::kValuesPerVertex, 24 * GraphicsObject::kValuesPerVertex, 36);
+    this->reserve(24 * GeometryObject::kValuesPerVertex, 24 * GeometryObject::kValuesPerVertex, 36);
 
-    auto box = dynamic_cast<Model::Box*>(this->modelObject());
-    const Model::Box::Limiter& limiter = box->limiter();
+    auto box = dynamic_cast<Model::BoxModel*>(this->modelObject());
+    const Model::BoxModel::Limiter& limiter = box->limiter();
 
     Core::Vector3d a{limiter.xlow, limiter.ylow, limiter.zlow};
     Core::Vector3d b{limiter.xhigh, limiter.ylow, limiter.zlow};
@@ -102,8 +101,8 @@ void GfxBox::initialize()
     this->initializeBoundingBox();
 
     // emit signals
-    graphicsObjectChanged.emit_signal();
+    geometryObjectChanged.emit_signal();
     extentChanged.emit_signal();
 }
 
-} // namespace GfxModel
+} // namespace Geometry

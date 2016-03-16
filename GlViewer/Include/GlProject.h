@@ -17,7 +17,7 @@
 #include "ShaderProgram.h"
 
 class QOpenGLFunctions_4_3_Core;
-namespace GfxModel { class GraphicsObject; }
+namespace GfxModel { class GeometryObject; }
 
 namespace GlViewer {
 
@@ -51,7 +51,7 @@ signals:
     void viewChanged();
 
 protected: // slots
-    void add(GfxModel::GraphicsObject& graphicsObject);
+    void add(GfxModel::GeometryObject& graphicsObject);
     void handleExtentChanged();
     void emitViewChanged() { emit viewChanged(); } // needed for connecting Nano signal to Qt signal
 

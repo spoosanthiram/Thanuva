@@ -1,31 +1,26 @@
-/**
-* Author: Saravanan Poosanthiram
-* $LastChangedBy: ps $
-* $LastChangedDate: 2015-03-29 02:53:27 -0400 (Sun, 29 Mar 2015) $
-*/
+/*
+ * Geometry: Geometry objects for Thanuva
+ *
+ * Copyright 2016, Saravanan Poosanthiram
+ * All rights reserved.
+ */
 
-#include "GraphicsObject.h"
+#include "GeometryObject.h"
+
+#include <glog/logging.h>
 
 #include "ModelObject.h"
 
-#include "glog/logging.h"
+namespace Geometry {
 
-namespace GfxModel {
-
-GraphicsObject::GraphicsObject(const GfxProject& gfxProject, Model::ModelObject* modelObject)
+GeometryObject::GeometryObject(const GfxProject& gfxProject, Model::ModelObject* modelObject)
     : m_gfxProject{gfxProject}
     , m_modelObject{modelObject}
-    , m_vertices{}
-    , m_normals{}
-    , m_indices{}
-    , m_extent{}
-    , m_boundingBoxVertices{}
-    , m_boundingBoxNormals{}
 {
-    CHECK(modelObject) << "GraphicsObject::ctor: Model::ModelObject nullptr!";
+    CHECK(modelObject) << "GeometryObject::ctor: Model::ModelObject nullptr!";
 }
 
-void GraphicsObject::setExtent(const Extent& extent, Core::EmitSignal emitSignal)
+void GeometryObject::setExtent(const Extent& extent, Core::EmitSignal emitSignal)
 {
     if (extent == m_extent)
         return;
@@ -35,7 +30,7 @@ void GraphicsObject::setExtent(const Extent& extent, Core::EmitSignal emitSignal
         extentChanged.emit_signal(); // emit signal
 }
 
-bool GraphicsObject::intersectBoundingBox(const Core::Vector3d& nearPoint, const Core::Vector3d& farPoint)
+bool GeometryObject::intersectBoundingBox(const Core::Vector3d& nearPoint, const Core::Vector3d& farPoint)
 {
     const unsigned int kNumQuad = 6;
 
@@ -48,9 +43,9 @@ bool GraphicsObject::intersectBoundingBox(const Core::Vector3d& nearPoint, const
         a.assign(&m_boundingBoxVertices[m_boundingBoxIndices[index]]);
         n.assign(&m_boundingBoxNormals[i * 3]);
 
-        if (!this->intersect(a, n, nearPoint, l, p))
+        if (!this->intersectPlane(a, n, nearPoint, l, p))
             continue;
-            
+
         b.assign(&m_boundingBoxVertices[m_boundingBoxIndices[index + 1]]);
         c.assign(&m_boundingBoxVertices[m_boundingBoxIndices[index + 2]]);
         d.assign(&m_boundingBoxVertices[m_boundingBoxIndices[index + 3]]);
@@ -64,7 +59,7 @@ bool GraphicsObject::intersectBoundingBox(const Core::Vector3d& nearPoint, const
     return false;
 }
 
-void GraphicsObject::insertQuad(const Core::Vector3d& a, const Core::Vector3d& b,
+void GeometryObject::insertQuad(const Core::Vector3d& a, const Core::Vector3d& b,
                                 const Core::Vector3d& c, const Core::Vector3d& d)
 {
     int index = static_cast<int>(m_vertices.size() / kValuesPerVertex);
@@ -92,7 +87,7 @@ void GraphicsObject::insertQuad(const Core::Vector3d& a, const Core::Vector3d& b
     m_indices.push_back(index + 3);
 }
 
-void GraphicsObject::initializeBoundingBox()
+void GeometryObject::initializeBoundingBox()
 {
     if (m_extent.isAnyInfinite())
         return;
@@ -134,4 +129,4 @@ void GraphicsObject::initializeBoundingBox()
     this->insertBoundingBoxNormal(15, this->computeNormal(d, c, b));
 }
 
-} // namespace GfxModel
+} // namespace Geometry

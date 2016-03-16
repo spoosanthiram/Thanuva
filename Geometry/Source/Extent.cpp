@@ -1,23 +1,23 @@
-/**
-* Author: Saravanan Poosanthiram
-* $LastChangedBy: ps $
-* $LastChangedDate: 2015-04-01 16:35:03 -0400 (Wed, 01 Apr 2015) $
-*/
+/*
+ * Geometry: Geometry objects for Thanuva
+ *
+ * Copyright 2016, Saravanan Poosanthiram
+ * All rights reserved.
+ */
 
 #include "Extent.h"
 
 #include <algorithm>
 
-#include "AlgoBase.h"
-
+#include <AlgoBase.h>
 #ifdef UNIT_TEST
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #endif
 
 #include "HVector.h"
 #include "Matrix4x4.h"
 
-namespace GfxModel {
+namespace Geometry {
 
 void Extent::update(const Extent& extent)
 {
@@ -170,4 +170,4 @@ TEST(ExtentTest, SimpleOperations)
 
 #endif // UNIT_TEST
 
-} // namespace GfxModel
+} // namespace Geometry

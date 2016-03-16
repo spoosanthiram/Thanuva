@@ -1,18 +1,19 @@
-/**
-* Author: Saravanan Poosanthiram
-* $LastChangedBy: ps $
-* $LastChangedDate: 2015-03-20 18:08:01 -0400 (Fri, 20 Mar 2015) $
-*/
+/*
+ * Geometry: Geometry objects for Thanuva
+ *
+ * Copyright 2016, Saravanan Poosanthiram
+ * All rights reserved.
+ */
 
-#ifndef GFXMODEL_VIEWPOINTCAMERA_H
-#define GFXMODEL_VIEWPOINTCAMERA_H
+#ifndef GEOMETRY_VIEWPOINTCAMERA_H
+#define GEOMETRY_VIEWPOINTCAMERA_H
 
 #include "Matrix4x4.h"
 #include "ViewpointCameraModel.h"
 
 #include "nano_signal_slot.hpp"
 
-namespace GfxModel {
+namespace Geometry {
 
 class GfxProject;
 
@@ -36,6 +37,6 @@ private:
     Core::Matrix4x4 m_viewMatrix;
 };
 
-} // namespace GfxModel
+} // namespace Geometry
 
-#endif // GFXMODEL_VIEWPOINTCAMERA_H
+#endif // GEOMETRY_VIEWPOINTCAMERA_H

@@ -1,30 +1,31 @@
-/**
-* Author: Saravanan Poosanthiram
-* $LastChangedBy: ps $
-* $LastChangedDate: 2015-03-31 17:41:12 -0400 (Tue, 31 Mar 2015) $
-*/
+/*
+ * Geometry: Geometry objects for Thanuva
+ *
+ * Copyright 2016, Saravanan Poosanthiram
+ * All rights reserved.
+ */
 
-#include "GfxStl.h"
+#include "Stl.h"
 
 #include <chrono>
 #include <fstream>
 #include <thread>
 
-#include "glog/logging.h"
+#include <glog/logging.h>
 
-#include "Stl.h"
+#include "StlModel.h"
 
-namespace GfxModel {
+namespace Geometry {
 
 const std::size_t k2MillionTriangles = 2000000 * 9;
 const std::size_t k4Point5MillionTriangles = 4500000 * 9;
 
-GfxStl::GfxStl(const GfxProject& gfxProject, Model::Stl* stl)
-    : GraphicsObject(gfxProject, stl)
+Stl::Stl(const GfxProject& gfxProject, Model::StlModel* stlModel)
+    : GeometryObject(gfxProject, stlModel)
 {
     this->initialize();
 
-    stl->geometryChanged.connect<GfxStl, &GfxStl::initialize>(this);
+    stlModel->modelObjectChanged.connect<Stl, &Stl::initialize>(this);
 }
 
 struct IntersectionPoints {
@@ -53,7 +54,7 @@ struct IntersectionPoints {
             a.assign(&m_vertices[i]);
             n.assign(&m_normals[i]);
 
-            if (!this->intersect(a, n, m_nearPoint, l, p))
+            if (!GeometryObject::intersectPlane(a, n, m_nearPoint, l, p))
                 continue;
 
             b.assign(&m_vertices[i + 3]);
@@ -70,21 +71,6 @@ struct IntersectionPoints {
         }
     }
 
-    bool intersect(const Core::Vector3d& a, const Core::Vector3d& n, const Core::Vector3d& nearPoint, const Core::Vector3d& l, Core::Vector3d& p)
-    {
-        double nDotL = n.dot(l);
-        if (psa::iszero(nDotL)) // ray is parallel to plane (triangle) either starts outside or inside
-            return false;
-
-        double alpha = n.dot(a - nearPoint) / nDotL;
-        if (alpha < 0.0 || alpha > 1.0) // plane is beyond the ray we consider
-            return false;
-
-        p = nearPoint + alpha * l; // // p intersect the plane (triangle)
-
-        return true;
-    }
-
     const std::vector<float>& m_vertices;
     const std::vector<float>& m_normals;
     std::size_t m_istart;
@@ -95,7 +81,7 @@ struct IntersectionPoints {
     std::vector<Core::Vector3d>* m_points;
 };
 
-bool GfxStl::intersect(const Core::Vector3d& nearPoint, const Core::Vector3d& farPoint, std::vector<Core::Vector3d>* points)
+bool Stl::intersect(const Core::Vector3d& nearPoint, const Core::Vector3d& farPoint, std::vector<Core::Vector3d>* points)
 {
     const auto& vertices = this->vertices();
     const auto& normals = this->normals();
@@ -143,11 +129,11 @@ bool GfxStl::intersect(const Core::Vector3d& nearPoint, const Core::Vector3d& fa
     return found;
 }
 
-void GfxStl::initialize()
+void Stl::initialize()
 {
     this->clear();
 
-    auto stl = dynamic_cast<Model::Stl*>(this->geometry());
+    auto stl = dynamic_cast<Model::StlModel*>(this->modelObject());
     std::ifstream dataStream{stl->filePath(), std::ios::binary};
 
     auto dataStreamRdBuf = std::make_unique<char[]>(kDataStreamReadBufferSize);
@@ -172,8 +158,8 @@ void GfxStl::initialize()
     dataStream.read(buf.get(), sizeof(int));
     int nFacets = *reinterpret_cast<int*>(buf.get());
 
-    this->reserve(nFacets * GraphicsObject::kVerticesPerTriangle * GraphicsObject::kValuesPerVertex,
-        nFacets * GraphicsObject::kVerticesPerTriangle * GraphicsObject::kValuesPerVertex, 0);
+    this->reserve(nFacets * GeometryObject::kVerticesPerTriangle * GeometryObject::kValuesPerVertex,
+        nFacets * GeometryObject::kVerticesPerTriangle * GeometryObject::kValuesPerVertex, 0);
 
     int readSize = kNFacetChunk;
 
@@ -204,8 +190,8 @@ void GfxStl::initialize()
     this->initializeBoundingBox();
 
     // emit signals
-    graphicsObjectChanged.emit_signal();
+    geometryObjectChanged.emit_signal();
     extentChanged.emit_signal();
 }
 
-} // namespace GfxModel
+} // namespace Geometry

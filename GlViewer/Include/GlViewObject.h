@@ -14,7 +14,7 @@
 
 #include "Vector3d.h"
 
-namespace GfxModel { class GraphicsObject; }
+namespace GfxModel { class GeometryObject; }
 
 namespace GlViewer {
 
@@ -32,7 +32,7 @@ public:
     static const int kNormalLocation = 1;
 
 public:
-    GlViewObject(const GlProject& glProject, GfxModel::GraphicsObject& graphicsObject);
+    GlViewObject(const GlProject& glProject, GfxModel::GeometryObject& graphicsObject);
 
     void render() const;
     bool probe(int x, int y) const;
@@ -47,7 +47,7 @@ private:
     Core::Vector3d glFarPoint(int x, int y) const;
 
     const GlProject& m_glProject;
-    GfxModel::GraphicsObject& m_graphicsObject;
+    GfxModel::GeometryObject& m_graphicsObject;
     GLuint m_vaoHandle;
     GLuint m_bufferHandle[kBufferSize];
 };

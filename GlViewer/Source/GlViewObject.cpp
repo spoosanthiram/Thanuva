@@ -11,13 +11,13 @@
 #include <QOpenGLFunctions_4_3_Core>
 
 #include "GlProject.h"
-#include "GraphicsObject.h"
+#include "GeometryObject.h"
 #include "Matrix3x3.h"
 #include "ViewpointCamera.h"
 
 namespace GlViewer {
 
-GlViewObject::GlViewObject(const GlProject& glProject, GfxModel::GraphicsObject& graphicsObject)
+GlViewObject::GlViewObject(const GlProject& glProject, GfxModel::GeometryObject& graphicsObject)
     : m_glProject{glProject}
     , m_graphicsObject{graphicsObject}
     , m_vaoHandle{0}
@@ -66,7 +66,7 @@ void GlViewObject::render() const
         m_glProject.glFuncsPtr()->glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
     else {
         const std::vector<float>& vertices = m_graphicsObject.vertices();
-        m_glProject.glFuncsPtr()->glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size() / GfxModel::GraphicsObject::kVerticesPerTriangle));
+        m_glProject.glFuncsPtr()->glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size() / GfxModel::GeometryObject::kVerticesPerTriangle));
     }
 }
 
@@ -93,7 +93,7 @@ void GlViewObject::initialize()
     m_glProject.glFuncsPtr()->glBindBuffer(GL_ARRAY_BUFFER, m_bufferHandle[kVertexBuffer]);
     const std::vector<float>& vertices = m_graphicsObject.vertices();
     m_glProject.glFuncsPtr()->glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
-    m_glProject.glFuncsPtr()->glVertexAttribPointer(kVertexLocation, GfxModel::GraphicsObject::kValuesPerVertex, GL_FLOAT, GL_FALSE, 0, 0);
+    m_glProject.glFuncsPtr()->glVertexAttribPointer(kVertexLocation, GfxModel::GeometryObject::kValuesPerVertex, GL_FLOAT, GL_FALSE, 0, 0);
     m_glProject.glFuncsPtr()->glEnableVertexAttribArray(kVertexLocation);
 
     LOG(INFO) << "Binding normal buffer, filling normal data and using vertex shader location 1.";
@@ -101,7 +101,7 @@ void GlViewObject::initialize()
     m_glProject.glFuncsPtr()->glBindBuffer(GL_ARRAY_BUFFER, m_bufferHandle[kNormalBuffer]);
     const std::vector<float>& normals = m_graphicsObject.normals();
     m_glProject.glFuncsPtr()->glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(float), normals.data(), GL_STATIC_DRAW);
-    m_glProject.glFuncsPtr()->glVertexAttribPointer(kNormalLocation, GfxModel::GraphicsObject::kValuesPerVertex, GL_FLOAT, GL_FALSE, 0, 0);
+    m_glProject.glFuncsPtr()->glVertexAttribPointer(kNormalLocation, GfxModel::GeometryObject::kValuesPerVertex, GL_FLOAT, GL_FALSE, 0, 0);
     m_glProject.glFuncsPtr()->glEnableVertexAttribArray(kNormalLocation);
 
     const std::vector<int>& indices = m_graphicsObject.indices();
