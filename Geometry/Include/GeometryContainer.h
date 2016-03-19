@@ -14,7 +14,6 @@
 #include <nano_signal_slot.hpp>
 
 #include "GeometryObject.h"
-#include "ViewpointCamera.h"
 
 namespace Model {
     class ModelObject;
@@ -23,10 +22,8 @@ namespace Model {
 
 namespace Geometry {
 
-class GeometryContainer {
-public:
-    static const double kDefaultWindowAspect;
-
+class GeometryContainer
+{
 public:
     GeometryContainer(Model::Project* project);
     GeometryContainer(const GeometryContainer& other) = delete;
@@ -34,13 +31,8 @@ public:
 
     GeometryContainer& operator=(const GeometryContainer& other) = delete;
 
-    const std::vector<GeometryObject*>& graphicsObjectList() const { return m_graphicsObjectList; }
-    const ViewpointCamera& viewpointCamera() const { return m_viewpointCamera; }
-    ViewpointCamera& viewpointCamera() { return m_viewpointCamera; }
+    const std::vector<GeometryObject*>& geometryObjectList() const { return m_geometryObjectList; }
     const Extent& extent() const { return m_extent; }
-    const Core::Matrix4x4& projectionMatrix() const { return m_projectionMatrix; }
-
-    void adjustProjection(int width, int height);
     void add(Model::ModelObject* modelObject);
 
 public: // signals
@@ -51,15 +43,10 @@ protected: // slots
     void updateExtent();
 
 private:
-    void updateProjectionMatrix();
-
     Model::Project* m_project;
 
     std::vector<GeometryObject*> m_geometryObjectList{};
-    ViewpointCamera m_viewpointCamera;
     Extent m_extent;
-    double m_windowAspect;
-    Core::Matrix4x4 m_projectionMatrix;
 };
 
 } // namespace Geometry

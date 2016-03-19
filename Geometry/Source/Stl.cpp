@@ -20,8 +20,8 @@ namespace Geometry {
 const std::size_t k2MillionTriangles = 2000000 * 9;
 const std::size_t k4Point5MillionTriangles = 4500000 * 9;
 
-Stl::Stl(const GfxProject& gfxProject, Model::StlModel* stlModel)
-    : GeometryObject(gfxProject, stlModel)
+Stl::Stl(const GeometryContainer& geometryContainer, Model::StlModel* stlModel)
+    : GeometryObject(geometryContainer, stlModel)
 {
     this->initialize();
 

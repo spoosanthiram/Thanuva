@@ -15,7 +15,7 @@
 #endif
 
 #include "CoreDef.h"
-#include "GraphicsException.h"
+#include "ThanuvaException.h"
 
 namespace {
 
@@ -64,7 +64,7 @@ void Material::set(const std::string& str)
         else if (cstr.size() > 2 && 's' == cstr[0] && ':' == cstr[1]) // shininess
             m_shininess = std::stof(cstr.substr(2));
         else
-            throw GraphicsException{fmt::format(GraphicsException::kBadMaterialString, str)};
+            throw ThanuvaException{fmt::format(ThanuvaException::kBadMaterialString, str)};
     }
 }
 
@@ -75,7 +75,7 @@ TEST(MaterialTest, Simple)
     Material mat{Color{127, 0, 0}, Color{34, 54, 234}, 64.0};
     EXPECT_EQ("dc:7f0000 sc:2236ea s:64.000000", mat.str());
 
-    EXPECT_THROW(mat.set("as46234"), GraphicsException);
+    EXPECT_THROW(mat.set("as46234"), ThanuvaException);
 
     mat.set("dc:b45a04 sc:5a2d02 s:128.000000");
     EXPECT_EQ(180.0f / Color::kMaxColorValue, mat.diffuseColor().r());

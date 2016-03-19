@@ -14,9 +14,10 @@ namespace Model { class BoxModel; }
 
 namespace Geometry {
 
-class Box : public GeometryObject {
+class Box : public GeometryObject
+{
 public:
-    Box(const GfxProject& gfxProject, Model::BoxModel* box);
+    Box(const GeometryContainer& geometryContainer, Model::BoxModel* boxModel);
 
     bool intersect(const Core::Vector3d& nearPoint, const Core::Vector3d& farPoint, std::vector<Core::Vector3d>* points) override;
 

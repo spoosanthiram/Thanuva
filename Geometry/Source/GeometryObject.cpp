@@ -13,8 +13,8 @@
 
 namespace Geometry {
 
-GeometryObject::GeometryObject(const GfxProject& gfxProject, Model::ModelObject* modelObject)
-    : m_gfxProject{gfxProject}
+GeometryObject::GeometryObject(const GeometryContainer& geometryContainer, Model::ModelObject* modelObject)
+    : m_geometryContainer{geometryContainer}
     , m_modelObject{modelObject}
 {
     CHECK(modelObject) << "GeometryObject::ctor: Model::ModelObject nullptr!";

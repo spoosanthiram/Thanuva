@@ -15,7 +15,8 @@ namespace Core {
 /**
  * @brief The Color class abstracts the RGB colors. The values are stored as floats.
  */
-class Color {
+class Color
+{
 public:
     // rgbint_t for representing RGB values as integer.
     // using long so we could potentially move to 16 bit per color components

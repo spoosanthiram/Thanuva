@@ -3,7 +3,7 @@ project(Core CXX)
 set(SOURCE_FILES
     ${Core_SOURCE_DIR}/Include/Color.h
     ${Core_SOURCE_DIR}/Include/CoreDef.h
-    ${Core_SOURCE_DIR}/Include/GraphicsException.h
+    ${Core_SOURCE_DIR}/Include/ThanuvaException.h
     ${Core_SOURCE_DIR}/Include/HVector.h
     ${Core_SOURCE_DIR}/Include/Material.h
     ${Core_SOURCE_DIR}/Include/Matrix3x3.h
@@ -13,7 +13,7 @@ set(SOURCE_FILES
 
     ${Core_SOURCE_DIR}/Source/Color.cpp
     ${Core_SOURCE_DIR}/Source/CoreDef.cpp
-    ${Core_SOURCE_DIR}/Source/GraphicsException.cpp
+    ${Core_SOURCE_DIR}/Source/ThanuvaException.cpp
     ${Core_SOURCE_DIR}/Source/HVector.cpp
     ${Core_SOURCE_DIR}/Source/Material.cpp
     ${Core_SOURCE_DIR}/Source/Matrix3x3.cpp

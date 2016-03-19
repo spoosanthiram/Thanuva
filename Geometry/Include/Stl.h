@@ -14,7 +14,8 @@ namespace Model { class StlModel; }
 
 namespace Geometry {
 
-class Stl : public GeometryObject {
+class Stl : public GeometryObject
+{
 public:
     static const int kBinaryHeaderLength = 80;
     static const int kDataStreamReadBufferSize = 2097152;
@@ -22,7 +23,7 @@ public:
     static const int kNFacetChunk = 10000;
 
 public:
-    Stl(const GfxProject& gfxProject, Model::StlModel* stlModel);
+    Stl(const GeometryContainer& gfxProject, Model::StlModel* stlModel);
 
     bool intersect(const Core::Vector3d& nearPoint, const Core::Vector3d& farPoint, std::vector<Core::Vector3d>* points) override;
 

@@ -14,13 +14,14 @@
 #include <boost/property_tree/ptree_fwd.hpp>
 #include <nano_signal_slot.hpp>
 
-#include "ViewpointCameraModel.h"
+#include "Viewpoint.h"
 
 namespace Model {
 
 class ModelObject;
 
-class Project {
+class Project
+{
 public:
     static std::string defaultPath();
 
@@ -37,8 +38,7 @@ public:
     std::string filePath() const;
     bool isDirty() const { return m_dirty; }
     const std::vector<std::shared_ptr<ModelObject>>& modelObjectList() const { return m_modelObjectList; }
-    const ViewpointCameraModel& viewpointCameraModel() const { return m_viewpointCameraModel; }
-    ViewpointCameraModel& viewpointCameraModel() { return m_viewpointCameraModel; }
+    const Viewpoint& viewpoint() const { return m_viewpoint; }
 
     void setFilePath(const std::string& filePath);
     void setDirty(bool dirty);
@@ -62,7 +62,7 @@ private:
     std::string m_path;
     bool m_dirty{false};
     std::vector<std::shared_ptr<ModelObject>> m_modelObjectList{};
-    ViewpointCameraModel m_viewpointCameraModel{};
+    Viewpoint m_viewpoint{};
 };
 
 } // namespace Model

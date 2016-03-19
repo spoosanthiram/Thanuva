@@ -7,17 +7,14 @@
 
 #include "Box.h"
 
-#include <chrono>
-
-#include <glog/logging.h>
 #include <nano_signal_slot.hpp>
 
 #include "BoxModel.h"
 
 namespace Geometry {
 
-Box::Box(const GfxProject& gfxProject, Model::BoxModel* boxModel)
-    : GeometryObject(gfxProject, boxModel)
+Box::Box(const GeometryContainer& geometryContainer, Model::BoxModel* boxModel)
+    : GeometryObject(geometryContainer, boxModel)
 {
     this->initialize();
 

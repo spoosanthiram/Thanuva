@@ -15,7 +15,8 @@ namespace Core {
 /**
  * @brief The Material class
  */
-class Material {
+class Material
+{
 public:
     static Material defaultMaterial();
 

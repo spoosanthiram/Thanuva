@@ -8,21 +8,22 @@
 #ifndef MODEL_MODELEXCEPTION_H
 #define MODEL_MODELEXCEPTION_H
 
-#include "GraphicsException.h"
+#include "ThanuvaException.h"
 
 namespace Model {
 
-class ModelException : public Core::GraphicsException {
+class ModelException : public Core::ThanuvaException
+{
 public:
     static const char* kInvalidBoxLimiter;
     static const char* kBadExtension;
 
 public:
     ModelException(const char* message)
-        : Core::GraphicsException{message}
+        : Core::ThanuvaException{message}
     {}
     ModelException(std::string&& message)
-        : Core::GraphicsException{std::move(message)}
+        : Core::ThanuvaException{std::move(message)}
     {}
 };
 

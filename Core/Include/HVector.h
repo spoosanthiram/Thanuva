@@ -20,7 +20,8 @@ class Vector3d;
 * @brief The HVector class is an abstraction of homogeneous vector used in graphics.
 * see http://en.wikipedia.org/wiki/Homogeneous_coordinates
 */
-class HVector {
+class HVector
+{
 public:
     static const int kDimension = 4;
 

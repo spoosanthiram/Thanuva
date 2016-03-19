@@ -14,7 +14,8 @@ namespace Core {
 
 class Vector3d;
 
-class Quaternion {
+class Quaternion
+{
 public:
     static const int kDimension = 4;
 

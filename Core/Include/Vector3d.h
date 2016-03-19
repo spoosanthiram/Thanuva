@@ -16,7 +16,8 @@ namespace Core {
 
 class HVector;
 
-class Vector3d {
+class Vector3d
+{
 public:
     static const int kDimension = 3;
 

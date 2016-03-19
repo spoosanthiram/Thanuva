@@ -22,9 +22,10 @@ namespace Model { class ModelObject; }
 
 namespace Geometry {
 
-class GfxProject;
+class GeometryContainer;
 
-class GeometryObject {
+class GeometryObject
+{
 public:
     static const int kValuesPerVertex = 3;
     static const int kVerticesPerTriangle = 3;
@@ -49,7 +50,7 @@ public:
     }
 
 public:
-    GeometryObject(const GfxProject& gfxProject, Model::ModelObject* modelObject);
+    GeometryObject(const GeometryContainer& geometryContainer, Model::ModelObject* modelObject);
     virtual ~GeometryObject() {}
 
     Model::ModelObject* modelObject() const { return m_modelObject; }
@@ -168,7 +169,7 @@ protected:
     void initializeBoundingBox();
 
 private:
-    const GfxProject& m_gfxProject;
+    const GeometryContainer& m_geometryContainer;
 
     Model::ModelObject* m_modelObject;
 

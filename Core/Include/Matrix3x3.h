@@ -20,7 +20,8 @@ class Vector3d;
 /**
 * Column based 3x3 matrix
 */
-class Matrix3x3 {
+class Matrix3x3
+{
 public:
     static const int kNRows = 3;
     static const int kNColumns = 3;

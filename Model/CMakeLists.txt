@@ -6,14 +6,14 @@ set(SOURCE_FILES
     ${Model_SOURCE_DIR}/Include/ModelObject.h
     ${Model_SOURCE_DIR}/Include/Project.h
     ${Model_SOURCE_DIR}/Include/StlModel.h
-    ${Model_SOURCE_DIR}/Include/ViewpointCameraModel.h
+    ${Model_SOURCE_DIR}/Include/Viewpoint.h
 
     ${Model_SOURCE_DIR}/Source/BoxModel.cpp
     ${Model_SOURCE_DIR}/Source/ModelException.cpp
     ${Model_SOURCE_DIR}/Source/ModelObject.cpp
     ${Model_SOURCE_DIR}/Source/Project.cpp
     ${Model_SOURCE_DIR}/Source/StlModel.cpp
-    ${Model_SOURCE_DIR}/Source/ViewpointCameraModel.cpp
+    ${Model_SOURCE_DIR}/Source/Viewpoint.cpp
 )
 
 include_directories(
@@ -25,10 +25,6 @@ include_directories(
     ${Thanuva_SOURCE_DIR}/../3rdParty/glog/src
     ${Thanuva_SOURCE_DIR}/../3rdParty/nano-signal-slot
 )
-
-#link_directories(
-#    ${Thanuva_SOURCE_DIR}/../3rdParty/boost_1_57_0/lib
-#)
 
 # TARGET for library
 add_library(Model ${SOURCE_FILES})

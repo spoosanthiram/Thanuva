@@ -23,7 +23,7 @@ namespace {
 
 const char* kModelObjectsTag = "modelobjects";
 const char* kModelObjectTag = "modelobject";
-const char* kViewpointCameraTag = "viewpointCamera";
+const char* kViewpointCameraTag = "viewpoint";
 
 } // anonymous
 
@@ -133,7 +133,7 @@ void Project::load()
         this->loadModelObjectList(modelObjectsPropTree);
 
         ptree cameraPropTree = projectPropTree.get_child(kViewpointCameraTag);
-        m_viewpointCameraModel.load(cameraPropTree);
+        m_viewpoint.load(cameraPropTree);
     }
     catch (std::exception& e) {
         LOG(ERROR) << e.what();
@@ -157,7 +157,7 @@ void Project::save()
     projectPropTree.add_child(kModelObjectsTag, modelObjectsPropTree);
 
     ptree cameraPropTree;
-    m_viewpointCameraModel.save(cameraPropTree);
+    m_viewpoint.save(cameraPropTree);
     projectPropTree.add_child(kViewpointCameraTag, cameraPropTree);
 
     write_json(this->filePath(), projectPropTree);

@@ -21,9 +21,11 @@ namespace Model {
 
 class Project;
 
-class ModelObject {
+class ModelObject
+{
 public:
-    enum class Type {
+    enum class Type
+    {
         Box,
         Stl
     };

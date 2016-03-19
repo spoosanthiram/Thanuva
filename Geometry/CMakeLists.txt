@@ -6,14 +6,12 @@ set(SOURCE_FILES
     ${Geometry_SOURCE_DIR}/Include/GeometryContainer.h
     ${Geometry_SOURCE_DIR}/Include/GeometryObject.h
     ${Geometry_SOURCE_DIR}/Include/Stl.h
-    ${Geometry_SOURCE_DIR}/Include/ViewpointCamera.h
 
     ${Geometry_SOURCE_DIR}/Source/Box.cpp
     ${Geometry_SOURCE_DIR}/Source/Extent.cpp
     ${Geometry_SOURCE_DIR}/Source/GeometryContainer.cpp
     ${Geometry_SOURCE_DIR}/Source/GeometryObject.cpp
     ${Geometry_SOURCE_DIR}/Source/Stl.cpp
-    ${Geometry_SOURCE_DIR}/Source/ViewpointCamera.cpp
 )
 
 include_directories(
