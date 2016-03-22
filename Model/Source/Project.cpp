@@ -171,7 +171,8 @@ void Project::loadModelObjectList(const boost::property_tree::ptree& modelObject
 
     for (const auto& it : modelObjectsPropTree) {
         const ptree& modelObjectPropTree = it.second;
-        auto type = static_cast<ModelObject::Type>(modelObjectPropTree.get<int>(ModelObject::kTypeTag));
+        auto type = static_cast<ModelObject::Type>(
+                        modelObjectPropTree.get<int>(ModelObject::kTypeTag));
 
         std::shared_ptr<ModelObject> modelObject;
 

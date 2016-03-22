@@ -25,7 +25,8 @@ public:
 public:
     Stl(const GeometryContainer& gfxProject, Model::StlModel* stlModel);
 
-    bool intersect(const Core::Vector3d& nearPoint, const Core::Vector3d& farPoint, std::vector<Core::Vector3d>* points) override;
+    bool intersect(const Core::Vector3d& nearPoint, const Core::Vector3d& farPoint,
+                   std::vector<Core::Vector3d>* points) override;
 
 protected: // slots
     void initialize();

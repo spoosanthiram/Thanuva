@@ -44,7 +44,8 @@ public:
     void normalize()
     {
         double norm = this->norm();
-        this->initialize(m_quaternion[0] / norm, m_quaternion[1] / norm, m_quaternion[2] / norm, m_quaternion[3] / norm);
+        this->initialize(m_quaternion[0] / norm, m_quaternion[1] / norm,
+                         m_quaternion[2] / norm, m_quaternion[3] / norm);
     }
 
     bool operator==(const Quaternion& rhs) const;

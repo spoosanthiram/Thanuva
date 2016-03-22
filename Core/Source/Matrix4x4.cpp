@@ -23,7 +23,9 @@
 
 namespace Core {
 
-Matrix4x4 Matrix4x4::frustum(double left, double right, double bottom, double top, double near, double far)
+Matrix4x4 Matrix4x4::frustum(double left, double right,
+                             double bottom, double top,
+                             double near, double far)
 {
     Matrix4x4 projection;
 
@@ -336,8 +338,10 @@ Matrix4x4 Matrix4x4::operator*(const Matrix4x4& rhs) const
     Matrix4x4 result = Matrix4x4::zero();
     for (unsigned int i = 0; i < kNColumns; ++i) {
         for (unsigned int j = 0; j < kNRows; ++j) {
-            for (unsigned int k = 0; k < kNRows; ++k)
-                result.m_elements[(i * kNRows) + k] += m_elements[(j * kNRows) + k] * rhs.m_elements[(i * kNRows) + j];
+            for (unsigned int k = 0; k < kNRows; ++k) {
+                result.m_elements[(i * kNRows) + k] +=
+                        m_elements[(j * kNRows) + k] * rhs.m_elements[(i * kNRows) + j];
+            }
         }
     }
     return result;

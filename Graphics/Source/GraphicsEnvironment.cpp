@@ -36,18 +36,24 @@ void GraphicsEnvironment::activate(Model::Project* project)
 
     this->handleExtentChanged();
 
-    m_geometryContainer->geometryObjectAdded.connect<GraphicsEnvironment, &GraphicsEnvironment::add>(this);
-    m_geometryContainer->extentChanged.connect<GraphicsEnvironment, &GraphicsEnvironment::handleExtentChanged>(this);
-    m_viewpointCamera.viewpointCameraChanged.connect<GraphicsEnvironment, &GraphicsEnvironment::emitViewChanged>(this);
+    m_geometryContainer->geometryObjectAdded.
+            connect<GraphicsEnvironment, &GraphicsEnvironment::add>(this);
+    m_geometryContainer->extentChanged.
+            connect<GraphicsEnvironment, &GraphicsEnvironment::handleExtentChanged>(this);
+    m_viewpointCamera.viewpointCameraChanged.
+            connect<GraphicsEnvironment, &GraphicsEnvironment::emitViewChanged>(this);
 }
 
 void GraphicsEnvironment::deactivate()
 {
     LOG(INFO) << "Deactivating GraphicsEnvironment.";
 
-    m_viewpointCamera.viewpointCameraChanged.disconnect<GraphicsEnvironment, &GraphicsEnvironment::emitViewChanged>(this);
-    m_geometryContainer->geometryObjectAdded.disconnect<GraphicsEnvironment, &GraphicsEnvironment::add>(this);
-    m_geometryContainer->extentChanged.disconnect<GraphicsEnvironment, &GraphicsEnvironment::handleExtentChanged>(this);
+    m_viewpointCamera.viewpointCameraChanged.
+            disconnect<GraphicsEnvironment, &GraphicsEnvironment::emitViewChanged>(this);
+    m_geometryContainer->geometryObjectAdded.
+            disconnect<GraphicsEnvironment, &GraphicsEnvironment::add>(this);
+    m_geometryContainer->extentChanged.
+            disconnect<GraphicsEnvironment, &GraphicsEnvironment::handleExtentChanged>(this);
 
     m_geometryContainer.reset(nullptr);
 }
@@ -104,14 +110,18 @@ void GraphicsEnvironment::render() const
 
     g_OpenGLFuncs->glUniform4fv(m_shaderProgram->ambientLightLocation(), 1, m_ambientLight.data());
 
-    g_OpenGLFuncs->glUniform4fv(m_shaderProgram->light0PositionLocation(), 1, m_light0Position.data());
-    g_OpenGLFuncs->glUniform4fv(m_shaderProgram->light0DiffuseColorLocation(), 1, m_light0DiffuseColor.data());
-    g_OpenGLFuncs->glUniform4fv(m_shaderProgram->light0SpecularColorLocation(), 1, m_light0SpecularColor.data());
+    g_OpenGLFuncs->glUniform4fv(m_shaderProgram->light0PositionLocation(), 1,
+                                m_light0Position.data());
+    g_OpenGLFuncs->glUniform4fv(m_shaderProgram->light0DiffuseColorLocation(), 1,
+                                m_light0DiffuseColor.data());
+    g_OpenGLFuncs->glUniform4fv(m_shaderProgram->light0SpecularColorLocation(), 1,
+                                m_light0SpecularColor.data());
 
     float matrixData[16]; // 4x4 matrix
     const Core::Matrix4x4& projectionMatrix = m_projectionMatrix;
     projectionMatrix.data(matrixData);
-    g_OpenGLFuncs->glUniformMatrix4fv(m_shaderProgram->projectionMatrixLocation(), 1, GL_FALSE, matrixData);
+    g_OpenGLFuncs->glUniformMatrix4fv(m_shaderProgram->projectionMatrixLocation(), 1,
+                                      GL_FALSE, matrixData);
 
     for (const auto& graphicsObject : m_graphicsObjectList)
         graphicsObject->render();
@@ -123,7 +133,8 @@ void GraphicsEnvironment::add(Geometry::GeometryObject& geometryObject)
 
     GraphicsObject* viewObject = new GraphicsObject{*this, geometryObject};
     m_graphicsObjectList.push_back(viewObject);
-    m_graphicsObjectList.back()->graphicsObjectChanged.connect<GraphicsEnvironment, &GraphicsEnvironment::emitViewChanged>(this);
+    m_graphicsObjectList.back()->graphicsObjectChanged.
+            connect<GraphicsEnvironment, &GraphicsEnvironment::emitViewChanged>(this);
 
     emit viewChanged();
 }

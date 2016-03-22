@@ -37,7 +37,10 @@ public:
     const std::string& path() const { return m_path; }
     std::string filePath() const;
     bool isDirty() const { return m_dirty; }
-    const std::vector<std::shared_ptr<ModelObject>>& modelObjectList() const { return m_modelObjectList; }
+    const std::vector<std::shared_ptr<ModelObject>>& modelObjectList() const
+    {
+        return m_modelObjectList;
+    }
     const Viewpoint& viewpoint() const { return m_viewpoint; }
 
     void setFilePath(const std::string& filePath);

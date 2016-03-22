@@ -13,7 +13,8 @@
 
 namespace Geometry {
 
-GeometryObject::GeometryObject(const GeometryContainer& geometryContainer, Model::ModelObject* modelObject)
+GeometryObject::GeometryObject(const GeometryContainer& geometryContainer,
+                               Model::ModelObject* modelObject)
     : m_geometryContainer{geometryContainer}
     , m_modelObject{modelObject}
 {
@@ -30,7 +31,8 @@ void GeometryObject::setExtent(const Extent& extent, Core::EmitSignal emitSignal
         extentChanged.emit_signal(); // emit signal
 }
 
-bool GeometryObject::intersectBoundingBox(const Core::Vector3d& nearPoint, const Core::Vector3d& farPoint)
+bool GeometryObject::intersectBoundingBox(const Core::Vector3d& nearPoint,
+                                          const Core::Vector3d& farPoint)
 {
     const unsigned int kNumQuad = 6;
 

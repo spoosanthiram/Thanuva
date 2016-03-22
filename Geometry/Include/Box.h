@@ -19,7 +19,8 @@ class Box : public GeometryObject
 public:
     Box(const GeometryContainer& geometryContainer, Model::BoxModel* boxModel);
 
-    bool intersect(const Core::Vector3d& nearPoint, const Core::Vector3d& farPoint, std::vector<Core::Vector3d>* points) override;
+    bool intersect(const Core::Vector3d& nearPoint, const Core::Vector3d& farPoint,
+                   std::vector<Core::Vector3d>* points) override;
 
 protected: // slots
     void initialize();

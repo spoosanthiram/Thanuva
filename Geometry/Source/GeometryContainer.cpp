@@ -34,7 +34,8 @@ GeometryContainer::~GeometryContainer()
     m_project->modelObjectAdded.disconnect<GeometryContainer, &GeometryContainer::add>(this);
 
     for (auto geometryObject : m_geometryObjectList) {
-        geometryObject->extentChanged.disconnect<GeometryContainer, &GeometryContainer::updateExtent>(this);
+        geometryObject->extentChanged.
+                disconnect<GeometryContainer, &GeometryContainer::updateExtent>(this);
         delete geometryObject;
     }
 }
@@ -59,7 +60,8 @@ void GeometryContainer::add(Model::ModelObject* modelObject)
         return;
 
     m_geometryObjectList.push_back(geometryObject);
-    geometryObject->extentChanged.connect<GeometryContainer, &GeometryContainer::updateExtent>(this);
+    geometryObject->extentChanged.
+            connect<GeometryContainer, &GeometryContainer::updateExtent>(this);
     geometryObjectAdded.emit_signal(*geometryObject); // emit signal
 
     this->updateExtent();
