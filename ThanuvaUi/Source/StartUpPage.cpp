@@ -9,12 +9,14 @@
 
 #include <QResizeEvent>
 
-namespace GlViewer {
+namespace ThanuvaUi {
 
 StartUpPage::StartUpPage(QWidget* parent)
     : QWidget{parent}
 {
     this->setupUi(this);
+
+    connect(m_newProjectButton, &QPushButton::clicked, this, &StartUpPage::newThanuvaProject);
 }
 
 void StartUpPage::resizeEvent(QResizeEvent* event)
@@ -23,4 +25,4 @@ void StartUpPage::resizeEvent(QResizeEvent* event)
     m_leftMarginHSpacer->changeSize(event->size().width() * 0.2, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
 }
 
-} // namespace GlViewer
+} // namespace ThanuvaUi

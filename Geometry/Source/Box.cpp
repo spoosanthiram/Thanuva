@@ -65,13 +65,13 @@ void Box::initialize()
     this->clear();
 
     this->setExtent(Extent{
-        std::numeric_limits<double>::infinity(),
-        -std::numeric_limits<double>::infinity(),
-        std::numeric_limits<double>::infinity(),
-        -std::numeric_limits<double>::infinity(),
-        std::numeric_limits<double>::infinity(),
-        -std::numeric_limits<double>::infinity()
-    });
+            std::numeric_limits<double>::infinity(),
+            -std::numeric_limits<double>::infinity(),
+            std::numeric_limits<double>::infinity(),
+            -std::numeric_limits<double>::infinity(),
+            std::numeric_limits<double>::infinity(),
+            -std::numeric_limits<double>::infinity()
+        }, Core::EmitSignal::DontEmit);
 
     this->reserve(24 * GeometryObject::kValuesPerVertex, 24 * GeometryObject::kValuesPerVertex, 36);
 

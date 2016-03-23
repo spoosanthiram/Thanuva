@@ -5,23 +5,23 @@
  * All rights reserved.
  */
 
-#ifndef GLVIEWER_GLWIDGET_H
-#define GLVIEWER_GLWIDGET_H
+#ifndef THANUVAUI_GLWIDGET_H
+#define THANUVAUI_GLWIDGET_H
 
 #include <memory>
 #include <vector>
 
-#include <QOpenGLWidget>
 #include <QMenu>
+#include <QOpenGLWidget>
 
-#include "GlProject.h"
-#include "ViewpointCameraModel.h"
+#include "GraphicsEnvironment.h"
+#include "ViewpointCamera.h"
 
 namespace Model { class Project; }
 
-namespace GlViewer {
+namespace ThanuvaUi {
 
-class GlWidget : public QOpenGLWidget
+class OpenGLWidget : public QOpenGLWidget
 {
     Q_OBJECT
 
@@ -40,7 +40,7 @@ public:
     };
 
 public:
-    GlWidget(QWidget* parent);
+    OpenGLWidget(QWidget* parent);
 
     void activate(Model::Project* project);
     void deactivate();
@@ -60,15 +60,16 @@ protected:
     void mouseReleaseEvent(QMouseEvent* mouseEvent) override;
     void wheelEvent(QWheelEvent* wheelEvent) override;
 
-    Model::ViewpointCameraModel::Location normalize(const Location& pos)
+    Graphics::ViewpointCamera::Location normalize(const Location& pos)
     {
-        return Model::ViewpointCameraModel::Location{(2.0 * pos.x - m_width) / static_cast<double>(m_width),
-                    (m_height - 2.0 * pos.y) / static_cast<double>(m_height)};
+        return Graphics::ViewpointCamera::Location{
+            (2.0 * pos.x - m_width) / static_cast<double>(m_width),
+            (m_height - 2.0 * pos.y) / static_cast<double>(m_height)};
     }
 
 private:
-    GlProject m_glProject;
-    Model::Project* m_project;
+    Graphics::GraphicsEnvironment m_graphicsEnvironment{};
+    Model::Project* m_project{nullptr};
     int m_width;
     int m_height;
     Location m_currentLocation;
@@ -77,6 +78,6 @@ private:
     QMenu* m_contextMenu;
 };
 
-} // namespace GlViewer
+} // namespace ThanuvaUi
 
-#endif // GLVIEWER_GLWIDGET_H
+#endif // THANUVAUI_GLWIDGET_H

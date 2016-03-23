@@ -5,42 +5,18 @@
  * All rights reserved.
  */
 
+#include <glog/logging.h>
+
 #include <QApplication>
 #include <QDir>
 
 #include "MainWindow.h"
-#include "Version.h"
 
-#include "glog/logging.h"
+namespace {
 
-namespace Graphics {
-
-const char* kAppName = "GL Viewer";
-const char* kAppBinary = "GlViewer";
+const char* kAppName = "Thanuva";
 const char* kVersion = "1.0";
 const char* kDomain = "sarvanz.com";
-
-std::string version()
-{
-    return std::string{kVersion};
-}
-
-std::string internalVersion()
-{
-#ifdef REVISION_NUMBER // comes from cmake definition (-D)
-    std::string revisionNumber{std::to_string(REVISION_NUMBER)};
-    if (revisionNumber.empty())
-        return std::string{kVersion};
-    else
-        return std::string{kVersion} + "." + revisionNumber;
-#else
-    return std::string{kVersion};
-#endif
-}
-
-} // namespace Graphics
-
-namespace GlViewer {
 
 class GLogger {
 public:
@@ -50,9 +26,12 @@ public:
 
         FLAGS_max_log_size = kLogFileSize;
 
-        google::SetLogDestination(google::INFO, (logDirPath + "/" + Graphics::kAppBinary + kLogInfoExt).toUtf8());
-        google::SetLogDestination(google::WARNING, (logDirPath + "/" + Graphics::kAppBinary + kLogWarningExt).toUtf8());
-        google::SetLogDestination(google::ERROR, (logDirPath + "/" + Graphics::kAppBinary + kLogErrorExt).toUtf8());
+        google::SetLogDestination(google::INFO,
+                                  (logDirPath + "/" + kAppName + kLogInfoExt).toUtf8());
+        google::SetLogDestination(google::WARNING,
+                                  (logDirPath + "/" + kAppName + kLogWarningExt).toUtf8());
+        google::SetLogDestination(google::ERROR,
+                                  (logDirPath + "/" + kAppName + kLogErrorExt).toUtf8());
 
         google::InitGoogleLogging(argv0);
     }
@@ -61,7 +40,7 @@ public:
     {
         QDir logDir{logdir()};
 
-        QString filterPrefix{Graphics::kAppBinary};
+        QString filterPrefix{kAppName};
 
         QStringList logFileFilters;
         logFileFilters << filterPrefix + kLogInfoExt + "*";    // for INFO log files
@@ -90,28 +69,28 @@ private:
 private:
     QString logdir()
     {
-        QString execName = QString(Graphics::kAppBinary).toLower();
-        QDir logDir{QDir::homePath() + "/" + QString(".%1").arg(execName)};
+        QString name = QString(kAppName).toLower();
+        QDir logDir{QDir::homePath() + "/" + QString(".%1").arg(name)};
         if (!logDir.exists()) {
             QDir userHomeDir = QDir::home();
-            userHomeDir.mkdir(QString(".%1").arg(execName));
+            userHomeDir.mkdir(QString(".%1").arg(name));
         }
         return logDir.absolutePath();
     }
 };
 
-} // namespace GlViewer
+} // namespace anonymous
 
 int main(int argc, char *argv[])
 {
-    GlViewer::GLogger logger{argv[0]};
-    LOG(INFO) << "Starting " << Graphics::kAppName << " " << Graphics::internalVersion();
+    GLogger logger{argv[0]};
+    LOG(INFO) << "Starting " << kAppName << " " << kVersion;
 
     QApplication app{argc, argv};
-    app.setApplicationName(Graphics::kAppName);
-    app.setOrganizationDomain(Graphics::kDomain);
+    app.setApplicationName(kAppName);
+    app.setOrganizationDomain(kDomain);
 
-    GlViewer::MainWindow w{};
+    ThanuvaUi::MainWindow w{};
     w.show();
 
     app.exec();

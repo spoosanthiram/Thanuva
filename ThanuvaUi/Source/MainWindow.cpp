@@ -21,35 +21,27 @@
 #include <QSurfaceFormat>
 
 #include "AppSettings.h"
-#include "GlWidget.h"
+#include "OpenGLWidget.h"
 #include "Project.h"
 #include "StartUpPage.h"
 
-namespace GlViewer {
+namespace ThanuvaUi {
 
-MainWindow::MainWindow(QWidget* parent)
-    : QMainWindow{parent}
+MainWindow::MainWindow()
+    : QMainWindow{nullptr}
 {
     this->setupUi();
 
-    //QSurfaceFormat format;
-    //format.setVersion(4, 3);
-    //format.setProfile(QSurfaceFormat::CoreProfile);
-    //QSurfaceFormat::setDefaultFormat(format);
-
     m_startUpPage = new StartUpPage{this};
-    //m_glWidget = new GlWidget{this};
     this->setCentralWidget(m_startUpPage);
 
-    //this->create(); // TODO: for now create newProject()...sometime down the road I need to change such that
-                    // we have startup page that shows recent project like Microsoft Word or Apple Pages
+    connect(m_startUpPage, &StartUpPage::newThanuvaProject, this, &MainWindow::create);
 }
 
 void MainWindow::create()
 {
     LOG(INFO) << "Creating new project!";
     m_project = new Model::Project{};
-    m_lastFileOpLocation = m_project->path();
 
     this->activate();
 }
@@ -61,15 +53,14 @@ void MainWindow::open()
 
     CHECK(nullptr == m_project);
 
-    QDir projectDir{m_lastFileOpLocation.c_str()};
+    QDir projectDir{};
     QString filePath = QFileDialog::getOpenFileName(this, "Open Project",
-                                                    projectDir.absolutePath(), "Project Files (*.gfx)");
+                            projectDir.absolutePath(), "Project Files (*.gfx)");
     if (filePath.isEmpty())
         return;
 
     try {
         m_project = new Model::Project{filePath.toUtf8().data()};
-        m_lastFileOpLocation = m_project->path();
     }
     catch (std::exception& e) {
         QMessageBox::critical(this, "Project Open Error",
@@ -86,7 +77,7 @@ bool MainWindow::save()
     if (!m_project->isNamed()) {
         QDir projectDir{m_project->path().c_str()};
         QString filePath = QFileDialog::getSaveFileName(this, "Save Project",
-                                                        projectDir.absolutePath(), "Project Files (*.gfx)");
+                                projectDir.absolutePath(), "Project Files (*.gfx)");
         if (filePath.isEmpty())
             return false;
 
@@ -99,11 +90,11 @@ bool MainWindow::save()
 
         try {
             m_project->setFilePath(filePath.toUtf8().data());
-            m_lastFileOpLocation = m_project->path();
         }
         catch (std::exception& e) {
-            QMessageBox::warning(this, "Project Save Error", QString("Project is not saved! Reason: %1").arg(e.what()));
-                return false;
+            QMessageBox::warning(this, "Project Save Error",
+                                 QString("Project is not saved! Reason: %1").arg(e.what()));
+            return false;
         }
     }
 
@@ -179,9 +170,14 @@ void MainWindow::activate()
 {
     CHECK(m_project) << "Activate: nullptr!";
 
+    if (!m_openGLWidget) {
+        m_openGLWidget = new OpenGLWidget{this};
+        this->setCentralWidget(m_openGLWidget);
+    }
+
     LOG(INFO) << "Activing project: " << m_project->name();
 
-    m_glWidget->activate(m_project);
+    m_openGLWidget->activate(m_project);
     this->handleProjectDirtyChanged();
 
     m_project->dirtyChanged.connect<MainWindow, &MainWindow::handleProjectDirtyChanged>(this);
@@ -193,7 +189,7 @@ void MainWindow::deactivate()
 
     LOG(INFO) << "Deactivating project: " << m_project->name();
 
-    m_glWidget->deactivate();
+    m_openGLWidget->deactivate();
 
     m_project->dirtyChanged.disconnect<MainWindow, &MainWindow::handleProjectDirtyChanged>(this);
 }
@@ -217,4 +213,4 @@ bool MainWindow::saveChanges()
     return retval;
 }
 
-} // namespace GlViewer
+} // namespace ThanuvaUi

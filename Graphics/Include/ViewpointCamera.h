@@ -37,8 +37,13 @@ public:
     void setViewpointTranslation(double viewpointTranslation)
     {
         m_viewpointTranslation = viewpointTranslation;
+        this->updateViewMatrix();
     }
-    void setViewpoint(const Model::Viewpoint& viewpoint) { m_viewpoint = viewpoint; }
+    void setViewpoint(const Model::Viewpoint& viewpoint)
+    {
+        m_viewpoint = viewpoint;
+        this->updateViewMatrix();
+    }
 
     void rotate(const Location& startLocation, const Location& endLocation);
     void zoom(int steps);

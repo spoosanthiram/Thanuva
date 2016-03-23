@@ -7,18 +7,17 @@
 
 #include "BoxDialog.h"
 
+#include <glog/logging.h>
 #include <QMessageBox>
 
 #include "AppSettings.h"
-#include "Box.h"
+#include "BoxModel.h"
 
-#include "glog/logging.h"
+namespace ThanuvaUi {
 
-namespace GlViewer {
-
-BoxDialog::BoxDialog(QWidget* parent, const std::shared_ptr<Model::Box>& box)
+BoxDialog::BoxDialog(QWidget* parent, const std::shared_ptr<Model::BoxModel>& boxModel)
     : QDialog{parent/*, Qt::Dialog | Qt::FramelessWindowHint*/}
-    , m_box{box}
+    , m_boxModel{boxModel}
 {
     this->setupUi(this);
     this->setWindowOpacity(AppSettings().windowOpacity());
@@ -27,7 +26,7 @@ BoxDialog::BoxDialog(QWidget* parent, const std::shared_ptr<Model::Box>& box)
 
     this->initialize();
 
-    m_box->geometryChanged.connect<BoxDialog, &BoxDialog::initialize>(this);
+    m_boxModel->modelObjectChanged.connect<BoxDialog, &BoxDialog::initialize>(this);
 
     connect(m_xLowLineEdit, &QLineEdit::editingFinished, this, &BoxDialog::update);
     connect(m_xHighLineEdit, &QLineEdit::editingFinished, this, &BoxDialog::update);
@@ -48,7 +47,7 @@ void BoxDialog::update()
 
     LOG(INFO) << "Update the Box limiter with user input values.";
     try {
-        m_box->setLimiter(Model::Box::Limiter(xlow, xhigh, ylow, yhigh, zlow, zhigh));
+        m_boxModel->setLimiter(Model::BoxModel::Limiter(xlow, xhigh, ylow, yhigh, zlow, zhigh));
     }
     catch (const std::exception& e) {
         LOG(WARNING) << e.what();
@@ -58,7 +57,7 @@ void BoxDialog::update()
 
 void BoxDialog::initialize()
 {
-    Model::Box::Limiter limiter = m_box->limiter();
+    Model::BoxModel::Limiter limiter = m_boxModel->limiter();
     m_xLowLineEdit->setText(QString::number(limiter.xlow));
     m_xHighLineEdit->setText(QString::number(limiter.xhigh));
     m_yLowLineEdit->setText(QString::number(limiter.ylow));
@@ -67,4 +66,4 @@ void BoxDialog::initialize()
     m_zHighLineEdit->setText(QString::number(limiter.zhigh));
 }
 
-} // namespace GlViewer
+} // namespace ThanuvaUi

@@ -36,6 +36,7 @@ public:
     }
     const std::unique_ptr<ShaderProgram>& shaderProgram() const { return m_shaderProgram; }
     const ViewpointCamera& viewpointCamera() const { return m_viewpointCamera; }
+    ViewpointCamera& viewpointCamera() { return m_viewpointCamera; }
     const Core::Matrix4x4& projectionMatrix() const { return m_projectionMatrix; }
     const std::array<int, 4>& viewportTransform() const { return m_viewportTransform; }
 
