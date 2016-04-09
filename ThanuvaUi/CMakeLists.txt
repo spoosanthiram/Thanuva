@@ -36,11 +36,24 @@ include_directories(
     ${Thanuva_SOURCE_DIR}/Geometry/Include
     ${Thanuva_SOURCE_DIR}/Graphics/Include
     ${Thanuva_SOURCE_DIR}/../Algorithms/Include
-    ${Thanuva_SOURCE_DIR}/../3rdParty/glog/src
+    ${Thanuva_SOURCE_DIR}/../3rdParty/boost
+    ${Thanuva_SOURCE_DIR}/../3rdParty/glog/src/windows
     ${Thanuva_SOURCE_DIR}/../3rdParty/nano-signal-slot
 )
 
 add_executable(ThanuvaUi ${SOURCE_FILES} ${UI_FILES})
+if(WIN32)
+target_link_libraries(ThanuvaUi
+    Graphics Geometry Model Core
+    ${Thanuva_SOURCE_DIR}/../Algorithms/MSVC/x64/Debug/Algo.lib
+    ${Thanuva_SOURCE_DIR}/../3rdParty/glog/x64/Debug/libglog_static.lib
+    Qt5::Widgets
+    Qt5::Gui
+    Qt5::Core
+    GLU
+    stdc++
+)
+else()
 target_link_libraries(ThanuvaUi
     Graphics Geometry Model Core
     ${Thanuva_SOURCE_DIR}/../Algorithms/libAlgo.a
@@ -51,3 +64,4 @@ target_link_libraries(ThanuvaUi
     GLU
     stdc++
 )
+endif()

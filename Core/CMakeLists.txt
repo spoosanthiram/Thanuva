@@ -37,6 +37,14 @@ target_compile_definitions(CoreTest PUBLIC UNIT_TEST)
 target_include_directories(CoreTest PUBLIC
     ${Thanuva_SOURCE_DIR}/../3rdParty/googletest/googletest/include
 )
+
+if (WIN32)
+target_link_libraries(CoreTest
+    ${Thanuva_SOURCE_DIR}/../Algorithms/MSVC/x64/Debug/Algo.lib
+    ${Thanuva_SOURCE_DIR}/../3rdParty/cppformat/build/cppformat/Debug/cppformat.lib
+    ${Thanuva_SOURCE_DIR}/../3rdParty/googletest/googletest/msvc/Debug/gtest.lib
+)
+else()
 target_link_libraries(CoreTest
     ${Thanuva_SOURCE_DIR}/../Algorithms/libAlgo.a
     ${Thanuva_SOURCE_DIR}/../3rdParty/cppformat/libcppformat.a
@@ -44,3 +52,4 @@ target_link_libraries(CoreTest
     pthread
     stdc++
 )
+endif()

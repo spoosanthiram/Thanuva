@@ -1,5 +1,9 @@
 project(Geometry CXX)
 
+if(WIN32)
+    add_definitions(-DGOOGLE_GLOG_DLL_DECL=)
+endif()
+
 set(SOURCE_FILES
     ${Geometry_SOURCE_DIR}/Include/Box.h
     ${Geometry_SOURCE_DIR}/Include/Extent.h
@@ -19,7 +23,8 @@ include_directories(
     ${Thanuva_SOURCE_DIR}/Core/Include
     ${Thanuva_SOURCE_DIR}/Model/Include
     ${Thanuva_SOURCE_DIR}/../Algorithms/Include
-    ${Thanuva_SOURCE_DIR}/../3rdParty/glog/src
+    ${Thanuva_SOURCE_DIR}/../3rdParty/boost
+    ${Thanuva_SOURCE_DIR}/../3rdParty/glog/src/windows
     ${Thanuva_SOURCE_DIR}/../3rdParty/nano-signal-slot
 )
 

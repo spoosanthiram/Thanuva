@@ -1,5 +1,9 @@
 project(Model CXX)
 
+if(WIN32)
+    add_definitions(-DGOOGLE_GLOG_DLL_DECL=)
+endif()
+
 set(SOURCE_FILES
     ${Model_SOURCE_DIR}/Include/BoxModel.h
     ${Model_SOURCE_DIR}/Include/ModelException.h
@@ -20,9 +24,9 @@ include_directories(
     ${Model_SOURCE_DIR}/Include
     ${Thanuva_SOURCE_DIR}/Core/Include
     ${Thanuva_SOURCE_DIR}/../Algorithms/Include
-    ${Thanuva_SOURCE_DIR}/../3rdParty/boost_1_57_0/include
+    ${Thanuva_SOURCE_DIR}/../3rdParty/boost
     ${Thanuva_SOURCE_DIR}/../3rdParty/cppformat
-    ${Thanuva_SOURCE_DIR}/../3rdParty/glog/src
+    ${Thanuva_SOURCE_DIR}/../3rdParty/glog/src/windows
     ${Thanuva_SOURCE_DIR}/../3rdParty/nano-signal-slot
 )
 
@@ -35,12 +39,22 @@ target_compile_definitions(ModelTest PUBLIC UNIT_TEST)
 target_include_directories(ModelTest PUBLIC
     ${Thanuva_SOURCE_DIR}/../3rdParty/googletest/googletest/include
 )
+if(WIN32)
+target_link_libraries(ModelTest
+    Core
+    ${Thanuva_SOURCE_DIR}/../Algorithms/MSVC/x64/Debug/Algo.lib
+    ${Thanuva_SOURCE_DIR}/../3rdParty/cppformat/build/cppformat/Debug/cppformat.lib
+    ${Thanuva_SOURCE_DIR}/../3rdParty/glog/x64/Debug/libglog_static.lib
+    ${Thanuva_SOURCE_DIR}/../3rdParty/googletest/googletest/msvc/Debug/gtest.lib
+)
+else()
 target_link_libraries(ModelTest
     Core
     ${Thanuva_SOURCE_DIR}/../Algorithms/libAlgo.a
     ${Thanuva_SOURCE_DIR}/../3rdParty/cppformat/libcppformat.a
-    ${Thanuva_SOURCE_DIR}/../3rdParty/googletest/googletest/libgtest.a
     ${Thanuva_SOURCE_DIR}/../3rdParty/glog/libglog.a
+    ${Thanuva_SOURCE_DIR}/../3rdParty/googletest/googletest/libgtest.a
     pthread
     stdc++
 )
+endif()

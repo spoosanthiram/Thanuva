@@ -7,6 +7,8 @@ set(CMAKE_AUTOMOC ON)
 find_package(Qt5Core)
 find_package(Qt5Gui)
 
+add_definitions(-DGLOG_NO_ABBREVIATED_SEVERITIES)
+
 set(SOURCE_FILES
     ${Graphics_SOURCE_DIR}/Include/GraphicsEnvironment.h
     ${Graphics_SOURCE_DIR}/Include/GraphicsException.h
@@ -31,7 +33,8 @@ include_directories(
     ${Thanuva_SOURCE_DIR}/Model/Include
     ${Thanuva_SOURCE_DIR}/Geometry/Include
     ${Thanuva_SOURCE_DIR}/../Algorithms/Include
-    ${Thanuva_SOURCE_DIR}/../3rdParty/glog/src
+    ${Thanuva_SOURCE_DIR}/../3rdParty/boost
+    ${Thanuva_SOURCE_DIR}/../3rdParty/glog/src/windows
     ${Thanuva_SOURCE_DIR}/../3rdParty/nano-signal-slot
 )
 
