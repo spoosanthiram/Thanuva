@@ -5,13 +5,13 @@
  * All rights reserved.
  */
 
-#ifndef GLVIEWER_APPSETTINGS_H
-#define GLVIEWER_APPSETTINGS_H
+#ifndef THANUVAUI_APPSETTINGS_H
+#define THANUVAUI_APPSETTINGS_H
 
 #include <QRect>
 #include <QSettings>
 
-namespace GlViewer {
+namespace ThanuvaUi {
 
 class AppSettings : public QSettings
 {
@@ -41,6 +41,6 @@ public:
     void setWindowOpacity(double value) { this->setValue(kWindowOpacityLabel, value); }
 };
 
-} // namespace GlViewer
+} // namespace ThanuvaUi
 
-#endif // GLVIEWER_APPSETTINGS_H
+#endif // THANUVAUI_APPSETTINGS_H

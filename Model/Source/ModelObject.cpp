@@ -30,7 +30,8 @@ void ModelObject::setMaterial(const Core::Material& material, Core::EmitSignal e
         materialChanged.emit_signal(); // emit signal
 }
 
-void ModelObject::setTransformMatrix(const Core::Matrix4x4& transformMatrix, Core::EmitSignal emitSignal)
+void ModelObject::setTransformMatrix(const Core::Matrix4x4& transformMatrix,
+                                     Core::EmitSignal emitSignal)
 {
     if (transformMatrix == m_transformMatrix)
         return;

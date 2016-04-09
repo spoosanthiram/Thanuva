@@ -210,8 +210,10 @@ Matrix3x3 Matrix3x3::operator*(const Matrix3x3& rhs) const
     Matrix3x3 result = Matrix3x3::zero();
     for (unsigned int i = 0; i < kNColumns; ++i) {
         for (unsigned int j = 0; j < kNRows; ++j) {
-            for (unsigned int k = 0; k < kNRows; ++k)
-                result.m_elements[(i * kNRows) + k] += m_elements[(j * kNRows) + k] * rhs.m_elements[(i * kNRows) + j];
+            for (unsigned int k = 0; k < kNRows; ++k) {
+                result.m_elements[(i * kNRows) + k] +=
+                        m_elements[(j * kNRows) + k] * rhs.m_elements[(i * kNRows) + j];
+            }
         }
     }
     return result;
@@ -268,9 +270,12 @@ TEST(Matrix3x3Test, Determinant)
 
 TEST(Matrix3x3Test, Inverse)
 {
-    Matrix3x3 mat{std::array<double, 9>{{0.814723686393179, 0.905791937075619, 0.126986816293506, 0.913375856139019,
-                0.632359246225410, 0.097540404999410, 0.278498218867048, 0.546881519204984, 0.957506835434298}}};
-    Matrix3x3 expected{std::array<double, 9>{{-1.9957973611559359, 2.8839464655651592, -0.029097811479364084,
+    Matrix3x3 mat{std::array<double, 9>{{
+                0.814723686393179, 0.905791937075619, 0.126986816293506,
+                0.913375856139019, 0.632359246225410, 0.097540404999410,
+                0.278498218867048, 0.546881519204984, 0.957506835434298}}};
+    Matrix3x3 expected{std::array<double, 9>{{
+                -1.9957973611559359, 2.8839464655651592, -0.029097811479364084,
                 3.0630278247219205, -2.6919472964268878, -0.13199960300229843,
                 -1.1689601143598116, 0.69869190314284257, 1.1282340680150791}}};
     mat.invert();

@@ -21,7 +21,8 @@ Box::Box(const GeometryContainer& geometryContainer, Model::BoxModel* boxModel)
     boxModel->modelObjectChanged.connect<Box, &Box::initialize>(this);
 }
 
-bool Box::intersect(const Core::Vector3d& nearPoint, const Core::Vector3d& farPoint, std::vector<Core::Vector3d>* points)
+bool Box::intersect(const Core::Vector3d& nearPoint, const Core::Vector3d& farPoint,
+                    std::vector<Core::Vector3d>* points)
 {
     const std::vector<float>& vertices = this->vertices();
     const std::vector<float>& normals = this->normals();
@@ -64,13 +65,13 @@ void Box::initialize()
     this->clear();
 
     this->setExtent(Extent{
-        std::numeric_limits<double>::infinity(),
-        -std::numeric_limits<double>::infinity(),
-        std::numeric_limits<double>::infinity(),
-        -std::numeric_limits<double>::infinity(),
-        std::numeric_limits<double>::infinity(),
-        -std::numeric_limits<double>::infinity()
-    });
+            std::numeric_limits<double>::infinity(),
+            -std::numeric_limits<double>::infinity(),
+            std::numeric_limits<double>::infinity(),
+            -std::numeric_limits<double>::infinity(),
+            std::numeric_limits<double>::infinity(),
+            -std::numeric_limits<double>::infinity()
+        }, Core::EmitSignal::DontEmit);
 
     this->reserve(24 * GeometryObject::kValuesPerVertex, 24 * GeometryObject::kValuesPerVertex, 36);
 

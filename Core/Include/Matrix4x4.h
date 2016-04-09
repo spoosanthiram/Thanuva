@@ -39,7 +39,9 @@ public:
         return eye;
     }
 
-    static Matrix4x4 frustum(double left, double right, double bottom, double top, double near, double far);
+    static Matrix4x4 frustum(double left, double right,
+                             double bottom, double top,
+                             double near, double far);
     static Matrix4x4 perspective(double fovy, double aspect, double near, double far);
 
 public:
@@ -65,12 +67,18 @@ public:
         return *this;
     }
 
-    double operator()(unsigned int irow, unsigned int icolumn) const { return m_elements[(icolumn * kNRows) + irow]; }
+    double operator()(unsigned int irow, unsigned int icolumn) const
+    {
+        return m_elements[(icolumn * kNRows) + irow];
+    }
     const double* data() const { return m_elements.data(); }
     void data(float* values) const;
     std::string str() const;
 
-    void setValue(int irow, int icolumn, double value) { m_elements[(icolumn * kNRows) + irow] = value; }
+    void setValue(int irow, int icolumn, double value)
+    {
+        m_elements[(icolumn * kNRows) + irow] = value;
+    }
     void setColumn(int icolumn, double val0, double val1, double val2, double val3);
     void setColumn(int icolumn, const double* values);
     void setColumn(int icolumn, const HVector& hv);

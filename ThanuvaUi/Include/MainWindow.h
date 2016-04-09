@@ -5,8 +5,8 @@
  * All rights reserved.
  */
 
-#ifndef GLVIEWER_MAINWINDOW_H
-#define GLVIEWER_MAINWINDOW_H
+#ifndef THANUVAUI_MAINWINDOW_H
+#define THANUVAUI_MAINWINDOW_H
 
 #include <memory>
 
@@ -14,15 +14,15 @@
 
 namespace Model { class Project; }
 
-namespace GlViewer {
+namespace ThanuvaUi {
 
-class GlWidget;
+class OpenGLWidget;
 class StartUpPage;
 
 class MainWindow : public QMainWindow
 {
 public:
-    MainWindow(QWidget* parent = nullptr);
+    MainWindow();
 
 private slots:
     void create();
@@ -41,15 +41,14 @@ private:
     void deactivate();
     bool saveChanges();
 
-    Model::Project* m_project = nullptr;
-    std::string m_lastFileOpLocation{};
+    Model::Project* m_project{nullptr};
 
-    StartUpPage* m_startUpPage = nullptr;
-    GlWidget* m_glWidget = nullptr;
+    StartUpPage* m_startUpPage{nullptr};
+    OpenGLWidget* m_openGLWidget{nullptr};
 
-    QAction* m_saveAction = nullptr;
+    QAction* m_saveAction{nullptr};
 };
 
-} // namespace GlViewer
+} // namespace ThanuvaUi
 
-#endif // GLVIEWER_MAINWINDOW_H
+#endif // THANUVAUI_MAINWINDOW_H

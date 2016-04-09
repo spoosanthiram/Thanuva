@@ -59,25 +59,4 @@ void Shader::compile(const char* shaderSource)
     }
 }
 
-/*
-std::string Shader::readSource(const std::string& filePath)
-{
-    std::ifstream shaderStream(filePath, std::ios_base::in);
-    if (!shaderStream.is_open())
-        throw GlViewerException{GlViewerException::kFileOpen + filePath};
-
-    std::string source;
-
-    std::string str;
-    while (!shaderStream.eof())
-    {
-        std::getline(shaderStream, str);
-        source.append(str);
-        source.push_back('\n');
-    }
-
-    return source;
-}
-*/
-
 } // namespace Graphics

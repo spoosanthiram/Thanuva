@@ -5,12 +5,12 @@
  * All rights reserved.
  */
 
-#include "GlWidget.h"
+#include "OpenGLWidget.h"
 
 #include <memory>
 
 #define GLOG_NO_ABBREVIATED_SEVERITIES
-#include "glog/logging.h"
+#include <glog/logging.h>
 
 #include <QDir>
 #include <QFileDialog>
@@ -19,18 +19,16 @@
 #include <QOpenGLContext>
 
 #include "AppSettings.h"
-#include "Box.h"
+#include "BoxModel.h"
 #include "BoxDialog.h"
 #include "OpenGLInterface.h"
 #include "Project.h"
-#include "Stl.h"
+#include "StlModel.h"
 
-namespace GlViewer {
+namespace ThanuvaUi {
 
-GlWidget::GlWidget(QWidget* parent)
+OpenGLWidget::OpenGLWidget(QWidget* parent)
     : QOpenGLWidget{parent}
-    , m_glProject{}
-    , m_project{nullptr}
     , m_width{0}
     , m_height{0}
     , m_currentLocation{}
@@ -39,7 +37,6 @@ GlWidget::GlWidget(QWidget* parent)
     this->setFocusPolicy(Qt::StrongFocus);
 
     m_contextMenu = new QMenu(this);
-    //m_contextMenu->setWindowOpacity(AppSettings().windowOpacity());
     m_contextMenu->addAction(tr("Add Box"), this, SLOT(addBox()));
     m_contextMenu->addAction(tr("Add STL"), this, SLOT(addStl()));
 
@@ -54,42 +51,43 @@ GlWidget::GlWidget(QWidget* parent)
     this->setFormat(format);
 }
 
-void GlWidget::activate(Model::Project* project)
+void OpenGLWidget::activate(Model::Project* project)
 {
     LOG(INFO) << "Activating GLWidget for: " << project->name();
 
     m_project = project;
-    m_glProject.activate(m_project);
+    m_graphicsEnvironment.activate(m_project);
 
-    connect(&m_glProject, &GlProject::viewChanged, this, &GlWidget::handleViewChanged);
+    connect(&m_graphicsEnvironment, &Graphics::GraphicsEnvironment::viewChanged,
+            this, &OpenGLWidget::handleViewChanged);
 }
 
-void GlWidget::deactivate()
+void OpenGLWidget::deactivate()
 {
     LOG(INFO) << "Deactivating GLWidget for: " << m_project->name();
 
-    disconnect(&m_glProject, 0, this, 0);
+    disconnect(&m_graphicsEnvironment, 0, this, 0);
 
-    m_glProject.deactivate();
+    m_graphicsEnvironment.deactivate();
     m_project = nullptr;
 }
 
-void GlWidget::addBox()
+void OpenGLWidget::addBox()
 {
     LOG(INFO) << "Creating default Box, adding it to Model::Project. Showing BoxDialog...";
-    auto box = std::make_shared<Model::Box>(*m_project);
-    box->setMaterial(Core::Material::defaultMaterial());
+    auto boxModel = std::make_shared<Model::BoxModel>(*m_project);
+    boxModel->setMaterial(Core::Material::defaultMaterial());
 
     this->makeCurrent();
 
-    m_project->add(box);
+    m_project->add(boxModel);
 
-    BoxDialog(this, box).exec();
+    BoxDialog(this, boxModel).exec();
 
     this->doneCurrent();
 }
 
-void GlWidget::addStl()
+void OpenGLWidget::addStl()
 {
     QDir projectDir{m_project->path().c_str()};
     QString filePath = QFileDialog::getOpenFileName(this, "Open File",
@@ -100,11 +98,11 @@ void GlWidget::addStl()
     LOG(INFO) << "Creating Stl object with chosen file, adding it to Model::Project.";
     try {
         filePath = projectDir.absoluteFilePath(filePath);
-        auto stl = std::make_shared<Model::Stl>(*m_project, std::string{filePath.toUtf8().data()});
-        stl->setMaterial(Core::Material::defaultMaterial());
+        auto stlModel = std::make_shared<Model::StlModel>(*m_project, std::string{filePath.toUtf8().data()});
+        stlModel->setMaterial(Core::Material::defaultMaterial());
 
         this->makeCurrent();
-        m_project->add(stl);
+        m_project->add(stlModel);
         this->doneCurrent();
     }
     catch (const std::exception& e) {
@@ -113,7 +111,7 @@ void GlWidget::addStl()
     }
 }
 
-void GlWidget::initializeGL()
+void OpenGLWidget::initializeGL()
 {
     g_OpenGLFuncs = this->context()->versionFunctions<OpenGLFuncs>();
     if (!g_OpenGLFuncs) {
@@ -121,7 +119,6 @@ void GlWidget::initializeGL()
         qApp->closeAllWindows();
     }
     g_OpenGLFuncs->initializeOpenGLFunctions();
-    m_glProject.setGlFuncsPtr(g_OpenGLFuncs);
 
     LOG(INFO) << "GL_VENDER: " << g_OpenGLFuncs->glGetString(GL_VENDOR);
     LOG(INFO) << "GL_RENDERER: " << g_OpenGLFuncs->glGetString(GL_RENDERER);
@@ -135,7 +132,7 @@ void GlWidget::initializeGL()
 
     LOG(INFO) << "Loading shaders...";
     try {
-        m_glProject.loadShaders();
+        m_graphicsEnvironment.loadShaders();
     }
     catch (const std::exception& e) {
         LOG(ERROR) << e.what();
@@ -146,7 +143,7 @@ void GlWidget::initializeGL()
     }
 }
 
-void GlWidget::resizeGL(int width, int height)
+void OpenGLWidget::resizeGL(int width, int height)
 {
     if (width == m_width && height == m_height)
         return;
@@ -155,22 +152,22 @@ void GlWidget::resizeGL(int width, int height)
     m_height = height;
 
     LOG(INFO) << "Adjusting Projection and Viewport for window resize.";
-    m_glProject.gfxProject()->adjustProjection(m_width, m_height);
-    m_glProject.g_OpenGLFuncs()->glViewport(0, 0, m_width, m_height);
+    m_graphicsEnvironment.adjustProjection(m_width, m_height);
+    g_OpenGLFuncs->glViewport(0, 0, m_width, m_height);
 
     std::array<int, 4> glViewport;
-    m_glProject.g_OpenGLFuncs()->glGetIntegerv(GL_VIEWPORT, &glViewport[0]);
-    m_glProject.setViewportTransform(glViewport);
+    g_OpenGLFuncs->glGetIntegerv(GL_VIEWPORT, &glViewport[0]);
+    m_graphicsEnvironment.setViewportTransform(glViewport);
 }
 
-void GlWidget::paintGL()
+void OpenGLWidget::paintGL()
 {
-    m_glProject.g_OpenGLFuncs()->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    g_OpenGLFuncs->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    m_glProject.render();
+    m_graphicsEnvironment.render();
 }
 
-void GlWidget::mouseMoveEvent(QMouseEvent* mouseEvent)
+void OpenGLWidget::mouseMoveEvent(QMouseEvent* mouseEvent)
 {
     m_currentLocation.x = mouseEvent->x();
     m_currentLocation.y = mouseEvent->y();
@@ -178,15 +175,15 @@ void GlWidget::mouseMoveEvent(QMouseEvent* mouseEvent)
     if (m_currentLocation.distance(m_previousLocation) < 1)
         return;
 
-    Model::ViewpointCameraModel::Location startLoc = this->normalize(m_previousLocation);
-    Model::ViewpointCameraModel::Location endLoc = this->normalize(m_currentLocation);
+    Graphics::ViewpointCamera::Location startLoc = this->normalize(m_previousLocation);
+    Graphics::ViewpointCamera::Location endLoc = this->normalize(m_currentLocation);
 
-    m_project->viewpointCameraModel().rotate(startLoc, endLoc);
+    m_graphicsEnvironment.viewpointCamera().rotate(startLoc, endLoc);
 
     m_previousLocation = m_currentLocation;
 }
 
-void GlWidget::mousePressEvent(QMouseEvent* mouseEvent)
+void OpenGLWidget::mousePressEvent(QMouseEvent* mouseEvent)
 {
     m_currentLocation.x = mouseEvent->x();
     m_currentLocation.y = mouseEvent->y();
@@ -194,22 +191,22 @@ void GlWidget::mousePressEvent(QMouseEvent* mouseEvent)
     m_previousLocation = m_currentLocation;
 }
 
-void GlWidget::mouseReleaseEvent(QMouseEvent* mouseEvent)
+void OpenGLWidget::mouseReleaseEvent(QMouseEvent* mouseEvent)
 {
     m_currentLocation.x = mouseEvent->x();
     m_currentLocation.y = mouseEvent->y();
 
     if (mouseEvent->button() == Qt::RightButton) {
-        auto probePoints = m_glProject.probe(m_currentLocation.x, m_height - m_currentLocation.y);
+        auto probePoints = m_graphicsEnvironment.probe(m_currentLocation.x, m_height - m_currentLocation.y);
         m_contextMenu->exec(mouseEvent->globalPos());
     }
 
     m_previousLocation = m_currentLocation;
 }
 
-void GlWidget::wheelEvent(QWheelEvent* wheelEvent)
+void OpenGLWidget::wheelEvent(QWheelEvent* wheelEvent)
 {
-    m_project->viewpointCameraModel().zoom(wheelEvent->delta() / 120);
+    m_graphicsEnvironment.viewpointCamera().zoom(wheelEvent->delta() / 120);
 }
 
-} // namespace GlViewer
+} // namespace ThanuvaUi

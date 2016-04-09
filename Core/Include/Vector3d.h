@@ -48,7 +48,9 @@ public:
 
     bool iszero() const
     {
-        return psa::iszero(m_elements[0]) && psa::iszero(m_elements[1]) && psa::iszero(m_elements[2]);
+        return psa::iszero(m_elements[0])
+                && psa::iszero(m_elements[1])
+                && psa::iszero(m_elements[2]);
     }
     double dot(const Vector3d& rhs) const
     {

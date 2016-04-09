@@ -57,12 +57,21 @@ public:
             && psa::isequal(rhs.m_elements[3], m_elements[3]);
     }
     bool operator!=(const HVector& rhs) const { return !(rhs == *this); }
-    HVector operator+(const HVector& rhs) const { HVector result(*this); result.add(rhs); return result; }
-    HVector operator-(const HVector& rhs) const { HVector result(*this); result.subtract(rhs); return result; }
+    HVector operator+(const HVector& rhs) const
+    {
+        HVector result(*this); result.add(rhs); return result;
+    }
+    HVector operator-(const HVector& rhs) const
+    {
+        HVector result(*this); result.subtract(rhs); return result;
+    }
 
     void scale(double scalar)
     {
-        m_elements[0] *= scalar; m_elements[1] *= scalar; m_elements[2] *= scalar; m_elements[3] *= scalar;
+        m_elements[0] *= scalar;
+        m_elements[1] *= scalar;
+        m_elements[2] *= scalar;
+        m_elements[3] *= scalar;
     }
     void scaleInfinite(double scalar)
     {

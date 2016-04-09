@@ -57,7 +57,8 @@ void Extent::transform(const Core::Matrix4x4& xformMatrix, CalculationModel mode
     vertices[2].assign(m_xMax, m_yMax, m_zMin, 1.0);
     vertices[3].assign(m_xMin, m_yMax, m_zMin, 1.0);
     if (CalculationModel::Pyramid== model)
-        vertices[4].assign(m_xMin + this->xLength() / 2.0, m_yMin + this->yLength() / 2.0, m_zMax, 1.0);
+        vertices[4].assign(m_xMin + this->xLength() / 2.0, m_yMin + this->yLength() / 2.0,
+                           m_zMax, 1.0);
     else {
         vertices[4].assign(m_xMin, m_yMin, m_zMax, 1.0);
         vertices[5].assign(m_xMax, m_yMin, m_zMax, 1.0);

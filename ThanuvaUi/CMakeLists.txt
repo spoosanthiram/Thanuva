@@ -12,15 +12,15 @@ find_package(Qt5Widgets)
 set(SOURCE_FILES
     ${ThanuvaUi_SOURCE_DIR}/Include/AppSettings.h
     ${ThanuvaUi_SOURCE_DIR}/Include/BoxDialog.h
-    ${ThanuvaUi_SOURCE_DIR}/Include/GlWidget.h
     ${ThanuvaUi_SOURCE_DIR}/Include/MainWindow.h
+    ${ThanuvaUi_SOURCE_DIR}/Include/OpenGLWidget.h
     ${ThanuvaUi_SOURCE_DIR}/Include/StartUpPage.h
 
     ${ThanuvaUi_SOURCE_DIR}/Source/AppSettings.cpp
     ${ThanuvaUi_SOURCE_DIR}/Source/BoxDialog.cpp
-    ${ThanuvaUi_SOURCE_DIR}/Source/GlWidget.cpp
     ${ThanuvaUi_SOURCE_DIR}/Source/main.cpp
     ${ThanuvaUi_SOURCE_DIR}/Source/MainWindow.cpp
+    ${ThanuvaUi_SOURCE_DIR}/Source/OpenGLWidget.cpp
     ${ThanuvaUi_SOURCE_DIR}/Source/StartUpPage.cpp
 )
 
@@ -57,6 +57,7 @@ else()
 target_link_libraries(ThanuvaUi
     Graphics Geometry Model Core
     ${Thanuva_SOURCE_DIR}/../Algorithms/libAlgo.a
+    ${Thanuva_SOURCE_DIR}/../3rdParty/cppformat/libcppformat.a
     ${Thanuva_SOURCE_DIR}/../3rdParty/glog/libglog.a
     Qt5::Widgets
     Qt5::Gui

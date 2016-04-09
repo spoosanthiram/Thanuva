@@ -61,7 +61,10 @@ struct IntersectionPoints {
             c.assign(&m_vertices[i + 6]);
 
             // is the point p inside the triangle?
-            if (n.dot((b - a).cross(p - a)) >= 0.0 && n.dot((c - b).cross(p - b)) >= 0.0 && n.dot((a - c).cross(p - c)) >= 0.0) {
+            if (n.dot((b - a).cross(p - a)) >= 0.0 &&
+                n.dot((c - b).cross(p - b)) >= 0.0 &&
+                n.dot((a - c).cross(p - c)) >= 0.0)
+            {
                 m_found = true;
                 if (m_points)
                     m_points->push_back(p);
@@ -81,7 +84,8 @@ struct IntersectionPoints {
     std::vector<Core::Vector3d>* m_points;
 };
 
-bool Stl::intersect(const Core::Vector3d& nearPoint, const Core::Vector3d& farPoint, std::vector<Core::Vector3d>* points)
+bool Stl::intersect(const Core::Vector3d& nearPoint, const Core::Vector3d& farPoint,
+                    std::vector<Core::Vector3d>* points)
 {
     const auto& vertices = this->vertices();
     const auto& normals = this->normals();
@@ -97,7 +101,8 @@ bool Stl::intersect(const Core::Vector3d& nearPoint, const Core::Vector3d& farPo
         IntersectionPoints{vertices, normals, 0, size, nearPoint, farPoint, found, points}();
     else if (size <= k4Point5MillionTriangles) {
         std::size_t size1 = size / 2;
-        std::thread thread1{IntersectionPoints{vertices, normals, 0, size1, nearPoint, farPoint, found, points}};
+        std::thread thread1{IntersectionPoints{vertices, normals, 0, size1,
+                        nearPoint, farPoint, found, points}};
         IntersectionPoints{vertices, normals, size1, size, nearPoint, farPoint, found, points}();
         thread1.join();
     }
@@ -106,15 +111,18 @@ bool Stl::intersect(const Core::Vector3d& nearPoint, const Core::Vector3d& farPo
 
         std::size_t istart = 0;
         std::size_t iend = sizeInc;
-        std::thread thread1{IntersectionPoints{vertices, normals, istart, iend, nearPoint, farPoint, found, points}};
+        std::thread thread1{IntersectionPoints{vertices, normals, istart, iend,
+                        nearPoint, farPoint, found, points}};
 
         istart = iend;
         iend = istart + sizeInc;
-        std::thread thread2{IntersectionPoints{vertices, normals, istart, iend, nearPoint, farPoint, found, points}};
+        std::thread thread2{IntersectionPoints{vertices, normals, istart, iend,
+                        nearPoint, farPoint, found, points}};
 
         istart = iend;
         iend = istart + sizeInc;
-        std::thread thread3{IntersectionPoints{vertices, normals, istart, iend, nearPoint, farPoint, found, points}};
+        std::thread thread3{IntersectionPoints{vertices, normals, istart, iend,
+                        nearPoint, farPoint, found, points}};
 
         IntersectionPoints{vertices, normals, iend, size, nearPoint, farPoint, found, points}();
 
@@ -124,7 +132,8 @@ bool Stl::intersect(const Core::Vector3d& nearPoint, const Core::Vector3d& farPo
     }
 
     auto time2 = std::chrono::steady_clock::now();
-    LOG(INFO) << "intersect took: " << std::chrono::duration_cast<std::chrono::milliseconds>(time2 - time1).count();
+    LOG(INFO) << "intersect took: "
+              << std::chrono::duration_cast<std::chrono::milliseconds>(time2 - time1).count();
 
     return found;
 }

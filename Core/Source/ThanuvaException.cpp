@@ -9,6 +9,7 @@
 
 namespace Core {
 
-const char* ThanuvaException::kBadMaterialString = "Material String, \"{}\" contains unrecognizable characters!";
+const char* ThanuvaException::kBadMaterialString =
+        "Material String, \"{}\" contains unrecognizable characters!";
 
 } // namespace Core

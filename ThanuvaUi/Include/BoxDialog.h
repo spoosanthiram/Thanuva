@@ -5,23 +5,23 @@
  * All rights reserved.
  */
 
-#ifndef GLVIEWER_BOXDIALOG_H
-#define GLVIEWER_BOXDIALOG_H
+#ifndef THANUVAUI_BOXDIALOG_H
+#define THANUVAUI_BOXDIALOG_H
 
 #include <memory>
 
 #include "ui_BoxDialog.h"
 
-namespace Model { class Box; }
+namespace Model { class BoxModel; }
 
-namespace GlViewer {
+namespace ThanuvaUi {
 
 class BoxDialog : public QDialog, private Ui::BoxDialog
 {
     Q_OBJECT
 
 public:
-    BoxDialog(QWidget* parent, const std::shared_ptr<Model::Box>& box);
+    BoxDialog(QWidget* parent, const std::shared_ptr<Model::BoxModel>& boxModel);
 
 protected slots:
     void update();
@@ -30,9 +30,9 @@ protected: // slots
     void initialize();
 
 private:
-    std::shared_ptr<Model::Box> m_box;
+    std::shared_ptr<Model::BoxModel> m_boxModel;
 };
 
-} // namespace GlViewer
+} // namespace ThanuvaUi
 
-#endif // GLVIEWER_BOXDIALOG_H
+#endif // THANUVAUI_BOXDIALOG_H
