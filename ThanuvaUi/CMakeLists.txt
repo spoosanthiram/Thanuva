@@ -9,6 +9,13 @@ find_package(Qt5Core)
 find_package(Qt5Gui)
 find_package(Qt5Widgets)
 
+if(WIN32)
+    add_definitions(-DGOOGLE_GLOG_DLL_DECL=)
+endif()
+
+add_definitions(-DGLOG_NO_ABBREVIATED_SEVERITIES)
+
+
 set(SOURCE_FILES
     ${ThanuvaUi_SOURCE_DIR}/Include/AppSettings.h
     ${ThanuvaUi_SOURCE_DIR}/Include/BoxDialog.h
@@ -46,12 +53,12 @@ if(WIN32)
 target_link_libraries(ThanuvaUi
     Graphics Geometry Model Core
     ${Thanuva_SOURCE_DIR}/../Algorithms/MSVC/x64/Debug/Algo.lib
+    ${Thanuva_SOURCE_DIR}/../3rdParty/cppformat/build/cppformat/Debug/cppformat.lib
     ${Thanuva_SOURCE_DIR}/../3rdParty/glog/x64/Debug/libglog_static.lib
     Qt5::Widgets
     Qt5::Gui
     Qt5::Core
-    GLU
-    stdc++
+    glu32.lib
 )
 else()
 target_link_libraries(ThanuvaUi

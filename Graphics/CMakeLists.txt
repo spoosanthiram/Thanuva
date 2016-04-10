@@ -7,6 +7,10 @@ set(CMAKE_AUTOMOC ON)
 find_package(Qt5Core)
 find_package(Qt5Gui)
 
+if(WIN32)
+    add_definitions(-DGOOGLE_GLOG_DLL_DECL=)
+endif()
+
 add_definitions(-DGLOG_NO_ABBREVIATED_SEVERITIES)
 
 set(SOURCE_FILES

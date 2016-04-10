@@ -4,6 +4,8 @@ if(WIN32)
     add_definitions(-DGOOGLE_GLOG_DLL_DECL=)
 endif()
 
+add_definitions(-DGLOG_NO_ABBREVIATED_SEVERITIES)
+
 set(SOURCE_FILES
     ${Model_SOURCE_DIR}/Include/BoxModel.h
     ${Model_SOURCE_DIR}/Include/ModelException.h

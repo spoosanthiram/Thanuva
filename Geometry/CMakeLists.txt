@@ -4,6 +4,8 @@ if(WIN32)
     add_definitions(-DGOOGLE_GLOG_DLL_DECL=)
 endif()
 
+add_definitions(-DGLOG_NO_ABBREVIATED_SEVERITIES)
+
 set(SOURCE_FILES
     ${Geometry_SOURCE_DIR}/Include/Box.h
     ${Geometry_SOURCE_DIR}/Include/Extent.h

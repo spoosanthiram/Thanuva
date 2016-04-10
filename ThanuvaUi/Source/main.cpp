@@ -26,11 +26,11 @@ public:
 
         FLAGS_max_log_size = kLogFileSize;
 
-        google::SetLogDestination(google::INFO,
+        google::SetLogDestination(google::GLOG_INFO,
                                   (logDirPath + "/" + kAppName + kLogInfoExt).toUtf8());
-        google::SetLogDestination(google::WARNING,
+        google::SetLogDestination(google::GLOG_WARNING,
                                   (logDirPath + "/" + kAppName + kLogWarningExt).toUtf8());
-        google::SetLogDestination(google::ERROR,
+        google::SetLogDestination(google::GLOG_ERROR,
                                   (logDirPath + "/" + kAppName + kLogErrorExt).toUtf8());
 
         google::InitGoogleLogging(argv0);

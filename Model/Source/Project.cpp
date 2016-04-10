@@ -12,7 +12,6 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <cppformat/format.h>
-#define GLOG_NO_ABBREVIATED_SEVERITIES
 #include <glog/logging.h>
 
 #include "BoxModel.h"
