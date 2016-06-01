@@ -8,6 +8,7 @@
 #ifndef CORE_VECTOR3D_H
 #define CORE_VECTOR3D_H
 
+#include <array>
 #include <string>
 
 #include <AlgoBase.h>
@@ -19,9 +20,6 @@ class HVector;
 class Vector3d
 {
 public:
-    static const int kDimension = 3;
-
-public:
     Vector3d() { this->initialize(0.0, 0.0, 0.0); }
     Vector3d(float x, float y, float z) { this->initialize(x, y, z); }
     Vector3d(double x, double y, double z) { this->initialize(x, y, z); }
@@ -32,8 +30,9 @@ public:
     double x() const { return m_elements[0]; }
     double y() const { return m_elements[1]; }
     double z() const { return m_elements[2]; }
-    double operator[] (int i) const { return m_elements[i]; }
-    const double* data() const { return m_elements; }
+    double operator[] (std::size_t i) const { return m_elements[i]; }
+    std::size_t size() const { return m_elements.size(); }
+    const double* data() const { return m_elements.data(); }
     std::string str() const;
 
     void setX(double x) { m_elements[0] = x; }
@@ -48,15 +47,15 @@ public:
 
     bool iszero() const
     {
-        return psa::iszero(m_elements[0])
-                && psa::iszero(m_elements[1])
-                && psa::iszero(m_elements[2]);
+        return psa::iszero(m_elements[0]) &&
+            psa::iszero(m_elements[1]) &&
+            psa::iszero(m_elements[2]);
     }
     double dot(const Vector3d& rhs) const
     {
-        return (m_elements[0] * rhs.m_elements[0])
-                + (m_elements[1] * rhs.m_elements[1])
-                + (m_elements[2] * rhs.m_elements[2]);
+        return (m_elements[0] * rhs.m_elements[0]) +
+            (m_elements[1] * rhs.m_elements[1]) +
+            (m_elements[2] * rhs.m_elements[2]);
     }
     Vector3d cross(const Vector3d& rhs) const
     {
@@ -143,17 +142,11 @@ private:
     }
     void initialize(const float* values)
     {
-        if (nullptr == values)
-            this->initialize(0.0, 0.0, 0.0);
-        else
-            this->initialize(values[0], values[1], values[2]);
+        this->initialize(values[0], values[1], values[2]);
     }
     void initialize(const double* values)
     {
-        if (nullptr == values)
-            this->initialize(0.0, 0.0, 0.0);
-        else
-            this->initialize(values[0], values[1], values[2]);
+        this->initialize(values[0], values[1], values[2]);
     }
     void add(const Vector3d& v)
     {
@@ -168,7 +161,7 @@ private:
         m_elements[2] -= v.m_elements[2];
     }
 
-    double m_elements[kDimension];
+    std::array<double, 3> m_elements;
 };
 
 } // namespace Core

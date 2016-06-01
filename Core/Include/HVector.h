@@ -8,7 +8,7 @@
 #ifndef CORE_HVECTOR_H
 #define CORE_HVECTOR_H
 
-#include <vector>
+#include <array>
 
 #include <AlgoBase.h>
 
@@ -23,9 +23,6 @@ class Vector3d;
 class HVector
 {
 public:
-    static const int kDimension = 4;
-
-public:
     HVector() { this->initialize(0.0, 0.0, 0.0, 0.0); }
     HVector(double x, double y, double z, double w) { this->initialize(x, y, z, w); }
     explicit HVector(const double* values) { this->initialize(values); }
@@ -35,17 +32,18 @@ public:
     double y() const { return m_elements[1]; }
     double z() const { return m_elements[2]; }
     double w() const { return m_elements[3]; }
-    double operator[] (int i) const { return m_elements[i]; }
-    const double* data() const { return m_elements; }
+    double operator[] (std::size_t i) const { return m_elements[i]; }
+    std::size_t size() const { return m_elements.size(); }
+    const double* data() const { return m_elements.data(); }
 
     void setX(double x) { m_elements[0] = x; }
     void setY(double y) { m_elements[1] = y; }
     void setZ(double z) { m_elements[2] = z; }
     void setW(double w) { m_elements[3] = w; }
     void assign(double x, double y, double z, double w) { this->initialize(x, y, z, w); }
-    void assign(std::vector<double>::const_iterator it)
+    void assign(const double* values)
     {
-        this->initialize(*it, *(it + 1), *(it + 2), *(it + 3));
+        this->initialize(values[0], values[1], values[2], values[3]);
     }
     void assign(const Vector3d& v);
 
@@ -120,7 +118,7 @@ private:
         m_elements[3] -= hv.m_elements[3];
     }
 
-    double m_elements[kDimension];
+    std::array<double, 4> m_elements;
 };
 
 } // namespace Core

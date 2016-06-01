@@ -64,7 +64,7 @@ public:
         return *this;
     }
 
-    double operator()(unsigned int irow, unsigned int icolumn) const
+    double operator()(std::size_t irow, std::size_t icolumn) const
     {
         return m_elements[(icolumn * kNRows) + irow];
     }

@@ -222,7 +222,7 @@ Matrix3x3 Matrix3x3::operator*(const Matrix3x3& rhs) const
 Vector3d Matrix3x3::operator*(const Vector3d& rhs) const
 {
     Vector3d result;
-    for (unsigned int i = 0; i < Vector3d::kDimension; ++i) {
+    for (std::size_t i = 0; i < result.size(); ++i) {
         Vector3d v2(&m_elements[i * kNRows]);
         v2.scale(rhs[i]);
         result += v2;

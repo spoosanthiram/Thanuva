@@ -350,7 +350,7 @@ Matrix4x4 Matrix4x4::operator*(const Matrix4x4& rhs) const
 HVector Matrix4x4::operator*(const HVector& rhs) const
 {
     HVector result;
-    for (unsigned int i = 0; i < HVector::kDimension; ++i)
+    for (std::size_t i = 0; i < result.size(); ++i)
     {
         HVector v2(&m_elements[i * kNRows]);
         v2.scale(rhs[i]);
@@ -362,7 +362,7 @@ HVector Matrix4x4::operator*(const HVector& rhs) const
 HVector Matrix4x4::multiplyInfinite(const HVector& rhs) const
 {
     HVector result;
-    for (unsigned int i = 0; i < HVector::kDimension; ++i)
+    for (std::size_t i = 0; i < result.size(); ++i)
     {
         HVector v2(&m_elements[i * kNRows]);
         v2.scaleInfinite(rhs[i]);

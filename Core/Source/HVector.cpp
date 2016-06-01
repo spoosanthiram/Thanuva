@@ -57,8 +57,8 @@ TEST(HVectorTest, AssignAndEquality)
     EXPECT_EQ(0.34, hv2.x());
     EXPECT_EQ(2.342e+56, hv2.w());
 
-    std::vector<double> vv{1.0, 0.97789, 3.45745e+67, -345345.0};
-    hv.assign(vv.cbegin());
+    double vv[] = {1.0, 0.97789, 3.45745e+67, -345345.0};
+    hv.assign(vv);
     hv2.assign(vv[0], vv[1], vv[2], vv[3]);
     EXPECT_TRUE(hv == hv2);
     EXPECT_FALSE(hv != hv2);
