@@ -1,5 +1,5 @@
-Build
 CMakeLists.txt.user*
+MSVC
 *.7z
 *.gfx
 *.stl
