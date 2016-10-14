@@ -11,7 +11,7 @@
 
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
-#include <cppformat/format.h>
+#include <fmt/format.h>
 #include <glog/logging.h>
 
 #include "BoxModel.h"

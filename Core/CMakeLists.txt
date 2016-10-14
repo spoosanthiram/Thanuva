@@ -25,7 +25,7 @@ set(SOURCE_FILES
 include_directories(
     ${Core_SOURCE_DIR}/Include
     ${Thanuva_SOURCE_DIR}/../Algorithms/Include
-    ${Thanuva_SOURCE_DIR}/../3rdParty/cppformat
+    ${Thanuva_SOURCE_DIR}/../3rdParty/fmt
 )
 
 # TARGET for library
@@ -47,7 +47,7 @@ target_link_libraries(CoreTest
 else()
 target_link_libraries(CoreTest
     ${Thanuva_SOURCE_DIR}/../Algorithms/libAlgo.a
-    ${Thanuva_SOURCE_DIR}/../3rdParty/cppformat/libcppformat.a
+    ${Thanuva_SOURCE_DIR}/../3rdParty/fmt/fmt/libfmt.a
     ${Thanuva_SOURCE_DIR}/../3rdParty/googletest/googletest/libgtest.a
     pthread
     stdc++

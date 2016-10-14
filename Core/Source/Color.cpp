@@ -26,7 +26,7 @@ Color::rgbint_t Color::rgb() const
 
 std::string Color::str() const
 {
-    return psa::toStringBaseP2(this->rgb(), kIntBase);
+    return psa::toString(this->rgb(), kIntBase);
 }
 
 void Color::set(const std::string& str)

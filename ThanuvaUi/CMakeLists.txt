@@ -15,7 +15,6 @@ endif()
 
 add_definitions(-DGLOG_NO_ABBREVIATED_SEVERITIES)
 
-
 set(SOURCE_FILES
     ${ThanuvaUi_SOURCE_DIR}/Include/AppSettings.h
     ${ThanuvaUi_SOURCE_DIR}/Include/BoxDialog.h
@@ -64,7 +63,7 @@ else()
 target_link_libraries(ThanuvaUi
     Graphics Geometry Model Core
     ${Thanuva_SOURCE_DIR}/../Algorithms/libAlgo.a
-    ${Thanuva_SOURCE_DIR}/../3rdParty/cppformat/libcppformat.a
+    ${Thanuva_SOURCE_DIR}/../3rdParty/fmt/fmt/libfmt.a
     ${Thanuva_SOURCE_DIR}/../3rdParty/glog/libglog.a
     Qt5::Widgets
     Qt5::Gui
