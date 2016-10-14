@@ -19,12 +19,8 @@ class Color
 {
 public:
     // rgbint_t for representing RGB values as integer.
-    // using long so we could potentially move to 16 bit per color components
-#ifdef WINDOWS
-    using rgbint_t = long long;
-#else
-    using rgbint_t = long;
-#endif
+    // we may move to using 'long' when we need 16 bit per color component
+    using rgbint_t = int;
 
     // constants for 8-bit RGB
     static const int kMaxColorValue = 0xff;

@@ -15,7 +15,6 @@ endif()
 
 add_definitions(-DGLOG_NO_ABBREVIATED_SEVERITIES)
 
-
 set(SOURCE_FILES
     ${ThanuvaUi_SOURCE_DIR}/Include/AppSettings.h
     ${ThanuvaUi_SOURCE_DIR}/Include/BoxDialog.h
