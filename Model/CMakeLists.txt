@@ -27,7 +27,7 @@ include_directories(
     ${Thanuva_SOURCE_DIR}/Core/Include
     ${Thanuva_SOURCE_DIR}/../Algorithms/Include
     ${Thanuva_SOURCE_DIR}/../3rdParty/boost
-    ${Thanuva_SOURCE_DIR}/../3rdParty/cppformat
+    ${Thanuva_SOURCE_DIR}/../3rdParty/fmt
     ${Thanuva_SOURCE_DIR}/../3rdParty/glog/src/windows
     ${Thanuva_SOURCE_DIR}/../3rdParty/nano-signal-slot
 )
@@ -45,7 +45,7 @@ if(WIN32)
 target_link_libraries(ModelTest
     Core
     ${Thanuva_SOURCE_DIR}/../Algorithms/MSVC/x64/Debug/Algo.lib
-    ${Thanuva_SOURCE_DIR}/../3rdParty/cppformat/build/cppformat/Debug/cppformat.lib
+    ${Thanuva_SOURCE_DIR}/../3rdParty/fmt/build/fmt/Debug/fmt.lib
     ${Thanuva_SOURCE_DIR}/../3rdParty/glog/x64/Debug/libglog_static.lib
     ${Thanuva_SOURCE_DIR}/../3rdParty/googletest/googletest/msvc/Debug/gtest.lib
 )
@@ -53,7 +53,7 @@ else()
 target_link_libraries(ModelTest
     Core
     ${Thanuva_SOURCE_DIR}/../Algorithms/libAlgo.a
-    ${Thanuva_SOURCE_DIR}/../3rdParty/cppformat/libcppformat.a
+    ${Thanuva_SOURCE_DIR}/../3rdParty/fmt/fmt/libfmt.a
     ${Thanuva_SOURCE_DIR}/../3rdParty/glog/libglog.a
     ${Thanuva_SOURCE_DIR}/../3rdParty/googletest/googletest/libgtest.a
     pthread

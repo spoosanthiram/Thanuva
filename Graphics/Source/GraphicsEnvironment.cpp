@@ -155,7 +155,9 @@ void GraphicsEnvironment::handleExtentChanged()
 
 void GraphicsEnvironment::updateProjectionMatrix()
 {
-    CHECK(m_geometryContainer);
+    if (!m_geometryContainer)
+        return;
+
     m_projectionMatrix = Core::Matrix4x4::perspective(50.0, m_windowAspect, 0.1,
             m_geometryContainer->extent().maxLength() * kExtentMultiplier);
 }

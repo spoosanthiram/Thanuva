@@ -9,7 +9,7 @@
 
 #include <regex>
 
-#include <cppformat/format.h>
+#include <fmt/format.h>
 #ifdef UNIT_TEST
 #include <gtest/gtest.h>
 #endif

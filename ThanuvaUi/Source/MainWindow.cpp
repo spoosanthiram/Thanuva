@@ -9,6 +9,7 @@
 
 #include <memory>
 
+#include <fmt/format.h>
 #include <glog/logging.h>
 #include <nano_signal_slot.hpp>
 
@@ -54,8 +55,8 @@ void MainWindow::open()
     CHECK(nullptr == m_project);
 
     QDir projectDir{};
-    QString filePath = QFileDialog::getOpenFileName(this, "Open Project",
-                            projectDir.absolutePath(), "Project Files (*.gfx)");
+    QString filePath = QFileDialog::getOpenFileName(this, "Open Project", projectDir.absolutePath(),
+                            fmt::format("Project Files (*.{})", Model::Project::kFileExtention).c_str());
     if (filePath.isEmpty())
         return;
 
@@ -76,8 +77,8 @@ bool MainWindow::save()
 
     if (!m_project->isNamed()) {
         QDir projectDir{m_project->path().c_str()};
-        QString filePath = QFileDialog::getSaveFileName(this, "Save Project",
-                                projectDir.absolutePath(), "Project Files (*.gfx)");
+        QString filePath = QFileDialog::getSaveFileName(this, "Save Project", projectDir.absolutePath(),
+                                fmt::format("Project Files (*.{})", Model::Project::kFileExtention).c_str());
         if (filePath.isEmpty())
             return false;
 
@@ -173,6 +174,7 @@ void MainWindow::activate()
     if (!m_openGLWidget) {
         m_openGLWidget = new OpenGLWidget{this};
         this->setCentralWidget(m_openGLWidget);
+        m_openGLWidget->show();
     }
 
     LOG(INFO) << "Activing project: " << m_project->name();

@@ -19,12 +19,14 @@ add_definitions(-DGLOG_NO_ABBREVIATED_SEVERITIES)
 set(SOURCE_FILES
     ${ThanuvaUi_SOURCE_DIR}/Include/AppSettings.h
     ${ThanuvaUi_SOURCE_DIR}/Include/BoxDialog.h
+    ${ThanuvaUi_SOURCE_DIR}/Include/GlogWrapper.h
     ${ThanuvaUi_SOURCE_DIR}/Include/MainWindow.h
     ${ThanuvaUi_SOURCE_DIR}/Include/OpenGLWidget.h
     ${ThanuvaUi_SOURCE_DIR}/Include/StartUpPage.h
 
     ${ThanuvaUi_SOURCE_DIR}/Source/AppSettings.cpp
     ${ThanuvaUi_SOURCE_DIR}/Source/BoxDialog.cpp
+    ${ThanuvaUi_SOURCE_DIR}/Source/GlogWrapper.cpp
     ${ThanuvaUi_SOURCE_DIR}/Source/main.cpp
     ${ThanuvaUi_SOURCE_DIR}/Source/MainWindow.cpp
     ${ThanuvaUi_SOURCE_DIR}/Source/OpenGLWidget.cpp
@@ -44,6 +46,7 @@ include_directories(
     ${Thanuva_SOURCE_DIR}/Graphics/Include
     ${Thanuva_SOURCE_DIR}/../Algorithms/Include
     ${Thanuva_SOURCE_DIR}/../3rdParty/boost
+    ${Thanuva_SOURCE_DIR}/../3rdParty/fmt
     ${Thanuva_SOURCE_DIR}/../3rdParty/glog/src/windows
     ${Thanuva_SOURCE_DIR}/../3rdParty/nano-signal-slot
 )
@@ -53,7 +56,7 @@ if(WIN32)
 target_link_libraries(ThanuvaUi
     Graphics Geometry Model Core
     ${Thanuva_SOURCE_DIR}/../Algorithms/MSVC/x64/Debug/Algo.lib
-    ${Thanuva_SOURCE_DIR}/../3rdParty/cppformat/build/cppformat/Debug/cppformat.lib
+    ${Thanuva_SOURCE_DIR}/../3rdParty/fmt/build/fmt/Debug/fmt.lib
     ${Thanuva_SOURCE_DIR}/../3rdParty/glog/x64/Debug/libglog_static.lib
     Qt5::Widgets
     Qt5::Gui
@@ -64,7 +67,7 @@ else()
 target_link_libraries(ThanuvaUi
     Graphics Geometry Model Core
     ${Thanuva_SOURCE_DIR}/../Algorithms/libAlgo.a
-    ${Thanuva_SOURCE_DIR}/../3rdParty/cppformat/libcppformat.a
+    ${Thanuva_SOURCE_DIR}/../3rdParty/fmt/fmt/libfmt.a
     ${Thanuva_SOURCE_DIR}/../3rdParty/glog/libglog.a
     Qt5::Widgets
     Qt5::Gui
