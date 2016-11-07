@@ -49,14 +49,16 @@ public:
         }
         bool operator!=(const Limiter& rhs) const { return !(rhs == *this); }
 
+        std::string str() const;
+
         double xlow, xhigh;
         double ylow, yhigh;
         double zlow, zhigh;
     };
 
 public:
-    BoxModel(const Project& project) : ModelObject{project} {}
-    BoxModel(const Project& project, const Limiter& limiter);
+    BoxModel(const Scene& scene) : ModelObject{scene} {}
+    BoxModel(const Scene& scene, const Limiter& limiter);
     BoxModel(const BoxModel& rhs) = delete; // TODO: needs to be implemented
 
     BoxModel& operator=(const BoxModel& rhs) = delete; // TODO: needs to be implemented

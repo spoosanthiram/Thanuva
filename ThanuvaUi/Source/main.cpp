@@ -5,35 +5,25 @@
  * All rights reserved.
  */
 
-#include <glog/logging.h>
-
 #include <QApplication>
 #include <QDir>
 
 #include "GlogWrapper.h"
 #include "MainWindow.h"
-
-namespace ThanuvaUi {
-
-const char* kAppName = "Thanuva";
-const char* kVersion = "1.0";
-const char* kDomain = "sarvanz.com";
-
-} // namespace ThanuvaUi
+#include "ThanuvaApp.h"
 
 int main(int argc, char *argv[])
 {
-    ThanuvaUi::GlogWrapper logger{argv[0]};
-    LOG(INFO) << "Starting " << ThanuvaUi::kAppName << " " << ThanuvaUi::kVersion;
+    Model::ThanuvaApp app;
 
-    QApplication app{argc, argv};
-    app.setApplicationName(ThanuvaUi::kAppName);
-    app.setOrganizationDomain(ThanuvaUi::kDomain);
+    QApplication qtApp{argc, argv};
+    qtApp.setApplicationName(app.name().c_str());
+    qtApp.setOrganizationDomain(app.domain().c_str());
 
-    ThanuvaUi::MainWindow w{};
+    ThanuvaUi::MainWindow w{app};
     w.show();
 
-    app.exec();
+    qtApp.exec();
 
     return 0;
 }

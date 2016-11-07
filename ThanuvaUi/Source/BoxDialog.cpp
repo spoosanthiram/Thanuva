@@ -15,7 +15,7 @@
 
 namespace ThanuvaUi {
 
-BoxDialog::BoxDialog(QWidget* parent, const std::shared_ptr<Model::BoxModel>& boxModel)
+BoxDialog::BoxDialog(QWidget* parent, Model::BoxModel* boxModel)
     : QDialog{parent/*, Qt::Dialog | Qt::FramelessWindowHint*/}
     , m_boxModel{boxModel}
 {

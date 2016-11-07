@@ -8,6 +8,7 @@
 #ifndef CORE_QUATERNION_H
 #define CORE_QUATERNION_H
 
+#include <array>
 #include <cmath>
 
 namespace Core {
@@ -16,9 +17,6 @@ class Vector3d;
 
 class Quaternion
 {
-public:
-    static const int kDimension = 4;
-
 public:
     Quaternion() { this->initialize(0.0, 0.0, 0.0, 1.0); }
     Quaternion(double x, double y, double z, double w) { this->initialize(x, y, z, w); }
@@ -78,7 +76,7 @@ private:
         m_quaternion[3] = w;
     }
 
-    double m_quaternion[kDimension];
+    std::array<double, 4> m_quaternion;
 };
 
 } // namespace Core

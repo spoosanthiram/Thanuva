@@ -45,7 +45,7 @@ public:
         std::copy(values.cbegin(), values.cend(), m_viewportTransform.begin());
     }
 
-    void activate(Model::Project* project);
+    void activate(Model::Scene* scene);
     void deactivate();
     void adjustProjection(int width, int height);
     std::vector<const Graphics::GraphicsObject*> probe(int x, int y) const;
@@ -57,8 +57,8 @@ public:
 signals:
     void viewChanged();
 
-protected: // slots
-    void add(Geometry::GeometryObject& graphicsObject);
+private: // slots
+    void add(Geometry::GeometryObject* graphicsObject);
     void handleExtentChanged();
     void emitViewChanged() { emit viewChanged(); } // needed for connecting Nano signal to Qt signal
 

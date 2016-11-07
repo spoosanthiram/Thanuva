@@ -8,8 +8,6 @@
 #ifndef MODEL_MODELOBJECT_H
 #define MODEL_MODELOBJECT_H
 
-#include <vector>
-
 #include <boost/property_tree/ptree_fwd.hpp>
 #include <nano_signal_slot.hpp>
 
@@ -19,7 +17,7 @@
 
 namespace Model {
 
-class Project;
+class Scene;
 
 class ModelObject
 {
@@ -33,7 +31,7 @@ public:
     static const char* kTypeTag;
 
 public:
-    ModelObject(const Project& project) : m_project{project} {}
+    ModelObject(const Scene& scene) : m_scene{scene} {}
     ModelObject(const ModelObject& rhs) = delete; // TODO: needs to be implemented, for now deleted
     virtual ~ModelObject() {}
 
@@ -61,7 +59,7 @@ protected:
     virtual void saveModel(boost::property_tree::ptree& /*modelPropTree*/) {}
 
 private:
-    const Project& m_project;
+    const Scene& m_scene;
 
     Core::Material m_material{};
     Core::Matrix4x4 m_transformMatrix{Core::Matrix4x4::identity()};

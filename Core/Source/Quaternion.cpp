@@ -42,10 +42,10 @@ bool Quaternion::operator==(const Quaternion& rhs) const
 
 Quaternion Quaternion::operator*(const Quaternion& rhs) const
 {
-    Vector3d v(m_quaternion[0], m_quaternion[1], m_quaternion[2]);
-    Vector3d v2(rhs.m_quaternion[0], rhs.m_quaternion[1], rhs.m_quaternion[2]);
-    Vector3d v3(v.cross(v2) + m_quaternion[3] * v2 + rhs.m_quaternion[3] * v);
-    return Quaternion(v3[0], v3[1], v3[2], m_quaternion[3] * rhs.m_quaternion[3] - v.dot(v2));
+    Vector3d v{m_quaternion[0], m_quaternion[1], m_quaternion[2]};
+    Vector3d v2{rhs.m_quaternion[0], rhs.m_quaternion[1], rhs.m_quaternion[2]};
+    Vector3d v3{v.cross(v2) + m_quaternion[3] * v2 + rhs.m_quaternion[3] * v};
+    return Quaternion{v3[0], v3[1], v3[2], m_quaternion[3] * rhs.m_quaternion[3] - v.dot(v2)};
 }
 
 #ifdef UNIT_TEST

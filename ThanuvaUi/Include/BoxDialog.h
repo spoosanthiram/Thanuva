@@ -21,7 +21,7 @@ class BoxDialog : public QDialog, private Ui::BoxDialog
     Q_OBJECT
 
 public:
-    BoxDialog(QWidget* parent, const std::shared_ptr<Model::BoxModel>& boxModel);
+    BoxDialog(QWidget* parent, Model::BoxModel* boxModel);
 
 protected slots:
     void update();
@@ -30,7 +30,7 @@ protected: // slots
     void initialize();
 
 private:
-    std::shared_ptr<Model::BoxModel> m_boxModel;
+    Model::BoxModel* m_boxModel;
 };
 
 } // namespace ThanuvaUi

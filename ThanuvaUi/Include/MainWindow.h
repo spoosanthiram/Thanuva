@@ -12,26 +12,31 @@
 
 #include <QMainWindow>
 
-namespace Model { class Project; }
+#include "ThanuvaApp.h"
 
 namespace ThanuvaUi {
 
 class OpenGLWidget;
 class StartUpPage;
 
+
 class MainWindow : public QMainWindow
 {
 public:
-    MainWindow();
+    static const char* kThanuvaFilesFilter;
+
+public:
+    MainWindow(Model::ThanuvaApp& app);
 
 private slots:
     void create();
     void open();
     bool save();
+    bool saveAs();
     bool close();
 
 private: // slots
-    void handleProjectDirtyChanged();
+    void handleSceneChanged();
 
 private:
     void closeEvent(QCloseEvent* closeEvent) override;
@@ -41,12 +46,14 @@ private:
     void deactivate();
     bool saveChanges();
 
-    Model::Project* m_project{nullptr};
+    Model::ThanuvaApp& m_app;
+    Model::Scene* m_scene{nullptr};
 
     StartUpPage* m_startUpPage{nullptr};
     OpenGLWidget* m_openGLWidget{nullptr};
 
     QAction* m_saveAction{nullptr};
+    QAction* m_saveAsAction{nullptr};
 };
 
 } // namespace ThanuvaUi

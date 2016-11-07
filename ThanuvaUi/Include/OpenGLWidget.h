@@ -17,7 +17,7 @@
 #include "GraphicsEnvironment.h"
 #include "ViewpointCamera.h"
 
-namespace Model { class Project; }
+namespace Model { class Scene; }
 
 namespace ThanuvaUi {
 
@@ -42,7 +42,7 @@ public:
 public:
     OpenGLWidget(QWidget* parent);
 
-    void activate(Model::Project* project);
+    void activate(Model::Scene* scene);
     void deactivate();
 
 protected slots:
@@ -69,7 +69,7 @@ protected:
 
 private:
     Graphics::GraphicsEnvironment m_graphicsEnvironment{};
-    Model::Project* m_project{nullptr};
+    Model::Scene* m_scene{nullptr};
     int m_width;
     int m_height;
     Location m_currentLocation;

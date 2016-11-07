@@ -19,10 +19,11 @@
 namespace Graphics {
 
 GraphicsObject::GraphicsObject(const GraphicsEnvironment& graphicsEnvironment,
-                               Geometry::GeometryObject& geometryObject)
+                               Geometry::GeometryObject* geometryObject)
     : m_graphicsEnvironment{graphicsEnvironment}
     , m_geometryObject{geometryObject}
 {
+    CHECK(geometryObject);
     LOG(INFO) << "Creating VAO and buffers for vertex, normal and index data.";
 
     g_OpenGLFuncs->glGenVertexArrays(1, &m_vaoHandle);
@@ -32,8 +33,7 @@ GraphicsObject::GraphicsObject(const GraphicsEnvironment& graphicsEnvironment,
     this->initialize();
 
     LOG(INFO) << "Connect model's objectChanged signals.";
-    m_geometryObject.geometryObjectChanged
-            .connect<GraphicsObject, &GraphicsObject::initialize>(this);
+    m_geometryObject->geometryObjectChanged.connect<GraphicsObject, &GraphicsObject::initialize>(this);
 }
 
 void GraphicsObject::render() const
@@ -44,17 +44,15 @@ void GraphicsObject::render() const
     Core::Matrix4x4 modelViewMatrix = m_graphicsEnvironment.viewpointCamera().viewMatrix()
                                         /** m_geometryObject.transformMatrix()*/;
     modelViewMatrix.data(matrixData);
-    g_OpenGLFuncs->glUniformMatrix4fv(shaderProgram->modelViewMatrixLocation(),
-                                      1, GL_FALSE, matrixData);
+    g_OpenGLFuncs->glUniformMatrix4fv(shaderProgram->modelViewMatrixLocation(), 1, GL_FALSE, matrixData);
 
     Core::Matrix3x3 normalMatrix = modelViewMatrix;
     normalMatrix.invert();
     normalMatrix.transpose();
     normalMatrix.data(matrixData);
-    g_OpenGLFuncs->glUniformMatrix3fv(shaderProgram->normalMatrixLocation(),
-                                      1, GL_FALSE, matrixData);
+    g_OpenGLFuncs->glUniformMatrix3fv(shaderProgram->normalMatrixLocation(), 1, GL_FALSE, matrixData);
 
-    const Core::Material& material = m_geometryObject.modelObject()->material();
+    const Core::Material& material = m_geometryObject->modelObject()->material();
 
     const Core::Color& diffuseColor = material.diffuseColor();
     g_OpenGLFuncs->glUniform4f(shaderProgram->diffuseColorLocation(),
@@ -67,14 +65,14 @@ void GraphicsObject::render() const
     g_OpenGLFuncs->glUniform1f(shaderProgram->shininessLocation(), material.shininess());
 
     g_OpenGLFuncs->glBindVertexArray(m_vaoHandle);
-    const std::vector<int>& indices = m_geometryObject.indices();
+    const std::vector<int>& indices = m_geometryObject->indices();
     if (indices.size() > 0)
         g_OpenGLFuncs->glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()),
                                       GL_UNSIGNED_INT, 0);
     else {
-        const std::vector<float>& vertices = m_geometryObject.vertices();
+        const std::vector<float>& vertices = m_geometryObject->vertices();
         g_OpenGLFuncs->glDrawArrays(GL_TRIANGLES, 0,
-            static_cast<GLsizei>(vertices.size() / Geometry::GeometryObject::kVerticesPerTriangle));
+                static_cast<GLsizei>(vertices.size() / Geometry::GeometryObject::kVerticesPerTriangle));
     }
 }
 
@@ -83,8 +81,8 @@ bool GraphicsObject::probe(int x, int y) const
     Core::Vector3d nearPoint = this->glNearPoint(x, y);
     Core::Vector3d farPoint = this->glFarPoint(x, y);
 
-    return m_geometryObject.intersectBoundingBox(nearPoint, farPoint)
-            && m_geometryObject.intersect(nearPoint, farPoint, nullptr);
+    return m_geometryObject->intersectBoundingBox(nearPoint, farPoint)
+            && m_geometryObject->intersect(nearPoint, farPoint, nullptr);
 }
 
 std::vector<Core::Vector3d> GraphicsObject::probePoints(int x, int y) const
@@ -100,7 +98,7 @@ void GraphicsObject::initialize()
     LOG(INFO) << "Binding vertex buffer, filling vertex data and using vertex shader location 0.";
 
     g_OpenGLFuncs->glBindBuffer(GL_ARRAY_BUFFER, m_bufferHandle[kVertexBuffer]);
-    const std::vector<float>& vertices = m_geometryObject.vertices();
+    const std::vector<float>& vertices = m_geometryObject->vertices();
     g_OpenGLFuncs->glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float),
                                 vertices.data(), GL_STATIC_DRAW);
     g_OpenGLFuncs->glVertexAttribPointer(kVertexLocation,
@@ -110,14 +108,14 @@ void GraphicsObject::initialize()
     LOG(INFO) << "Binding normal buffer, filling normal data and using vertex shader location 1.";
 
     g_OpenGLFuncs->glBindBuffer(GL_ARRAY_BUFFER, m_bufferHandle[kNormalBuffer]);
-    const std::vector<float>& normals = m_geometryObject.normals();
+    const std::vector<float>& normals = m_geometryObject->normals();
     g_OpenGLFuncs->glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(float),
                                 normals.data(), GL_STATIC_DRAW);
     g_OpenGLFuncs->glVertexAttribPointer(kNormalLocation,
             Geometry::GeometryObject::kValuesPerVertex, GL_FLOAT, GL_FALSE, 0, 0);
     g_OpenGLFuncs->glEnableVertexAttribArray(kNormalLocation);
 
-    const std::vector<int>& indices = m_geometryObject.indices();
+    const std::vector<int>& indices = m_geometryObject->indices();
     if (indices.size() > 0) {
         LOG(INFO) << "Binding index buffer, filling index data.";
 
@@ -126,7 +124,7 @@ void GraphicsObject::initialize()
                                     indices.data(), GL_STATIC_DRAW);
     }
 
-    LOG(INFO) << "Emitting viewChanged signal";
+    LOG(INFO) << "Emitting graphicsObjectChanged signal";
     graphicsObjectChanged.emit_signal();
 }
 

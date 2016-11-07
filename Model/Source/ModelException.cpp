@@ -9,8 +9,11 @@
 
 namespace Model {
 
-const char* ModelException::kInvalidBoxLimiter = "Limiter for Box is invalid.";
-const char* ModelException::kBadExtension =
-        "The file path, \"{}\" for the Project is not ending with {}.";
+const char* ModelException::kInvalidBoxLimiter = "Limiter provided {} for Box is invalid.";
+
+const char* ModelException::kPathNotFound = "The Scene file, {} could not be opened.";
+const char* ModelException::kFailedToRead = "Could not read the scene file: {}.";
+const char* ModelException::kFailedToWrite = "Could not write to the scene file: {}.";
+const char* ModelException::kInvalidPath = "File Path {} is invalid.";
 
 } // namespace Model

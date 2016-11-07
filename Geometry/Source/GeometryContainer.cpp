@@ -11,33 +11,30 @@
 
 #include "Box.h"
 #include "BoxModel.h"
-#include "Project.h"
+#include "Scene.h"
 #include "Stl.h"
 #include "StlModel.h"
 
 namespace Geometry {
 
-GeometryContainer::GeometryContainer(Model::Project* project)
-    : m_project{project}
+GeometryContainer::GeometryContainer(Model::Scene* scene)
+    : m_scene{scene}
     , m_extent{}
 {
-    CHECK(m_project) << "GeometryContainer::ctor: Model::Project nullptr!";
+    CHECK(m_scene) << "GeometryContainer::ctor: Model::Scene nullptr!";
 
-    for (auto& modelObject : m_project->modelObjectList())
+    for (auto& modelObject : m_scene->modelObjectList())
         this->add(modelObject.get());
 
-    m_project->modelObjectAdded.connect<GeometryContainer, &GeometryContainer::add>(this);
+    m_scene->modelObjectAdded.connect<GeometryContainer, &GeometryContainer::add>(this);
 }
 
 GeometryContainer::~GeometryContainer()
 {
-    m_project->modelObjectAdded.disconnect<GeometryContainer, &GeometryContainer::add>(this);
+    m_scene->modelObjectAdded.disconnect<GeometryContainer, &GeometryContainer::add>(this);
 
-    for (auto geometryObject : m_geometryObjectList) {
-        geometryObject->extentChanged.
-                disconnect<GeometryContainer, &GeometryContainer::updateExtent>(this);
-        delete geometryObject;
-    }
+    for (auto& geometryObject : m_geometryObjectList)
+        geometryObject->extentChanged.disconnect<GeometryContainer, &GeometryContainer::updateExtent>(this);
 }
 
 void GeometryContainer::add(Model::ModelObject* modelObject)
@@ -45,24 +42,15 @@ void GeometryContainer::add(Model::ModelObject* modelObject)
     if (!modelObject)
         return;
 
-    GeometryObject* geometryObject = nullptr;
-
-    switch (modelObject->type()) {
-    case Model::ModelObject::Type::Box:
-        geometryObject = new Box{*this, dynamic_cast<Model::BoxModel*>(modelObject)};
-        break;
-    case Model::ModelObject::Type::Stl:
-        geometryObject = new Stl{*this, dynamic_cast<Model::StlModel*>(modelObject)};
-        break;
-    }
-
-    if (!geometryObject)
+    auto geometryObjectPtr = this->makeGeometryObject(modelObject);
+    if (!geometryObjectPtr)
         return;
 
-    m_geometryObjectList.push_back(geometryObject);
-    geometryObject->extentChanged.
-            connect<GeometryContainer, &GeometryContainer::updateExtent>(this);
-    geometryObjectAdded.emit_signal(*geometryObject); // emit signal
+    GeometryObject* geometryObject = geometryObjectPtr.get();
+    m_geometryObjectList.push_back(std::move(geometryObjectPtr));
+
+    geometryObject->extentChanged.connect<GeometryContainer, &GeometryContainer::updateExtent>(this);
+    geometryObjectAdded.emit_signal(geometryObject); // emit signal
 
     this->updateExtent();
 }
@@ -77,6 +65,20 @@ void GeometryContainer::updateExtent()
         m_extent = extent;
         extentChanged.emit_signal(); // emit signal
     }
+}
+
+std::unique_ptr<GeometryObject> GeometryContainer::makeGeometryObject(Model::ModelObject* modelObject)
+{
+    std::unique_ptr<GeometryObject> geometryObjectPtr{};
+    switch (modelObject->type()) {
+    case Model::ModelObject::Type::Box:
+        geometryObjectPtr = std::make_unique<Box>(*this, dynamic_cast<Model::BoxModel*>(modelObject));
+        break;
+    case Model::ModelObject::Type::Stl:
+        geometryObjectPtr = std::make_unique<Stl>(*this, dynamic_cast<Model::StlModel*>(modelObject));
+        break;
+    }
+    return geometryObjectPtr;
 }
 
 } // namespace Geometry

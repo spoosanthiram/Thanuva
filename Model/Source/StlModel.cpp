@@ -17,8 +17,8 @@ const char* kFilePathTag = "filePath";
 
 namespace Model {
 
-StlModel::StlModel(const Project& project, const std::string& filePath)
-    : ModelObject{project}
+StlModel::StlModel(const Scene& scene, const std::string& filePath)
+    : ModelObject{scene}
     , m_filePath{filePath}
 {
     // TODO: check if STL is exists

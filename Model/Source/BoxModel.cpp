@@ -8,6 +8,7 @@
 #include "BoxModel.h"
 
 #include <boost/property_tree/ptree.hpp>
+#include <fmt/format.h>
 #include <glog/logging.h>
 #ifdef UNIT_TEST
 #include <gtest/gtest.h>
@@ -15,7 +16,8 @@
 
 #include "ModelException.h"
 #ifdef UNIT_TEST
-#include "Project.h"
+#include "Scene.h"
+#include "ThanuvaApp.h"
 #endif
 
 namespace {
@@ -31,12 +33,17 @@ const char* kZHighTag = "zhigh";
 
 namespace Model {
 
-BoxModel::BoxModel(const Project& project, const Limiter& limiter)
-    : ModelObject{project}
+std::string BoxModel::Limiter::str() const
+{
+    return fmt::format("[{}, {}]; [{}, {}]; [{}, {}]", xlow, xhigh, ylow, yhigh, zlow, zhigh);
+}
+
+BoxModel::BoxModel(const Scene& scene, const Limiter& limiter)
+    : ModelObject{scene}
     , m_limiter{limiter}
 {
     if (!m_limiter.isValid()) {
-        ModelException e{ModelException::kInvalidBoxLimiter};
+        ModelException e{fmt::format(ModelException::kInvalidBoxLimiter, m_limiter.str())};
         LOG(ERROR) << e.what();
         throw e;
     }
@@ -45,7 +52,7 @@ BoxModel::BoxModel(const Project& project, const Limiter& limiter)
 void BoxModel::setLimiter(const Limiter& limiter, Core::EmitSignal emitSignal)
 {
     if (!limiter.isValid()) {
-        ModelException e{ModelException::kInvalidBoxLimiter};
+        ModelException e{ fmt::format(ModelException::kInvalidBoxLimiter, m_limiter.str())};
         LOG(ERROR) << e.what();
         throw e;
     }
@@ -83,23 +90,24 @@ void BoxModel::saveModel(boost::property_tree::ptree& modelPropTree)
 
 struct BoxTest : public ::testing::Test
 {
-    Project m_project;
+    ThanuvaApp m_app;
+    Scene* m_scene = m_app.newScene();
 };
 
 TEST_F(BoxTest, CreationDefault)
 {
-    BoxModel b{m_project};
+    BoxModel* boxModel = m_scene->newModelObject<BoxModel>();
 
     BoxModel::Limiter expected{-1.0, 1.0, -1.0, 1.0, -1.0, 1.0};
-    EXPECT_EQ(expected, b.limiter());
+    EXPECT_EQ(expected, boxModel->limiter());
 }
 
 TEST_F(BoxTest, CreationWithLimiter)
 {
-    BoxModel b{m_project, BoxModel::Limiter{0.1, 10.7, -2.8, 9.8, -20.4, -11.5}};
+    BoxModel* boxModel = m_scene->newModelObject<BoxModel>(BoxModel::Limiter{0.1, 10.7, -2.8, 9.8, -20.4, -11.5});
 
     BoxModel::Limiter expected{0.1, 10.7, -2.8, 9.8, -20.4, -11.5};
-    EXPECT_EQ(expected, b.limiter());
+    EXPECT_EQ(expected, boxModel->limiter());
 }
 
 #endif // UNIT_TEST

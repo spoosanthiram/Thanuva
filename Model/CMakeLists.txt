@@ -8,17 +8,21 @@ add_definitions(-DGLOG_NO_ABBREVIATED_SEVERITIES)
 
 set(SOURCE_FILES
     ${Model_SOURCE_DIR}/Include/BoxModel.h
+    ${Model_SOURCE_DIR}/Include/GlogWrapper.h
     ${Model_SOURCE_DIR}/Include/ModelException.h
     ${Model_SOURCE_DIR}/Include/ModelObject.h
-    ${Model_SOURCE_DIR}/Include/Project.h
+    ${Model_SOURCE_DIR}/Include/Scene.h
     ${Model_SOURCE_DIR}/Include/StlModel.h
+    ${Model_SOURCE_DIR}/Include/ThanuvaApp.h
     ${Model_SOURCE_DIR}/Include/Viewpoint.h
 
     ${Model_SOURCE_DIR}/Source/BoxModel.cpp
+    ${Model_SOURCE_DIR}/Source/GlogWrapper.cpp
     ${Model_SOURCE_DIR}/Source/ModelException.cpp
     ${Model_SOURCE_DIR}/Source/ModelObject.cpp
-    ${Model_SOURCE_DIR}/Source/Project.cpp
+    ${Model_SOURCE_DIR}/Source/Scene.cpp
     ${Model_SOURCE_DIR}/Source/StlModel.cpp
+    ${Model_SOURCE_DIR}/Source/ThanuvaApp.cpp
     ${Model_SOURCE_DIR}/Source/Viewpoint.cpp
 )
 
@@ -29,6 +33,7 @@ include_directories(
     ${Thanuva_SOURCE_DIR}/../3rdParty/boost
     ${Thanuva_SOURCE_DIR}/../3rdParty/fmt
     ${Thanuva_SOURCE_DIR}/../3rdParty/glog/src/windows
+    ${Thanuva_SOURCE_DIR}/../3rdParty/GSL
     ${Thanuva_SOURCE_DIR}/../3rdParty/nano-signal-slot
 )
 

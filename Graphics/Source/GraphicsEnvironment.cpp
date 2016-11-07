@@ -11,7 +11,7 @@
 #include <nano_signal_slot.hpp>
 
 #include "GraphicsObject.h"
-#include "Project.h"
+#include "Scene.h"
 
 namespace Graphics {
 
@@ -22,22 +22,21 @@ GraphicsEnvironment::GraphicsEnvironment()
 {
 }
 
-void GraphicsEnvironment::activate(Model::Project* project)
+void GraphicsEnvironment::activate(Model::Scene* scene)
 {
     CHECK(!m_geometryContainer) << "GraphicsEnvironment::activate: old one still active!";
 
-    LOG(INFO) << "Activating GraphicsEnvironment with Model::Project.";
+    LOG(INFO) << "Activating GraphicsEnvironment with Model::Scene.";
 
-    m_geometryContainer = std::make_unique<Geometry::GeometryContainer>(project);
+    m_geometryContainer = std::make_unique<Geometry::GeometryContainer>(scene);
 
-    for (auto geometryObject : m_geometryContainer->geometryObjectList())
-        this->add(*geometryObject);
-    m_viewpointCamera.setViewpoint(project->viewpoint());
+    for (auto& geometryObject : m_geometryContainer->geometryObjectList())
+        this->add(geometryObject.get());
+    m_viewpointCamera.setViewpoint(scene->viewpoint());
 
     this->handleExtentChanged();
 
-    m_geometryContainer->geometryObjectAdded.
-            connect<GraphicsEnvironment, &GraphicsEnvironment::add>(this);
+    m_geometryContainer->geometryObjectAdded.connect<GraphicsEnvironment, &GraphicsEnvironment::add>(this);
     m_geometryContainer->extentChanged.
             connect<GraphicsEnvironment, &GraphicsEnvironment::handleExtentChanged>(this);
     m_viewpointCamera.viewpointCameraChanged.
@@ -55,7 +54,7 @@ void GraphicsEnvironment::deactivate()
     m_geometryContainer->extentChanged.
             disconnect<GraphicsEnvironment, &GraphicsEnvironment::handleExtentChanged>(this);
 
-    m_geometryContainer.reset(nullptr);
+    m_geometryContainer.release();
 }
 
 void GraphicsEnvironment::adjustProjection(int width, int height)
@@ -127,14 +126,14 @@ void GraphicsEnvironment::render() const
         graphicsObject->render();
 }
 
-void GraphicsEnvironment::add(Geometry::GeometryObject& geometryObject)
+void GraphicsEnvironment::add(Geometry::GeometryObject* geometryObject)
 {
     LOG(INFO) << "Adding GfxModel::GeometryObject into viewObjectList.";
 
     GraphicsObject* viewObject = new GraphicsObject{*this, geometryObject};
     m_graphicsObjectList.push_back(viewObject);
     m_graphicsObjectList.back()->graphicsObjectChanged.
-            connect<GraphicsEnvironment, &GraphicsEnvironment::emitViewChanged>(this);
+        connect<GraphicsEnvironment, &GraphicsEnvironment::emitViewChanged>(this);
 
     emit viewChanged();
 }
@@ -146,8 +145,7 @@ void GraphicsEnvironment::handleExtentChanged()
     m_light0Position[1] = m_geometryContainer->extent().maxLength();
     m_light0Position[2] = m_geometryContainer->extent().maxLength() * kExtentMultiplier;
 
-    m_viewpointCamera.setViewpointTranslation(
-            m_geometryContainer->extent().maxLength() * kExtentMultiplier);
+    m_viewpointCamera.setViewpointTranslation(m_geometryContainer->extent().maxLength() * kExtentMultiplier);
     this->updateProjectionMatrix();
 
     this->emitViewChanged();

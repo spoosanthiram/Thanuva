@@ -16,7 +16,11 @@ class ModelException : public Core::ThanuvaException
 {
 public:
     static const char* kInvalidBoxLimiter;
-    static const char* kBadExtension;
+
+    static const char* kPathNotFound;
+    static const char* kFailedToRead;
+    static const char* kFailedToWrite;
+    static const char* kInvalidPath;
 
 public:
     ModelException(const char* message)

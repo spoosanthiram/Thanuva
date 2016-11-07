@@ -17,7 +17,7 @@
 
 namespace Model {
     class ModelObject;
-    class Project;
+    class Scene;
 }
 
 namespace Geometry {
@@ -25,27 +25,32 @@ namespace Geometry {
 class GeometryContainer
 {
 public:
-    GeometryContainer(Model::Project* project);
+    GeometryContainer(Model::Scene* scene);
     GeometryContainer(const GeometryContainer& other) = delete;
     ~GeometryContainer();
 
     GeometryContainer& operator=(const GeometryContainer& other) = delete;
 
-    const std::vector<GeometryObject*>& geometryObjectList() const { return m_geometryObjectList; }
+    const std::vector<std::unique_ptr<GeometryObject>>& geometryObjectList() const
+    {
+        return m_geometryObjectList;
+    }
     const Extent& extent() const { return m_extent; }
     void add(Model::ModelObject* modelObject);
 
 public: // signals
-    Nano::Signal<void(GeometryObject&)> geometryObjectAdded{};
+    Nano::Signal<void(GeometryObject*)> geometryObjectAdded{};
     Nano::Signal<void()> extentChanged{};
 
-protected: // slots
+private: // slots
     void updateExtent();
 
 private:
-    Model::Project* m_project;
+    std::unique_ptr<GeometryObject> makeGeometryObject(Model::ModelObject* modelObject);
 
-    std::vector<GeometryObject*> m_geometryObjectList{};
+    Model::Scene* m_scene;
+
+    std::vector<std::unique_ptr<GeometryObject>> m_geometryObjectList{};
     Extent m_extent;
 };
 

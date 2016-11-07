@@ -31,16 +31,14 @@ public:
     static const int kVerticesPerTriangle = 3;
 
     /**
-     * Checks for does the line (\b np, \b l) intersects the plane (\b a, \b n).
-     * The line characterized by two point \b np and \b fp with \b l = \b fp - \b np.
-     * The plane of infinite dimension with \b a that lies on the plane and \b n normal to the plane.
-     * @return true if intersecting point is found. <b>p<b> will be filled.
+     * Checks for does the line (np, l) intersects the plane (a, n).
+     * The line characterized by two point np and fp with l = fp - np.
+     * The plane of infinite dimension with 'a' that lies on the plane and 'n' normal to the plane.
+     * @return true if intersecting point is found. 'p' will be filled.
      *         false if no intersecting point is found.
      */
-    static bool intersectPlane(const Core::Vector3d& a,
-                               const Core::Vector3d& n,
-                               const Core::Vector3d& np,
-                               const Core::Vector3d& l,
+    static bool intersectPlane(const Core::Vector3d& a, const Core::Vector3d& n,
+                               const Core::Vector3d& np, const Core::Vector3d& l,
                                Core::Vector3d& p)
     {
         double nDotL = n.dot(l);

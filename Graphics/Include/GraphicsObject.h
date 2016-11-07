@@ -34,8 +34,7 @@ public:
     static const int kNormalLocation = 1;
 
 public:
-    GraphicsObject(const GraphicsEnvironment& graphicsEnvironment,
-                   Geometry::GeometryObject& geometryObject);
+    GraphicsObject(const GraphicsEnvironment& graphicsEnvironment, Geometry::GeometryObject* geometryObject);
 
     void render() const;
     bool probe(int x, int y) const;
@@ -50,7 +49,7 @@ private:
     Core::Vector3d glFarPoint(int x, int y) const;
 
     const GraphicsEnvironment& m_graphicsEnvironment;
-    Geometry::GeometryObject& m_geometryObject;
+    Geometry::GeometryObject* m_geometryObject;
     GLuint m_vaoHandle{0};
     GLuint m_bufferHandle[kBufferSize];
 };

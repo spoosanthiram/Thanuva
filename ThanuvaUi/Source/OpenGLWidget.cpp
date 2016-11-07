@@ -9,6 +9,7 @@
 
 #include <memory>
 
+#include <fmt/format.h>
 #include <glog/logging.h>
 
 #include <QDir>
@@ -21,8 +22,9 @@
 #include "BoxModel.h"
 #include "BoxDialog.h"
 #include "OpenGLInterface.h"
-#include "Project.h"
+#include "Scene.h"
 #include "StlModel.h"
+#include "ThanuvaApp.h"
 
 namespace ThanuvaUi {
 
@@ -45,17 +47,16 @@ OpenGLWidget::OpenGLWidget(QWidget* parent)
     format.setDepthBufferSize(32);
     format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
 
-    //LOG(INFO) << "Setting OpenGL context with version "
-    //          << kOpenGLMajorVersion << "." << kOpenGLMinorVersion << " core profile.";
+    LOG(INFO) << fmt::format("Setting format with OpenGL version {}.{}", kOpenGLMajorVersion, kOpenGLMinorVersion);
     this->setFormat(format);
 }
 
-void OpenGLWidget::activate(Model::Project* project)
+void OpenGLWidget::activate(Model::Scene* scene)
 {
-    LOG(INFO) << "Activating GLWidget for: " << project->name();
+    LOG(INFO) << "Activating GLWidget for: " << scene->name();
 
-    m_project = project;
-    m_graphicsEnvironment.activate(m_project);
+    m_scene = scene;
+    m_graphicsEnvironment.activate(m_scene);
 
     connect(&m_graphicsEnvironment, &Graphics::GraphicsEnvironment::viewChanged,
             this, &OpenGLWidget::handleViewChanged);
@@ -63,23 +64,22 @@ void OpenGLWidget::activate(Model::Project* project)
 
 void OpenGLWidget::deactivate()
 {
-    LOG(INFO) << "Deactivating GLWidget for: " << m_project->name();
-
-    disconnect(&m_graphicsEnvironment, 0, this, 0);
+    LOG(INFO) << "Deactivating GLWidget for: " << m_scene->name();
 
     m_graphicsEnvironment.deactivate();
-    m_project = nullptr;
+    m_scene = nullptr;
+
+    disconnect(&m_graphicsEnvironment, 0, this, 0);
 }
 
 void OpenGLWidget::addBox()
 {
     LOG(INFO) << "Creating default Box, adding it to Model::Project. Showing BoxDialog...";
-    auto boxModel = std::make_shared<Model::BoxModel>(*m_project);
-    boxModel->setMaterial(Core::Material::defaultMaterial());
 
     this->makeCurrent();
 
-    m_project->add(boxModel);
+    auto boxModel = m_scene->newModelObject<Model::BoxModel>();
+    boxModel->setMaterial(Core::Material::defaultMaterial());
 
     BoxDialog(this, boxModel).exec();
 
@@ -88,33 +88,34 @@ void OpenGLWidget::addBox()
 
 void OpenGLWidget::addStl()
 {
-    QDir projectDir{m_project->path().c_str()};
-    QString filePath = QFileDialog::getOpenFileName(this, "Open File",
-                                                    projectDir.absolutePath(), "STL Files (*.stl)");
+    QString caption{"Add Stl"};
+    QString filePath = QFileDialog::getOpenFileName(this, caption,
+                                                    m_scene->thanuvaApp().recentDirPath().string().c_str(),
+                                                    "STL Files (*.stl)");
     if (filePath.isEmpty())
         return;
 
     LOG(INFO) << "Creating Stl object with chosen file, adding it to Model::Project.";
-    try {
-        filePath = projectDir.absoluteFilePath(filePath);
-        auto stlModel = std::make_shared<Model::StlModel>(*m_project, std::string{filePath.toUtf8().data()});
-        stlModel->setMaterial(Core::Material::defaultMaterial());
 
-        this->makeCurrent();
-        m_project->add(stlModel);
-        this->doneCurrent();
+    this->makeCurrent();
+
+    try {
+        auto stlModel = m_scene->newModelObject<Model::StlModel>(filePath.toStdString());
+        stlModel->setMaterial(Core::Material::defaultMaterial());
     }
     catch (const std::exception& e) {
         LOG(WARNING) << e.what();
-        QMessageBox::warning(this, qApp->applicationName(), tr(e.what()));
+        QMessageBox::warning(this, caption, tr(e.what()));
     }
+
+    this->doneCurrent();
 }
 
 void OpenGLWidget::initializeGL()
 {
     g_OpenGLFuncs = this->context()->versionFunctions<OpenGLFuncs>();
     if (!g_OpenGLFuncs) {
-        QMessageBox::critical(this, qApp->applicationName(), "context()->versionFunctions<QOpenGLFunctions_?_?_Core>() failed!");
+        QMessageBox::critical(this, qApp->applicationName(), "context()->versionFunctions<OpenGLFuncs>() failed!");
         qApp->closeAllWindows();
     }
     g_OpenGLFuncs->initializeOpenGLFunctions();

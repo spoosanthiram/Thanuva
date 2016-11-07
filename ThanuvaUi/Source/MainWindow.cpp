@@ -22,14 +22,18 @@
 #include <QSurfaceFormat>
 
 #include "AppSettings.h"
+#include "ModelException.h"
 #include "OpenGLWidget.h"
-#include "Project.h"
 #include "StartUpPage.h"
+#include "ThanuvaApp.h"
 
 namespace ThanuvaUi {
 
-MainWindow::MainWindow()
+const char* MainWindow::kThanuvaFilesFilter = "Thanuva Files (*{})";
+
+MainWindow::MainWindow(Model::ThanuvaApp& app)
     : QMainWindow{nullptr}
+    , m_app{app}
 {
     this->setupUi();
 
@@ -41,31 +45,29 @@ MainWindow::MainWindow()
 
 void MainWindow::create()
 {
-    LOG(INFO) << "Creating new project!";
-    m_project = new Model::Project{};
+    LOG(INFO) << "Creating new scene!";
 
+    m_scene = m_app.newScene();
     this->activate();
+    m_saveAsAction->setEnabled(m_scene != nullptr);
 }
 
 void MainWindow::open()
 {
-    if (m_project && !this->close())
+    if (m_scene && !this->close())
         return;
 
-    CHECK(nullptr == m_project);
-
-    QDir projectDir{};
-    QString filePath = QFileDialog::getOpenFileName(this, "Open Project", projectDir.absolutePath(),
-                            fmt::format("Project Files (*.{})", Model::Project::kFileExtention).c_str());
+    QString caption{"Open Project"};
+    QString filePath = QFileDialog::getOpenFileName(this, caption, m_app.recentDirPath().string().c_str(),
+                            fmt::format(kThanuvaFilesFilter, m_app.fileExtension().string()).c_str());
     if (filePath.isEmpty())
         return;
 
     try {
-        m_project = new Model::Project{filePath.toUtf8().data()};
+        m_app.openScene(filePath.toStdString());
     }
-    catch (std::exception& e) {
-        QMessageBox::critical(this, "Project Open Error",
-                              QString("Not able to open %1. Error: %2").arg(filePath, e.what()));
+    catch (const Model::ModelException& e) {
+        QMessageBox::critical(this, caption, QString{ "Could not open the Scene...%1" }.arg(e.what()));
     }
 
     this->activate();
@@ -73,33 +75,42 @@ void MainWindow::open()
 
 bool MainWindow::save()
 {
-    CHECK(m_project->isDirty());
+    CHECK(m_scene->isSceneChanged());
 
-    if (!m_project->isNamed()) {
-        QDir projectDir{m_project->path().c_str()};
-        QString filePath = QFileDialog::getSaveFileName(this, "Save Project", projectDir.absolutePath(),
-                                fmt::format("Project Files (*.{})", Model::Project::kFileExtention).c_str());
-        if (filePath.isEmpty())
-            return false;
-
-        filePath = projectDir.absoluteFilePath(filePath);
-
-        if (!filePath.contains('.')) {
-            filePath.append('.');
-            filePath.append(Model::Project::kFileExtention);
-        }
-
+    if (!m_scene->isNamed())
+        return this->saveAs();
+    else {
         try {
-            m_project->setFilePath(filePath.toUtf8().data());
+            m_app.saveScene();
         }
-        catch (std::exception& e) {
-            QMessageBox::warning(this, "Project Save Error",
-                                 QString("Project is not saved! Reason: %1").arg(e.what()));
+        catch (const std::exception& e) {
+            QString caption{"Save Scene"};
+            QMessageBox::critical(this, caption, QString{"Could not save the Scene...%1"}.arg(e.what()));
             return false;
         }
     }
 
-    m_project->save();
+    return true;
+}
+
+bool MainWindow::saveAs()
+{
+    QString caption{"Save Scene As"};
+    QString filePath = QFileDialog::getSaveFileName(this, caption, m_app.recentDirPath().string().c_str(),
+            fmt::format(kThanuvaFilesFilter, m_app.fileExtension().string()).c_str());
+    if (filePath.isEmpty())
+        return false;
+
+    if (!filePath.contains('.'))
+        filePath.append(m_app.fileExtension().string().c_str());
+
+    try {
+        m_app.saveSceneAs(filePath.toStdString());
+    }
+    catch (const std::exception& e) {
+        QMessageBox::critical(this, caption, QString{"Could not save the Scene...%1"}.arg(e.what()));
+        return false;
+    }
 
     return true;
 }
@@ -110,28 +121,26 @@ bool MainWindow::close()
         return false;
 
     this->deactivate();
+    m_app.closeScene();
 
-    delete m_project;
-    m_project = nullptr;
+    m_saveAction->setEnabled(false);
+    m_saveAsAction->setEnabled(false);
 
     return true;
 }
 
-void MainWindow::handleProjectDirtyChanged()
+void MainWindow::handleSceneChanged()
 {
-    QString title = QString(m_project->name().c_str());
-    if (m_project->isDirty()) {
-        m_saveAction->setEnabled(true);
-        title.append('*');
-    }
-    else
-        m_saveAction->setEnabled(false);
-    this->setWindowTitle(title);
+    m_saveAction->setEnabled(m_scene->isSceneChanged());
+
+    std::string title = fmt::format("{}{} - {}", m_scene->name(),
+                                    m_scene->isSceneChanged() ? "*" : "", m_app.name());
+    this->setWindowTitle(title.c_str());
 }
 
 void MainWindow::closeEvent(QCloseEvent* closeEvent)
 {
-    if (m_project && !this->saveChanges()) {
+    if (m_scene && !this->saveChanges()) {
         closeEvent->ignore();
         return;
     }
@@ -157,11 +166,21 @@ void MainWindow::setupUi()
 
     QMenu* fileMenu = this->menuBar()->addMenu(MainWindow::tr("&File"));
 
-    QAction* openAction = fileMenu->addAction(MainWindow::tr("Open..."));
+    QAction* newAction = fileMenu->addAction(MainWindow::tr("&New Scene"));
+    connect(newAction, &QAction::triggered, this, &MainWindow::create);
+
+    QAction* openAction = fileMenu->addAction(MainWindow::tr("&Open Scene..."));
     connect(openAction, &QAction::triggered, this, &MainWindow::open);
+
+    fileMenu->addSeparator();
 
     m_saveAction = fileMenu->addAction(MainWindow::tr("Save"));
     connect(m_saveAction, &QAction::triggered, this, &MainWindow::save);
+
+    m_saveAsAction = fileMenu->addAction(MainWindow::tr("Save &As..."));
+    connect(m_saveAsAction, &QAction::triggered, this, &MainWindow::saveAs);
+
+    fileMenu->addSeparator();
 
     QAction* exitAction = fileMenu->addAction(MainWindow::tr("Exit"));
     connect(exitAction, &QAction::triggered, qApp, &QApplication::closeAllWindows);
@@ -169,7 +188,7 @@ void MainWindow::setupUi()
 
 void MainWindow::activate()
 {
-    CHECK(m_project) << "Activate: nullptr!";
+    CHECK(m_scene) << "MainWindow::activate: nullptr!";
 
     if (!m_openGLWidget) {
         m_openGLWidget = new OpenGLWidget{this};
@@ -177,35 +196,35 @@ void MainWindow::activate()
         m_openGLWidget->show();
     }
 
-    LOG(INFO) << "Activing project: " << m_project->name();
+    LOG(INFO) << "Activing scene: " << m_scene->name();
 
-    m_openGLWidget->activate(m_project);
-    this->handleProjectDirtyChanged();
+    m_openGLWidget->activate(m_scene);
+    this->handleSceneChanged();
 
-    m_project->dirtyChanged.connect<MainWindow, &MainWindow::handleProjectDirtyChanged>(this);
+    m_scene->sceneChanged.connect<MainWindow, &MainWindow::handleSceneChanged>(this);
 }
 
 void MainWindow::deactivate()
 {
-    CHECK(m_project) << "Deactivate: nullptr!";
-
-    LOG(INFO) << "Deactivating project: " << m_project->name();
+    CHECK(m_scene) << "Deactivate: nullptr!";
+    LOG(INFO) << "Deactivating scene: " << m_scene->name();
 
     m_openGLWidget->deactivate();
 
-    m_project->dirtyChanged.disconnect<MainWindow, &MainWindow::handleProjectDirtyChanged>(this);
+    m_scene->sceneChanged.disconnect<MainWindow, &MainWindow::handleSceneChanged>(this);
 }
 
 bool MainWindow::saveChanges()
 {
-    if (!m_project->isDirty())
+    if (!m_scene->isSceneChanged())
         return true;
 
     bool retval = true;
 
-    QString message = QString("Project \"%1\" has unsaved changes, do you want to save?").arg(
-                QString(m_project->name().c_str()));
-    QMessageBox::StandardButton answer = QMessageBox::question(this, "Save Changes", message,
+    QString caption{"Save Changes"};
+    QString message = QString{"The Scene \"%1\" has unsaved changes, do you want to save?"}.arg(
+                QString(m_scene->name().c_str()));
+    QMessageBox::StandardButton answer = QMessageBox::question(this, caption, message,
                 QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Cancel);
     if (QMessageBox::Cancel == answer)
         retval = false;
