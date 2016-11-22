@@ -5,15 +5,18 @@
  * All rights reserved.
  */
 
-#ifndef CORE_STRINGUTILS_H
-#define CORE_STRINGUTILS_H
+#ifndef CORE_UTILS_H
+#define CORE_UTILS_H
 
+#include <fstream>
 #include <string>
 
 namespace Core {
 
 std::string toLower(const std::string& str);
 
+void skipWhitespace(std::ifstream& textStream);
+
 } // namespace Core
 
-#endif // CORE_STRINGUTILS_H
+#endif // CORE_UTILS_H

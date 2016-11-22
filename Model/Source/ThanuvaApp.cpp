@@ -19,7 +19,7 @@
 #include "BoxModel.h"
 #endif
 #include "ModelException.h"
-#include "StringUtils.h"
+#include "Utils.h"
 
 namespace Model {
 

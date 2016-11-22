@@ -22,8 +22,12 @@ public:
     bool intersect(const Core::Vector3d& nearPoint, const Core::Vector3d& farPoint,
                    std::vector<Core::Vector3d>* points) override;
 
-protected: // slots
+private: // slots
     void initialize();
+
+private:
+    void insertQuad(const Core::Vector3d& a, const Core::Vector3d& b,
+                    const Core::Vector3d& c, const Core::Vector3d& d);
 };
 
 } // namespace Geometry

@@ -13,8 +13,8 @@
 
 #include <glog/logging.h>
 
-#include "StringUtils.h"
 #include "ThanuvaApp.h"
+#include "Utils.h"
 
 namespace Model {
 

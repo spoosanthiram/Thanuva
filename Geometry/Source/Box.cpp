@@ -103,4 +103,28 @@ void Box::initialize()
     extentChanged.emit_signal();
 }
 
+void Box::insertQuad(const Core::Vector3d& a, const Core::Vector3d& b,
+                     const Core::Vector3d& c, const Core::Vector3d& d)
+{
+    int index = static_cast<int>(this->vertices().size() / kValuesPerVertex);
+
+    this->insertVertex(a);
+    this->insertVertex(b);
+    this->insertVertex(c);
+    this->insertVertex(d);
+
+    Core::Vector3d n = this->computeNormal(a, b, c);
+
+    this->insertNormal(n);
+    this->insertNormal(n);
+    this->insertNormal(n);
+    this->insertNormal(n);
+
+    // a, b, c triangle
+    this->insertIndices(index, index + 1, index + 2);
+
+    // a, c, d triangle
+    this->insertIndices(index, index + 2, index + 3);
+}
+
 } // namespace Geometry

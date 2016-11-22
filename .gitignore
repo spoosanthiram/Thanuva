@@ -3,4 +3,6 @@ CMakeLists.txt.user*
 MSVC
 *.7z
 *.gfx
+*.nas
 *.stl
+*.tha

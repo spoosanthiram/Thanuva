@@ -105,6 +105,13 @@ protected:
         m_normals.push_back(static_cast<float>(normal.z()));
     }
 
+    void insertIndices(int ia, int ib, int ic)
+    {
+        m_indices.push_back(ia);
+        m_indices.push_back(ib);
+        m_indices.push_back(ic);
+    }
+
     Core::Vector3d computeNormal(const Core::Vector3d& a,
                                  const Core::Vector3d& b,
                                  const Core::Vector3d& c)
@@ -113,24 +120,6 @@ protected:
         n.normalize();
         return n;
     }
-
-    void insertTriangle(const Core::Vector3d& a, const Core::Vector3d& b, const Core::Vector3d& c)
-    {
-        this->insertVertex(a);
-        this->insertVertex(b);
-        this->insertVertex(c);
-
-        Core::Vector3d n = this->computeNormal(a, b, c);
-
-        this->insertNormal(n);
-        this->insertNormal(n);
-        this->insertNormal(n);
-    }
-
-    void insertQuad(const Core::Vector3d& a,
-                    const Core::Vector3d& b,
-                    const Core::Vector3d& c,
-                    const Core::Vector3d& d);
 
     void reserve(std::size_t nvertices, std::size_t nnormals, std::size_t nindices)
     {

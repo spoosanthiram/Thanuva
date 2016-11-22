@@ -61,34 +61,6 @@ bool GeometryObject::intersectBoundingBox(const Core::Vector3d& nearPoint,
     return false;
 }
 
-void GeometryObject::insertQuad(const Core::Vector3d& a, const Core::Vector3d& b,
-                                const Core::Vector3d& c, const Core::Vector3d& d)
-{
-    int index = static_cast<int>(m_vertices.size() / kValuesPerVertex);
-
-    this->insertVertex(a);
-    this->insertVertex(b);
-    this->insertVertex(c);
-    this->insertVertex(d);
-
-    Core::Vector3d n = this->computeNormal(a, b, c);
-
-    this->insertNormal(n);
-    this->insertNormal(n);
-    this->insertNormal(n);
-    this->insertNormal(n);
-
-    // a, b, c triangle
-    m_indices.push_back(index);
-    m_indices.push_back(index + 1);
-    m_indices.push_back(index + 2);
-
-    // a, c, d triangle
-    m_indices.push_back(index);
-    m_indices.push_back(index + 2);
-    m_indices.push_back(index + 3);
-}
-
 void GeometryObject::initializeBoundingBox()
 {
     if (m_extent.isAnyInfinite())

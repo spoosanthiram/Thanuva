@@ -9,7 +9,7 @@ set(SOURCE_FILES
     ${Core_SOURCE_DIR}/Include/Matrix3x3.h
     ${Core_SOURCE_DIR}/Include/Matrix4x4.h
     ${Core_SOURCE_DIR}/Include/Quaternion.h
-    ${Core_SOURCE_DIR}/Include/StringUtils.h
+    ${Core_SOURCE_DIR}/Include/Utils.h
     ${Core_SOURCE_DIR}/Include/Vector3d.h
 
     ${Core_SOURCE_DIR}/Source/Color.cpp
@@ -20,7 +20,7 @@ set(SOURCE_FILES
     ${Core_SOURCE_DIR}/Source/Matrix3x3.cpp
     ${Core_SOURCE_DIR}/Source/Matrix4x4.cpp
     ${Core_SOURCE_DIR}/Source/Quaternion.cpp
-    ${Core_SOURCE_DIR}/Source/StringUtils.cpp
+    ${Core_SOURCE_DIR}/Source/Utils.cpp
     ${Core_SOURCE_DIR}/Source/Vector3d.cpp
 )
 
