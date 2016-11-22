@@ -10,6 +10,7 @@
 #include <chrono>
 #include <fstream>
 #include <thread>
+#include <unordered_map>
 
 #include <glog/logging.h>
 
@@ -146,7 +147,6 @@ void Stl::initialize()
     std::ifstream dataStream{stl->filePath(), std::ios::binary};
 
     auto dataStreamRdBuf = std::make_unique<char[]>(kDataStreamReadBufferSize);
-
     dataStream.rdbuf()->pubsetbuf(dataStreamRdBuf.get(), kDataStreamReadBufferSize);
 
     this->setExtent(Extent{
@@ -165,12 +165,18 @@ void Stl::initialize()
 
     // read number of facets
     dataStream.read(buf.get(), sizeof(int));
-    int nFacets = *reinterpret_cast<int*>(buf.get());
+    unsigned int nFacets = *reinterpret_cast<int*>(buf.get());
 
     this->reserve(nFacets * GeometryObject::kVerticesPerTriangle * GeometryObject::kValuesPerVertex,
         nFacets * GeometryObject::kVerticesPerTriangle * GeometryObject::kValuesPerVertex, 0);
 
+    std::unordered_map<Vertex, int, VertexHasher> verticesMap{nFacets * 2};
+
     int readSize = kNFacetChunk;
+
+    Vertex v;
+    std::unordered_map<Vertex, int, VertexHasher>::iterator it;
+    int i1, i2, i3;
 
     for (int i = 0; i < nFacets; i += readSize) {
         readSize = ((nFacets - i) > kNFacetChunk) ? kNFacetChunk : (nFacets - i);
@@ -180,19 +186,35 @@ void Stl::initialize()
         char* p = buf.get();
         char* q = p + (readSize * kFacetSize);
         while (p < q) {
-            this->insertNormal(reinterpret_cast<float*>(p));
-            this->insertNormal(reinterpret_cast<float*>(p));
-            this->insertNormal(reinterpret_cast<float*>(p));
+            float* normal = reinterpret_cast<float*>(p);
             p += 3 * sizeof(float);
 
-            this->insertVertex(reinterpret_cast<float*>(p));
+            v.assign(reinterpret_cast<float*>(p));
+            it = verticesMap.find(v);
+            if (it != verticesMap.end()) {
+                i1 = static_cast<int>(this->vertices().size() / kValuesPerVertex);
+                this->insertVertex(v.values);
+            }
+            else {
+                i1 = it->second;
+            }
+             =  ? it->second : ;
             p += 3 * sizeof(float);
-            this->insertVertex(reinterpret_cast<float*>(p));
+
+            b.assign(reinterpret_cast<float*>(p));
             p += 3 * sizeof(float);
-            this->insertVertex(reinterpret_cast<float*>(p));
+            c.assign(reinterpret_cast<float*>(p));
             p += 3 * sizeof(float);
 
             p += sizeof(uint16_t);
+
+            //this->insertVertex(reinterpret_cast<float*>(p));
+            //this->insertVertex(reinterpret_cast<float*>(p));
+            //this->insertVertex(reinterpret_cast<float*>(p));
+
+            //this->insertNormal(reinterpret_cast<float*>(p));
+            //this->insertNormal(reinterpret_cast<float*>(p));
+            //this->insertNormal(reinterpret_cast<float*>(p));
         }
     }
 

@@ -22,6 +22,40 @@ public:
     static const int kFacetSize = 12 * sizeof(float) + sizeof(uint16_t); // 1 normal and three vertices = 12 floats; uint16_t for pad
     static const int kNFacetChunk = 10000;
 
+    struct Vertex
+    {
+        void assign(float* v)
+        {
+            values[0] = v[0];
+            values[1] = v[1];
+            values[2] = v[2];
+        }
+        bool operator= (const Vertex& rhs)
+        {
+            return psa::isequal(values[0], rhs.values[0]) &&
+                   psa::isequal(values[1], rhs.values[1]) &&
+                   psa::isequal(values[2], rhs.values[2]);
+        }
+        float values[3];
+    };
+
+    struct VertexHasher
+    {
+        std::size_t combine(size_t hashVal, float x)
+        {
+            return hashVal ^ (std::hash<float>{}(x) + 0x9e3779b9 + (hashVal << 6) + (hashVal >> 2));
+        }
+
+        std::size_t operator()(const Vertex& p)
+        {
+            std::size_t hashVal = 0;
+            hashVal = combine(hashVal, p.x);
+            hashVal = combine(hashVal, p.y);
+            hashVal = combine(hashVal, p.z);
+            return hashVal;
+        }
+    };
+
 public:
     Stl(const GeometryContainer& gfxProject, Model::StlModel* stlModel);
 
