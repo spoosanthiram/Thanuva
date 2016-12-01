@@ -25,7 +25,8 @@ class GraphicsEnvironment : public QObject
     Q_OBJECT
 
 public:
-    static const double kExtentMultiplier;
+    static const double kViewpointTranslationMultiplier;
+    static const double kFarProjectionMultiplier;
 
 public:
     GraphicsEnvironment();

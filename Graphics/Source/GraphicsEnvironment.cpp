@@ -15,7 +15,8 @@
 
 namespace Graphics {
 
-const double GraphicsEnvironment::kExtentMultiplier = 3.0;
+const double GraphicsEnvironment::kViewpointTranslationMultiplier = 2.5;
+const double GraphicsEnvironment::kFarProjectionMultiplier = 7.0;
 
 GraphicsEnvironment::GraphicsEnvironment()
     : m_projectionMatrix{Core::Matrix4x4::identity()}
@@ -143,9 +144,9 @@ void GraphicsEnvironment::handleExtentChanged()
     CHECK(m_geometryContainer);
 
     m_light0Position[1] = m_geometryContainer->extent().maxLength();
-    m_light0Position[2] = m_geometryContainer->extent().maxLength() * kExtentMultiplier;
+    m_light0Position[2] = m_geometryContainer->extent().maxLength() * kViewpointTranslationMultiplier;
 
-    m_viewpointCamera.setViewpointTranslation(m_geometryContainer->extent().maxLength() * kExtentMultiplier);
+    m_viewpointCamera.setViewpointTranslation(m_geometryContainer->extent().maxLength() * kViewpointTranslationMultiplier);
     this->updateProjectionMatrix();
 
     this->emitViewChanged();
@@ -156,8 +157,8 @@ void GraphicsEnvironment::updateProjectionMatrix()
     if (!m_geometryContainer)
         return;
 
-    m_projectionMatrix = Core::Matrix4x4::perspective(50.0, m_windowAspect, 0.1,
-            m_geometryContainer->extent().maxLength() * kExtentMultiplier);
+    m_projectionMatrix = Core::Matrix4x4::perspective(60.0, m_windowAspect, 0.1,
+            m_geometryContainer->extent().maxLength() * kFarProjectionMultiplier);
 }
 
 const char* GraphicsEnvironment::kVertexShaderSource =

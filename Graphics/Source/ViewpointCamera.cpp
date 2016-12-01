@@ -12,7 +12,7 @@
 
 namespace Graphics {
 
-const double ViewpointCamera::kZoomIncrement = 0.05;
+const double ViewpointCamera::kZoomIncrement = 0.025;
 
 void ViewpointCamera::rotate(const Location& startLocation, const Location& endLocation)
 {
