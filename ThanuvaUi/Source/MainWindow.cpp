@@ -45,6 +45,9 @@ MainWindow::MainWindow(Model::ThanuvaApp& app)
 
 void MainWindow::create()
 {
+    if (m_scene && !this->close()) // there is an existing scene, close it!
+        return;
+
     LOG(INFO) << "Creating new scene!";
 
     m_scene = m_app.newScene();
@@ -175,9 +178,11 @@ void MainWindow::setupUi()
     fileMenu->addSeparator();
 
     m_saveAction = fileMenu->addAction(MainWindow::tr("Save"));
+    m_saveAction->setEnabled(false);
     connect(m_saveAction, &QAction::triggered, this, &MainWindow::save);
 
     m_saveAsAction = fileMenu->addAction(MainWindow::tr("Save &As..."));
+    m_saveAsAction->setEnabled(false);
     connect(m_saveAsAction, &QAction::triggered, this, &MainWindow::saveAs);
 
     fileMenu->addSeparator();
