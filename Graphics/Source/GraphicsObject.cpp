@@ -32,7 +32,6 @@ GraphicsObject::GraphicsObject(const GraphicsEnvironment& graphicsEnvironment,
 
     this->initialize();
 
-    LOG(INFO) << "Connect model's objectChanged signals.";
     m_geometryObject->geometryObjectChanged.connect<GraphicsObject, &GraphicsObject::initialize>(this);
 }
 
@@ -66,14 +65,8 @@ void GraphicsObject::render() const
 
     g_OpenGLFuncs->glBindVertexArray(m_vaoHandle);
     const std::vector<int>& indices = m_geometryObject->indices();
-    if (indices.size() > 0)
-        g_OpenGLFuncs->glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()),
+    g_OpenGLFuncs->glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()),
                                       GL_UNSIGNED_INT, 0);
-    else {
-        const std::vector<float>& vertices = m_geometryObject->vertices();
-        g_OpenGLFuncs->glDrawArrays(GL_TRIANGLES, 0,
-                static_cast<GLsizei>(vertices.size() / Geometry::GeometryObject::kVerticesPerTriangle));
-    }
 }
 
 bool GraphicsObject::probe(int x, int y) const
@@ -116,16 +109,14 @@ void GraphicsObject::initialize()
     g_OpenGLFuncs->glEnableVertexAttribArray(kNormalLocation);
 
     const std::vector<int>& indices = m_geometryObject->indices();
-    if (indices.size() > 0) {
-        LOG(INFO) << "Binding index buffer, filling index data.";
 
-        g_OpenGLFuncs->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_bufferHandle[kIndexBuffer]);
-        g_OpenGLFuncs->glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(int),
-                                    indices.data(), GL_STATIC_DRAW);
-    }
+    LOG(INFO) << "Binding index buffer, filling index data.";
 
-    LOG(INFO) << "Emitting graphicsObjectChanged signal";
-    graphicsObjectChanged.emit_signal();
+    g_OpenGLFuncs->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_bufferHandle[kIndexBuffer]);
+    g_OpenGLFuncs->glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(int),
+                                indices.data(), GL_STATIC_DRAW);
+
+    graphicsObjectChanged.emit_signal(); // emit signal
 }
 
 Core::Vector3d GraphicsObject::glNearPoint(int x, int y) const
