@@ -84,7 +84,7 @@ bool MainWindow::save()
         return this->saveAs();
     else {
         try {
-            m_app.saveScene();
+            m_scene->write();
         }
         catch (const std::exception& e) {
             QString caption{"Save Scene"};

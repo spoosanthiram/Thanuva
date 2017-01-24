@@ -28,7 +28,7 @@ public:
     ThanuvaApp();
     ThanuvaApp(const ThanuvaApp&) = delete;
     ThanuvaApp& operator= (const ThanuvaApp&) = delete;
-    ~ThanuvaApp() {}
+    ~ThanuvaApp();
 
     std::string name() const { return m_name; }
     std::string version() const { return m_version; }
@@ -37,6 +37,7 @@ public:
     fs::path homePath() const;
     fs::path appPath() const;
     fs::path recentDirPath() const { return m_recentDirPath; }
+    const std::list<fs::path>& recentScenePaths() const { return m_recentScenePaths; }
 
     /**
      * Create new scene. The scene object is owned by ThanuvaApp.
@@ -48,12 +49,13 @@ public:
      * Open scene from the file. If there is a scene already created/opended, it will be released.
      */
     Scene* openScene(const fs::path& filePath);
-    void saveScene();
     void saveSceneAs(const fs::path& filePath);
     void closeScene();
 
 private:
+    void readSettings();
     void addToRecentPaths(const fs::path& filePath);
+    void writeSettings();
 
     std::string m_name{"Thanuva"};
     std::string m_version{"1.0"};

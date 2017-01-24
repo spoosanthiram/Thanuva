@@ -12,18 +12,22 @@
 
 namespace ThanuvaUi {
 
+class MainWindow;
+
 class StartUpPage : public QWidget, private Ui::StartUpPage
 {
     Q_OBJECT
 
 public:
-    StartUpPage(QWidget* parent);
+    StartUpPage(ThanuvaUi::MainWindow* mainWindow);
 
 signals:
     void newThanuvaProject();
 
-protected:
+private:
     void resizeEvent(QResizeEvent* event) override;
+
+    ThanuvaUi::MainWindow* m_mainWindow;
 };
 
 } // namespace ThanuvaUi

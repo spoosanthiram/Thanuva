@@ -9,14 +9,22 @@
 
 #include <QResizeEvent>
 
+#include "MainWindow.h"
+#include "ThanuvaApp.h"
+
 namespace ThanuvaUi {
 
-StartUpPage::StartUpPage(QWidget* parent)
-    : QWidget{parent}
+StartUpPage::StartUpPage(ThanuvaUi::MainWindow* mainWindow)
+    : QWidget{mainWindow}
+    , m_mainWindow{mainWindow}
 {
     this->setupUi(this);
 
-    connect(m_newProjectButton, &QPushButton::clicked, this, &StartUpPage::newThanuvaProject);
+    const std::list<fs::path>& recentPaths = m_mainWindow->app().recentScenePaths();
+    for (auto& filePath : recentPaths)
+        m_scenesVerticalLayout->addWidget(new QPushButton(filePath.string().c_str(), this));
+
+    connect(m_newSceneButton, &QPushButton::clicked, this, &StartUpPage::newThanuvaProject);
 }
 
 void StartUpPage::resizeEvent(QResizeEvent* event)

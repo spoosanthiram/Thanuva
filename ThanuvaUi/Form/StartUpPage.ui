@@ -49,9 +49,9 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="m_newProjectButton">
+      <widget class="QPushButton" name="m_newSceneButton">
        <property name="text">
-        <string>New Project</string>
+        <string>New Scene</string>
        </property>
       </widget>
      </item>
@@ -72,7 +72,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QLabel" name="m_recentProjectsLabel">
+      <widget class="QLabel" name="m_recentScenesLabel">
        <property name="font">
         <font>
          <weight>75</weight>
@@ -80,7 +80,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Recent Projects</string>
+        <string>Recent Scenes</string>
        </property>
        <property name="openExternalLinks">
         <bool>false</bool>
@@ -106,15 +106,7 @@
         </spacer>
        </item>
        <item>
-        <layout class="QVBoxLayout" name="m_projectsVerticalLayout">
-         <item>
-          <widget class="QLabel" name="m_sampleProjectLabel">
-           <property name="text">
-            <string>Sample Project</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <layout class="QVBoxLayout" name="m_scenesVerticalLayout"/>
        </item>
       </layout>
      </item>

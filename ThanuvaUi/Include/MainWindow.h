@@ -28,6 +28,8 @@ public:
 public:
     MainWindow(Model::ThanuvaApp& app);
 
+    const Model::ThanuvaApp& app() const { return m_app; }
+
 private slots:
     void create();
     void open();
