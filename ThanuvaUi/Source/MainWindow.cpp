@@ -60,17 +60,43 @@ void MainWindow::open()
     if (m_scene && !this->close())
         return;
 
-    QString caption{"Open Project"};
+    QString caption{"Open Scene"};
     QString filePath = QFileDialog::getOpenFileName(this, caption, m_app.recentDirPath().string().c_str(),
                             fmt::format(kThanuvaFilesFilter, m_app.fileExtension().string()).c_str());
     if (filePath.isEmpty())
         return;
 
     try {
-        m_app.openScene(filePath.toStdString());
+        m_scene = m_app.openScene(filePath.toStdString());
     }
     catch (const Model::ModelException& e) {
-        QMessageBox::critical(this, caption, QString{ "Could not open the Scene...%1" }.arg(e.what()));
+        QMessageBox::critical(this, caption, QString{"Could not open the Scene...%1"}.arg(e.what()));
+    }
+
+    this->activate();
+}
+
+void MainWindow::openRecentScene(QAction* selectedAction)
+{
+    QString caption{"Recent Scenes"};
+    fs::path filePath{selectedAction->text().toStdString()};
+    if (!fs::exists(filePath)) {
+        QMessageBox::StandardButton answer = QMessageBox::question(this, caption,
+            QString{"Select scene '%1' does not exist. Do you want to remove from recent scenes list?"}.arg(selectedAction->text()),
+            QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+        if (answer == QMessageBox::Yes)
+            m_app.removeFromRecentPaths(filePath);
+        return;
+    }
+
+    if (m_scene && !this->close())
+        return;
+
+    try {
+        m_scene = m_app.openScene(filePath);
+    }
+    catch (const Model::ModelException& e) {
+        QMessageBox::critical(this, caption, QString{"Could not open the Scene...%1"}.arg(e.what()));
     }
 
     this->activate();
@@ -132,6 +158,16 @@ bool MainWindow::close()
     return true;
 }
 
+void MainWindow::buildRecentScenes()
+{
+    m_recentScenesAction->clear();
+
+    const std::list<fs::path>& recentPaths = this->app().recentScenePaths();
+    for (auto& filePath : recentPaths) {
+        QAction* action = m_recentScenesAction->addAction(filePath.string().c_str());
+    }
+}
+
 void MainWindow::handleSceneChanged()
 {
     m_saveAction->setEnabled(m_scene->isSceneChanged());
@@ -167,28 +203,38 @@ void MainWindow::setupUi()
     if (settings.isMaximized())
         this->setWindowState(this->windowState() | Qt::WindowMaximized);
 
-    QMenu* fileMenu = this->menuBar()->addMenu(MainWindow::tr("&File"));
+    this->buildFileMenu();
+}
 
-    QAction* newAction = fileMenu->addAction(MainWindow::tr("&New Scene"));
+void MainWindow::buildFileMenu()
+{
+    m_fileMenu = this->menuBar()->addMenu(MainWindow::tr("&File"));
+
+    QAction* newAction = m_fileMenu->addAction(MainWindow::tr("&New Scene"));
     connect(newAction, &QAction::triggered, this, &MainWindow::create);
 
-    QAction* openAction = fileMenu->addAction(MainWindow::tr("&Open Scene..."));
+    QAction* openAction = m_fileMenu->addAction(MainWindow::tr("&Open Scene..."));
     connect(openAction, &QAction::triggered, this, &MainWindow::open);
 
-    fileMenu->addSeparator();
+    m_recentScenesAction = m_fileMenu->addMenu(MainWindow::tr("Recent Scenes"));
+    connect(m_recentScenesAction, &QMenu::triggered, this, &MainWindow::openRecentScene);
 
-    m_saveAction = fileMenu->addAction(MainWindow::tr("Save"));
+    m_fileMenu->addSeparator();
+
+    m_saveAction = m_fileMenu->addAction(MainWindow::tr("Save"));
     m_saveAction->setEnabled(false);
     connect(m_saveAction, &QAction::triggered, this, &MainWindow::save);
 
-    m_saveAsAction = fileMenu->addAction(MainWindow::tr("Save &As..."));
+    m_saveAsAction = m_fileMenu->addAction(MainWindow::tr("Save &As..."));
     m_saveAsAction->setEnabled(false);
     connect(m_saveAsAction, &QAction::triggered, this, &MainWindow::saveAs);
 
-    fileMenu->addSeparator();
+    m_fileMenu->addSeparator();
 
-    QAction* exitAction = fileMenu->addAction(MainWindow::tr("Exit"));
+    QAction* exitAction = m_fileMenu->addAction(MainWindow::tr("Exit"));
     connect(exitAction, &QAction::triggered, qApp, &QApplication::closeAllWindows);
+
+    connect(m_fileMenu, &QMenu::aboutToShow, this, &MainWindow::buildRecentScenes);
 }
 
 void MainWindow::activate()

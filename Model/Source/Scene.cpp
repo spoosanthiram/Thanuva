@@ -37,10 +37,11 @@ Scene::Scene(const ThanuvaApp& thanuvaApp)
 
 Scene::Scene(const ThanuvaApp& thanuvaApp, const fs::path& filePath)
     : m_thanuvaApp{thanuvaApp}
-    , m_name{m_filePath.stem().string()}
+    , m_name{/*m_filePath.stem().string()*/}
     , m_filePath{filePath}
     , m_modelObjectList{}
 {
+    m_name = m_filePath.stem().string();
     this->read();
 }
 

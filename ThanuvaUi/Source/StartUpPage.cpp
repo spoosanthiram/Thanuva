@@ -22,7 +22,7 @@ StartUpPage::StartUpPage(ThanuvaUi::MainWindow* mainWindow)
 
     const std::list<fs::path>& recentPaths = m_mainWindow->app().recentScenePaths();
     for (auto& filePath : recentPaths)
-        m_scenesVerticalLayout->addWidget(new QPushButton(filePath.string().c_str(), this));
+        m_scenesVerticalLayout->addWidget(new QLabel(filePath.string().c_str(), this));
 
     connect(m_newSceneButton, &QPushButton::clicked, this, &StartUpPage::newThanuvaProject);
 }

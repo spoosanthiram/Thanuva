@@ -79,8 +79,8 @@ Scene* ThanuvaApp::openScene(const fs::path& filePath)
         throw e;
     }
 
-    m_scene = std::make_unique<Scene>(*this, filePath);
-    this->addToRecentPaths(filePath);
+    m_scene = std::make_unique<Scene>(*this, pathToOpen);
+    this->addToRecentPaths(pathToOpen);
     return m_scene.get();
 }
 
@@ -95,7 +95,7 @@ void ThanuvaApp::saveSceneAs(const fs::path& filePath)
 
     m_scene->setFilePath(pathToSave);
     m_scene->write();
-    this->addToRecentPaths(filePath);
+    this->addToRecentPaths(pathToSave);
 }
 
 void ThanuvaApp::closeScene()

@@ -51,6 +51,7 @@ public:
     Scene* openScene(const fs::path& filePath);
     void saveSceneAs(const fs::path& filePath);
     void closeScene();
+    void removeFromRecentPaths(const fs::path& filePath) { m_recentScenePaths.remove(filePath); }
 
 private:
     void readSettings();
