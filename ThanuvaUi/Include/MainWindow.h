@@ -16,9 +16,9 @@
 
 namespace ThanuvaUi {
 
+class GeometryListUiModel;
 class OpenGLWidget;
 class StartUpPage;
-
 
 class MainWindow : public QMainWindow
 {
@@ -45,8 +45,11 @@ private: // slots
 private:
     void closeEvent(QCloseEvent* closeEvent) override;
 
-    void setupUi();
+    void initSettings();
     void buildFileMenu();
+    void createCentralWidget();
+    void createDockingWidgets();
+
     void activate();
     void deactivate();
     bool saveChanges();
@@ -56,6 +59,7 @@ private:
 
     StartUpPage* m_startUpPage{nullptr};
     OpenGLWidget* m_openGLWidget{nullptr};
+    GeometryListUiModel* m_geometryListUiModel{nullptr};
 
     QMenu* m_fileMenu{nullptr};
     QMenu* m_recentScenesAction{nullptr};

@@ -18,12 +18,14 @@ add_definitions(-DGLOG_NO_ABBREVIATED_SEVERITIES)
 set(SOURCE_FILES
     ${ThanuvaUi_SOURCE_DIR}/Include/AppSettings.h
     ${ThanuvaUi_SOURCE_DIR}/Include/BoxDialog.h
+    ${ThanuvaUi_SOURCE_DIR}/Include/GeometryListUiModel.h
     ${ThanuvaUi_SOURCE_DIR}/Include/MainWindow.h
     ${ThanuvaUi_SOURCE_DIR}/Include/OpenGLWidget.h
     ${ThanuvaUi_SOURCE_DIR}/Include/StartUpPage.h
 
     ${ThanuvaUi_SOURCE_DIR}/Source/AppSettings.cpp
     ${ThanuvaUi_SOURCE_DIR}/Source/BoxDialog.cpp
+    ${ThanuvaUi_SOURCE_DIR}/Source/GeometryListUiModel.cpp
     ${ThanuvaUi_SOURCE_DIR}/Source/main.cpp
     ${ThanuvaUi_SOURCE_DIR}/Source/MainWindow.cpp
     ${ThanuvaUi_SOURCE_DIR}/Source/OpenGLWidget.cpp

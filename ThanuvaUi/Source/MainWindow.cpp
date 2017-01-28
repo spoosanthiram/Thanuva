@@ -15,13 +15,16 @@
 
 #include <QApplication>
 #include <QCloseEvent>
+#include <QDockWidget>
 #include <QFileDialog>
+#include <QListView>
 #include <QMessageBox>
 #include <QMenuBar>
 #include <QStatusBar>
 #include <QSurfaceFormat>
 
 #include "AppSettings.h"
+#include "GeometryListUiModel.h"
 #include "ModelException.h"
 #include "OpenGLWidget.h"
 #include "StartUpPage.h"
@@ -35,7 +38,8 @@ MainWindow::MainWindow(Model::ThanuvaApp& app)
     : QMainWindow{nullptr}
     , m_app{app}
 {
-    this->setupUi();
+    this->initSettings();
+    this->buildFileMenu();
 
     m_startUpPage = new StartUpPage{this};
     this->setCentralWidget(m_startUpPage);
@@ -196,14 +200,12 @@ void MainWindow::closeEvent(QCloseEvent* closeEvent)
     closeEvent->accept();
 }
 
-void MainWindow::setupUi()
+void MainWindow::initSettings()
 {
     AppSettings settings;
     this->setGeometry(settings.geometry());
     if (settings.isMaximized())
         this->setWindowState(this->windowState() | Qt::WindowMaximized);
-
-    this->buildFileMenu();
 }
 
 void MainWindow::buildFileMenu()
@@ -237,19 +239,40 @@ void MainWindow::buildFileMenu()
     connect(m_fileMenu, &QMenu::aboutToShow, this, &MainWindow::buildRecentScenes);
 }
 
+void MainWindow::createCentralWidget()
+{
+    m_openGLWidget = new OpenGLWidget{this};
+    this->setCentralWidget(m_openGLWidget);
+    m_openGLWidget->show(); // this is needed to make OpenGLWidget::initializeGL() to be called so that
+                            // we have GL context and other initialization are done.
+}
+
+void MainWindow::createDockingWidgets()
+{
+    QDockWidget* geometryDockWidget = new QDockWidget(tr("Geometry"), this);
+    geometryDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+
+    QListView* geometryListView = new QListView(this);
+    m_geometryListUiModel = new GeometryListUiModel(this);
+    geometryListView->setModel(m_geometryListUiModel);
+
+    geometryDockWidget->setWidget(geometryListView);
+    this->addDockWidget(Qt::RightDockWidgetArea, geometryDockWidget);
+}
+
 void MainWindow::activate()
 {
     CHECK(m_scene) << "MainWindow::activate: nullptr!";
 
     if (!m_openGLWidget) {
-        m_openGLWidget = new OpenGLWidget{this};
-        this->setCentralWidget(m_openGLWidget);
-        m_openGLWidget->show();
+        this->createCentralWidget();
+        this->createDockingWidgets();
     }
 
     LOG(INFO) << "Activing scene: " << m_scene->name();
 
     m_openGLWidget->activate(m_scene);
+    m_geometryListUiModel->activate(m_scene);
     this->handleSceneChanged();
 
     m_scene->sceneChanged.connect<MainWindow, &MainWindow::handleSceneChanged>(this);
@@ -261,6 +284,7 @@ void MainWindow::deactivate()
     LOG(INFO) << "Deactivating scene: " << m_scene->name();
 
     m_openGLWidget->deactivate();
+    m_geometryListUiModel->dectivate();
 
     m_scene->sceneChanged.disconnect<MainWindow, &MainWindow::handleSceneChanged>(this);
 }

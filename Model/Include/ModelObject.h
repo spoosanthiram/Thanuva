@@ -27,6 +27,7 @@ public:
         Box,
         Stl
     };
+    static std::string typeStr(Type type);
 
     static const char* kTypeTag;
 
@@ -38,9 +39,12 @@ public:
     ModelObject& operator=(const ModelObject& rhs) = delete; // // TODO: needs to be implemented, for now deleted
 
     virtual Type type() const = 0;
+    const std::string& name() const { return m_name; }
     const Core::Material& material() const { return m_material; }
     const Core::Matrix4x4& transformMatrix() const { return m_transformMatrix; }
+    std::string label() const;
 
+    void setName(const std::string& name);
     void setMaterial(const Core::Material& material,
                      Core::EmitSignal emitSignal = Core::EmitSignal::Emit);
     void setTransformMatrix(const Core::Matrix4x4& transformMatrix,
@@ -61,6 +65,7 @@ protected:
 private:
     const Scene& m_scene;
 
+    std::string m_name{};
     Core::Material m_material{};
     Core::Matrix4x4 m_transformMatrix{Core::Matrix4x4::identity()};
 };

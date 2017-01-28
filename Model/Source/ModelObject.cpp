@@ -8,6 +8,7 @@
 #include "ModelObject.h"
 
 #include <boost/property_tree/ptree.hpp>
+#include <fmt/format.h>
 
 namespace {
 
@@ -19,6 +20,28 @@ const char* kTransformMatrixTag = "transformMatrix";
 namespace Model {
 
 const char* ModelObject::kTypeTag = "type";
+
+std::string ModelObject::typeStr(Type type)
+{
+    std::string str{};
+
+    switch (type)
+    {
+        case Type::Box:
+            str = "Box";
+            break;
+        case Type::Stl:
+            str = "Stl";
+            break;
+    }
+
+    return str;
+}
+
+std::string ModelObject::label() const
+{
+    return fmt::format("{}: {}", this->typeStr(this->type()), m_name);
+}
 
 void ModelObject::setMaterial(const Core::Material& material, Core::EmitSignal emitSignal)
 {
