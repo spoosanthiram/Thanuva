@@ -101,6 +101,7 @@ void MainWindow::openRecentScene(QAction* selectedAction)
     }
     catch (const Model::ModelException& e) {
         QMessageBox::critical(this, caption, QString{"Could not open the Scene...%1"}.arg(e.what()));
+        return;
     }
 
     this->activate();

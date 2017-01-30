@@ -16,6 +16,7 @@
 
 namespace {
 
+const char* kNameTag = "name";
 const char* kMaterialTag = "material";
 const char* kTransformMatrixTag = "transformMatrix";
 
@@ -93,6 +94,7 @@ void ModelObject::setTransformMatrix(const Core::Matrix4x4& transformMatrix,
 
 void ModelObject::load(const boost::property_tree::ptree& modelPropTree)
 {
+    m_name = modelPropTree.get<std::string>(kNameTag);
     m_material.set(modelPropTree.get<std::string>(kMaterialTag));
     m_transformMatrix.set(modelPropTree.get<std::string>(kTransformMatrixTag));
 
@@ -102,6 +104,7 @@ void ModelObject::load(const boost::property_tree::ptree& modelPropTree)
 void ModelObject::save(boost::property_tree::ptree& modelPropTree)
 {
     modelPropTree.put(kTypeTag, static_cast<int>(this->type()));
+    modelPropTree.put(kNameTag, m_name);
     modelPropTree.put(kMaterialTag, m_material.str());
     modelPropTree.put(kTransformMatrixTag, m_transformMatrix.str());
 
