@@ -79,7 +79,6 @@ void OpenGLWidget::addBox()
     this->makeCurrent();
 
     auto boxModel = m_scene->newModelObject<Model::BoxModel>();
-    boxModel->setMaterial(Core::Material::defaultMaterial());
 
     BoxDialog(this, boxModel).exec();
 
@@ -101,11 +100,10 @@ void OpenGLWidget::addStl()
 
     try {
         auto stlModel = m_scene->newModelObject<Model::StlModel>(filePath.toStdString());
-        stlModel->setMaterial(Core::Material::defaultMaterial());
     }
     catch (const std::exception& e) {
-        LOG(WARNING) << e.what();
-        QMessageBox::warning(this, caption, tr(e.what()));
+        LOG(ERROR) << e.what();
+        QMessageBox::critical(this, caption, tr(e.what()));
     }
 
     this->doneCurrent();

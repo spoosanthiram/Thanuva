@@ -32,7 +32,7 @@ public:
     static const char* kTypeTag;
 
 public:
-    ModelObject(const Scene& scene) : m_scene{scene} {}
+    ModelObject(const Scene& scene);
     ModelObject(const ModelObject& rhs) = delete; // TODO: needs to be implemented, for now deleted
     virtual ~ModelObject() {}
 
@@ -45,18 +45,22 @@ public:
     std::string label() const;
 
     void setName(const std::string& name);
-    void setMaterial(const Core::Material& material,
-                     Core::EmitSignal emitSignal = Core::EmitSignal::Emit);
+    void setMaterial(const Core::Material& material);
     void setTransformMatrix(const Core::Matrix4x4& transformMatrix,
                             Core::EmitSignal emitSignal = Core::EmitSignal::Emit);
 
     void load(const boost::property_tree::ptree& modelPropTree);
     void save(boost::property_tree::ptree& modelPropTree);
 
+public: //slots
+    void emitModelObjectChanged() { modelObjectChanged.emit_signal(this); }
+
 public: // signals
-    Nano::Signal<void()> modelObjectChanged{};
+    Nano::Signal<void()> nameChanged{};
     Nano::Signal<void()> materialChanged{};
     Nano::Signal<void()> transformMatrixChanged{};
+
+    Nano::Signal<void(ModelObject*)> modelObjectChanged{}; // meant for most generic change, should be used sparingly
 
 protected:
     virtual void loadModel(const boost::property_tree::ptree& /*modelPropTree*/) {}
@@ -66,7 +70,7 @@ private:
     const Scene& m_scene;
 
     std::string m_name{};
-    Core::Material m_material{};
+    Core::Material m_material{Core::Material::defaultMaterial()};
     Core::Matrix4x4 m_transformMatrix{Core::Matrix4x4::identity()};
 };
 

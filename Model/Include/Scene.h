@@ -46,6 +46,7 @@ public:
      */
     const std::vector<std::unique_ptr<ModelObject>>& modelObjectList() const { return m_modelObjectList; }
     const Viewpoint& viewpoint() const { return m_viewpoint; }
+    intmax_t index(ModelObject* modelObject);
 
     void setFilePath(const fs::path& filePath);
     void setSceneChanged(bool changed);
@@ -67,7 +68,7 @@ public:
     Nano::Signal<void(ModelObject*)> modelObjectAdded{};
 
 protected: // slots
-    void handleModelObjectChanged() { this->setSceneChanged(true); }
+    void handleModelObjectChanged(Model::ModelObject* /*modelObject*/) { this->setSceneChanged(true); }
 
 private:
     void add(std::unique_ptr<ModelObject> modelObjectPtr);

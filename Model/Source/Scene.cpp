@@ -45,6 +45,15 @@ Scene::Scene(const ThanuvaApp& thanuvaApp, const fs::path& filePath)
     this->read();
 }
 
+intmax_t Scene::index(ModelObject* modelObject)
+{
+    auto it = std::find_if(m_modelObjectList.cbegin(), m_modelObjectList.cend(),
+        [=](const std::unique_ptr<ModelObject>& ptr) { return ptr.get() == modelObject; });
+    if (it == m_modelObjectList.cend())
+        return -1;
+    return std::distance(m_modelObjectList.cbegin(), it);
+}
+
 void Scene::setFilePath(const fs::path& filePath)
 {
     m_name = filePath.stem().string();

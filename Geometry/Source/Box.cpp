@@ -18,7 +18,7 @@ Box::Box(const GeometryContainer& geometryContainer, Model::BoxModel* boxModel)
 {
     this->initialize();
 
-    boxModel->modelObjectChanged.connect<Box, &Box::initialize>(this);
+    boxModel->limiterChanged.connect<Box, &Box::initialize>(this);
 }
 
 bool Box::intersect(const Core::Vector3d& nearPoint, const Core::Vector3d& farPoint,

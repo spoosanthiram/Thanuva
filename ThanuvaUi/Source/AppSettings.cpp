@@ -13,6 +13,6 @@ const char* AppSettings::kGeometryLabel = "Geometry";
 const char* AppSettings::kIsMaximizedLabel = "IsMaximized";
 const char* AppSettings::kWindowOpacityLabel = "WindowOpacity";
 
-const double AppSettings::kDefaultWindowOpacity = 0.90;
+const double AppSettings::kDefaultWindowOpacity = 0.70;
 
 } // namespace ThanuvaUi

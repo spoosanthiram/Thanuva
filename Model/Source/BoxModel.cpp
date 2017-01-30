@@ -42,17 +42,15 @@ BoxModel::BoxModel(const Scene& scene, const Limiter& limiter)
     : ModelObject{scene}
     , m_limiter{limiter}
 {
-    if (!m_limiter.isValid()) {
-        ModelException e{fmt::format(ModelException::kInvalidBoxLimiter, m_limiter.str())};
-        LOG(ERROR) << e.what();
-        throw e;
-    }
+    this->setLimiter(m_limiter); // to get it validated
+
+    limiterChanged.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
 }
 
-void BoxModel::setLimiter(const Limiter& limiter, Core::EmitSignal emitSignal)
+void BoxModel::setLimiter(const Limiter& limiter)
 {
     if (!limiter.isValid()) {
-        ModelException e{ fmt::format(ModelException::kInvalidBoxLimiter, m_limiter.str())};
+        ModelException e{fmt::format(ModelException::kInvalidBoxLimiter, limiter.str())};
         LOG(ERROR) << e.what();
         throw e;
     }
@@ -61,9 +59,7 @@ void BoxModel::setLimiter(const Limiter& limiter, Core::EmitSignal emitSignal)
         return;
 
     m_limiter = limiter;
-
-    if (Core::EmitSignal::Emit == emitSignal)
-        modelObjectChanged.emit_signal(); // emit signal
+    limiterChanged.emit_signal(); // emit signal
 }
 
 void BoxModel::loadModel(const boost::property_tree::ptree& modelPropTree)

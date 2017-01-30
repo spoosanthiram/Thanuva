@@ -8,29 +8,38 @@
 #ifndef THANUVAUI_BOXDIALOG_H
 #define THANUVAUI_BOXDIALOG_H
 
-#include <memory>
-
-#include "ui_BoxDialog.h"
+#include "GeometryDialog.h"
+#include "ui_BoxWidget.h"
 
 namespace Model { class BoxModel; }
 
 namespace ThanuvaUi {
 
-class BoxDialog : public QDialog, private Ui::BoxDialog
+class BoxWidget : public QWidget, public Ui::BoxWidget
+{
+public:
+    BoxWidget(QWidget* parent)
+        : QWidget{parent}
+    {
+        this->setupUi(this);
+    }
+};
+
+class BoxDialog : public GeometryDialog
 {
     Q_OBJECT
 
 public:
     BoxDialog(QWidget* parent, Model::BoxModel* boxModel);
 
-protected slots:
+private slots:
     void update();
 
-protected: // slots
+private: // slots
     void initialize();
 
 private:
-    Model::BoxModel* m_boxModel;
+    BoxWidget* m_boxWidget{nullptr};
 };
 
 } // namespace ThanuvaUi

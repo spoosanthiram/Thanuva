@@ -29,6 +29,7 @@ public:
     void dectivate();
 
 private: // slots
+    void handleModelObjectChanged(Model::ModelObject* modelObject);
     void add(Model::ModelObject* modelObject);
 
 private:

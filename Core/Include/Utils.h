@@ -13,7 +13,8 @@
 
 namespace Core {
 
-std::string toLower(const std::string& str);
+std::string toLower(std::string str);
+std::string trim(std::string str);
 
 void skipWhitespace(std::ifstream& textStream);
 

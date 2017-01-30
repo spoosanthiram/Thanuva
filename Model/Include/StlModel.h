@@ -29,6 +29,9 @@ public:
     void setFilePath(const std::string& filePath,
                      Core::EmitSignal emitSignal = Core::EmitSignal::Emit);
 
+public: // signals
+    Nano::Signal<void()> filePathChanged{};
+
 protected:
     void loadModel(const boost::property_tree::ptree& modelPropTree) override;
     void saveModel(boost::property_tree::ptree& modelPropTree) override;

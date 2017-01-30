@@ -9,6 +9,10 @@
 
 #include <boost/property_tree/ptree.hpp>
 #include <fmt/format.h>
+#include <glog/logging.h>
+
+#include "ModelException.h"
+#include "Utils.h"
 
 namespace {
 
@@ -38,19 +42,42 @@ std::string ModelObject::typeStr(Type type)
     return str;
 }
 
+ModelObject::ModelObject(const Scene& scene)
+    : m_scene{scene}
+{
+    nameChanged.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
+    materialChanged.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
+    transformMatrixChanged.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
+}
+
 std::string ModelObject::label() const
 {
     return fmt::format("{}: {}", this->typeStr(this->type()), m_name);
 }
 
-void ModelObject::setMaterial(const Core::Material& material, Core::EmitSignal emitSignal)
+void ModelObject::setName(const std::string& name)
+{
+    std::string newName = Core::trim(name);
+    if (newName.empty()) {
+        ModelException e{ModelException::kEmptyName};
+        LOG(ERROR) << e.what();
+        throw e;
+    }
+
+    if (newName == m_name)
+        return;
+
+    m_name = newName;
+    nameChanged.emit_signal(); // emit signal
+}
+
+void ModelObject::setMaterial(const Core::Material& material)
 {
     if (material == m_material)
         return;
 
     m_material = material;
-    if (Core::EmitSignal::Emit == emitSignal)
-        materialChanged.emit_signal(); // emit signal
+    materialChanged.emit_signal(); // emit signal
 }
 
 void ModelObject::setTransformMatrix(const Core::Matrix4x4& transformMatrix,

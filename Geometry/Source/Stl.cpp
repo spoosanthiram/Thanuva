@@ -26,7 +26,7 @@ Stl::Stl(const GeometryContainer& geometryContainer, Model::StlModel* stlModel)
 {
     this->initialize();
 
-    stlModel->modelObjectChanged.connect<Stl, &Stl::initialize>(this);
+    stlModel->filePathChanged.connect<Stl, &Stl::initialize>(this);
 }
 
 struct IntersectionPoints {

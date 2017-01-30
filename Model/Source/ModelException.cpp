@@ -9,6 +9,8 @@
 
 namespace Model {
 
+const char* ModelException::kEmptyName = "Name cannot be empty.";
+
 const char* ModelException::kInvalidBoxLimiter = "Limiter provided {} for Box is invalid.";
 
 const char* ModelException::kPathNotFound = "The Scene file, {} could not be opened.";

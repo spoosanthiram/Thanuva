@@ -66,7 +66,10 @@ public:
     Type type() const override { return Type::Box; }
     const Limiter& limiter() const { return m_limiter; }
 
-    void setLimiter(const Limiter& limiter, Core::EmitSignal emitSignal = Core::EmitSignal::Emit);
+    void setLimiter(const Limiter& limiter);
+
+public: // signals
+    Nano::Signal<void()> limiterChanged{};
 
 protected:
     void loadModel(const boost::property_tree::ptree& modelPropTree) override;

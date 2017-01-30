@@ -22,6 +22,7 @@ StlModel::StlModel(const Scene& scene, const std::string& filePath)
     , m_filePath{filePath}
 {
     // TODO: check if STL is exists
+    filePathChanged.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
 }
 
 void StlModel::setFilePath(const std::string& filePath, Core::EmitSignal emitSignal)
@@ -33,7 +34,7 @@ void StlModel::setFilePath(const std::string& filePath, Core::EmitSignal emitSig
     m_filePath = filePath;
 
     if (Core::EmitSignal::Emit == emitSignal)
-        modelObjectChanged.emit_signal(); // emit signal
+        filePathChanged.emit_signal(); // emit signal
 }
 
 void StlModel::loadModel(const boost::property_tree::ptree& modelPropTree)

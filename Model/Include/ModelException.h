@@ -15,6 +15,8 @@ namespace Model {
 class ModelException : public Core::ThanuvaException
 {
 public:
+    static const char* kEmptyName;
+
     static const char* kInvalidBoxLimiter;
 
     static const char* kPathNotFound;

@@ -7,18 +7,26 @@
 
 #include "Utils.h"
 
+#include <algorithm>
 #include <cctype>
 #include <locale>
 
 namespace Core {
 
-std::string toLower(const std::string& str)
+std::string toLower(std::string str)
 {
-    std::string result{};
     std::locale defaultLocale{};
-    for (auto ch : str)
-        result.push_back(std::tolower(ch, defaultLocale));
-    return result;
+    for (auto& ch : str)
+        ch = std::tolower(ch, defaultLocale);
+    return str;
+}
+
+std::string trim(std::string str)
+{
+    auto isNotSpace = [](auto& ch) { return !std::isspace(ch); };
+    str.erase(std::find_if(str.rbegin(), str.rend(), isNotSpace).base(), str.end());
+    str.erase(str.begin(), std::find_if(str.begin(), str.end(), isNotSpace));
+    return str;
 }
 
 void skipWhitespace(std::ifstream& textStream)

@@ -18,6 +18,7 @@ add_definitions(-DGLOG_NO_ABBREVIATED_SEVERITIES)
 set(SOURCE_FILES
     ${ThanuvaUi_SOURCE_DIR}/Include/AppSettings.h
     ${ThanuvaUi_SOURCE_DIR}/Include/BoxDialog.h
+    ${ThanuvaUi_SOURCE_DIR}/Include/GeometryDialog.h
     ${ThanuvaUi_SOURCE_DIR}/Include/GeometryListUiModel.h
     ${ThanuvaUi_SOURCE_DIR}/Include/MainWindow.h
     ${ThanuvaUi_SOURCE_DIR}/Include/OpenGLWidget.h
@@ -25,6 +26,7 @@ set(SOURCE_FILES
 
     ${ThanuvaUi_SOURCE_DIR}/Source/AppSettings.cpp
     ${ThanuvaUi_SOURCE_DIR}/Source/BoxDialog.cpp
+    ${ThanuvaUi_SOURCE_DIR}/Source/GeometryDialog.cpp
     ${ThanuvaUi_SOURCE_DIR}/Source/GeometryListUiModel.cpp
     ${ThanuvaUi_SOURCE_DIR}/Source/main.cpp
     ${ThanuvaUi_SOURCE_DIR}/Source/MainWindow.cpp
@@ -33,7 +35,8 @@ set(SOURCE_FILES
 )
 
 qt5_wrap_ui(UI_FILES
-    ${ThanuvaUi_SOURCE_DIR}/Form/BoxDialog.ui
+    ${ThanuvaUi_SOURCE_DIR}/Form/BoxWidget.ui
+    ${ThanuvaUi_SOURCE_DIR}/Form/GeometryDialog.ui
     ${ThanuvaUi_SOURCE_DIR}/Form/StartUpPage.ui
 )
 
