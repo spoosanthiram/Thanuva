@@ -7,45 +7,16 @@
 
 #include "Quaternion.h"
 
-#include <AlgoBase.h>
+#include <fmt/format.h>
 #ifdef UNIT_TEST
 #include <gtest/gtest.h>
 #endif
 
-#include "Vector3d.h"
-
 namespace Core {
 
-Quaternion::Quaternion(Vector3d v, double angle)
+std::string Quaternion::str() const
 {
-    if (!psa::isequal(1.0, v.norm()))
-        v.normalize();
-    angle /= 2.0;
-    angle *= psa::kRadianMultiplier;
-    v.scale(std::sin(angle));
-    this->initialize(v.x(), v.y(), v.z(), std::cos(angle));
-}
-
-bool Quaternion::iszero() const
-{
-    return psa::iszero(m_quaternion[0]) && psa::iszero(m_quaternion[1])
-            && psa::iszero(m_quaternion[2]) && psa::iszero(m_quaternion[3]);
-}
-
-bool Quaternion::operator==(const Quaternion& rhs) const
-{
-    return psa::isequal(rhs.m_quaternion[0], m_quaternion[0])
-        && psa::isequal(rhs.m_quaternion[1], m_quaternion[1])
-        && psa::isequal(rhs.m_quaternion[2], m_quaternion[2])
-        && psa::isequal(rhs.m_quaternion[3], m_quaternion[3]);
-}
-
-Quaternion Quaternion::operator*(const Quaternion& rhs) const
-{
-    Vector3d v{m_quaternion[0], m_quaternion[1], m_quaternion[2]};
-    Vector3d v2{rhs.m_quaternion[0], rhs.m_quaternion[1], rhs.m_quaternion[2]};
-    Vector3d v3{v.cross(v2) + m_quaternion[3] * v2 + rhs.m_quaternion[3] * v};
-    return Quaternion{v3[0], v3[1], v3[2], m_quaternion[3] * rhs.m_quaternion[3] - v.dot(v2)};
+    return fmt::format("({}, {}, {}, {})", m_coords[0], m_coords[1], m_coords[2], m_coords[3]);
 }
 
 #ifdef UNIT_TEST

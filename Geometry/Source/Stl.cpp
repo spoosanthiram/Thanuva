@@ -32,8 +32,8 @@ Stl::Stl(const GeometryContainer& geometryContainer, Model::StlModel* stlModel)
 struct IntersectionPoints {
     IntersectionPoints(const std::vector<float>& vertices, const std::vector<float>& normals,
                        std::size_t istart, std::size_t iend,
-                       const Core::Vector3d& nearPoint, const Core::Vector3d& farPoint,
-                       volatile bool& found, std::vector<Core::Vector3d>* points)
+                       const Core::Point3d& nearPoint, const Core::Point3d& farPoint,
+                       volatile bool& found, std::vector<Core::Point3d>* points)
         : m_vertices{vertices}
         , m_normals{normals}
         , m_istart{istart}
@@ -45,7 +45,8 @@ struct IntersectionPoints {
     {}
 
     void operator()() {
-        Core::Vector3d n, a, b, c, p;
+        Core::Vector3d n;
+        Core::Point3d a, b, c, p;
         Core::Vector3d l = m_farPoint - m_nearPoint;
 
         for (size_t i = m_istart; i < m_iend; i += 9) {
@@ -79,14 +80,14 @@ struct IntersectionPoints {
     const std::vector<float>& m_normals;
     std::size_t m_istart;
     std::size_t m_iend;
-    const Core::Vector3d& m_nearPoint;
-    const Core::Vector3d& m_farPoint;
+    const Core::Point3d& m_nearPoint;
+    const Core::Point3d& m_farPoint;
     volatile bool& m_found;
-    std::vector<Core::Vector3d>* m_points;
+    std::vector<Core::Point3d>* m_points;
 };
 
-bool Stl::intersect(const Core::Vector3d& nearPoint, const Core::Vector3d& farPoint,
-                    std::vector<Core::Vector3d>* points)
+bool Stl::intersect(const Core::Point3d& nearPoint, const Core::Point3d& farPoint,
+                    std::vector<Core::Point3d>* points)
 {
     const auto& vertices = this->vertices();
     const auto& normals = this->normals();

@@ -9,15 +9,16 @@
 #define CORE_HVECTOR_H
 
 #include <array>
+#include <string>
 
 #include <AlgoBase.h>
 
+#include "Vector3d.h"
+
 namespace Core {
 
-class Vector3d;
-
 /**
-* @brief The HVector class is an abstraction of homogeneous vector used in graphics.
+* The HVector class is an abstraction of vector in homogeneous coordinate system.
 * see http://en.wikipedia.org/wiki/Homogeneous_coordinates
 */
 class HVector
@@ -26,99 +27,110 @@ public:
     HVector() { this->initialize(0.0, 0.0, 0.0, 0.0); }
     HVector(double x, double y, double z, double w) { this->initialize(x, y, z, w); }
     explicit HVector(const double* values) { this->initialize(values); }
-    explicit HVector(const Vector3d& v);
+    explicit HVector(const Vector3d& v) { this->initialize(v.x(), v.y(), v.z(), 1.0); }
 
-    double x() const { return m_elements[0]; }
-    double y() const { return m_elements[1]; }
-    double z() const { return m_elements[2]; }
-    double w() const { return m_elements[3]; }
-    double operator[] (std::size_t i) const { return m_elements[i]; }
-    std::size_t size() const { return m_elements.size(); }
-    const double* data() const { return m_elements.data(); }
+    double x() const { return m_coords[0]; }
+    double y() const { return m_coords[1]; }
+    double z() const { return m_coords[2]; }
+    double w() const { return m_coords[3]; }
+    double operator[] (std::size_t i) const { return m_coords[i]; }
+    std::size_t size() const { return m_coords.size(); }
+    const double* data() const { return m_coords.data(); }
+    std::string str() const;
 
-    void setX(double x) { m_elements[0] = x; }
-    void setY(double y) { m_elements[1] = y; }
-    void setZ(double z) { m_elements[2] = z; }
-    void setW(double w) { m_elements[3] = w; }
+    void setX(double x) { m_coords[0] = x; }
+    void setY(double y) { m_coords[1] = y; }
+    void setZ(double z) { m_coords[2] = z; }
+    void setW(double w) { m_coords[3] = w; }
     void assign(double x, double y, double z, double w) { this->initialize(x, y, z, w); }
     void assign(const double* values)
     {
         this->initialize(values[0], values[1], values[2], values[3]);
     }
-    void assign(const Vector3d& v);
-
-    bool operator==(const HVector& rhs) const
+    void assign(const Vector3d& v)
     {
-        return psa::isequal(rhs.m_elements[0], m_elements[0])
-            && psa::isequal(rhs.m_elements[1], m_elements[1])
-            && psa::isequal(rhs.m_elements[2], m_elements[2])
-            && psa::isequal(rhs.m_elements[3], m_elements[3]);
-    }
-    bool operator!=(const HVector& rhs) const { return !(rhs == *this); }
-    HVector operator+(const HVector& rhs) const
-    {
-        HVector result(*this); result.add(rhs); return result;
-    }
-    HVector operator-(const HVector& rhs) const
-    {
-        HVector result(*this); result.subtract(rhs); return result;
+        this->initialize(v.x(), v.y(), v.z(), 1.0);
     }
 
     void scale(double scalar)
     {
-        m_elements[0] *= scalar;
-        m_elements[1] *= scalar;
-        m_elements[2] *= scalar;
-        m_elements[3] *= scalar;
+        m_coords[0] *= scalar;
+        m_coords[1] *= scalar;
+        m_coords[2] *= scalar;
+        m_coords[3] *= scalar;
     }
     void scaleInfinite(double scalar)
     {
-        m_elements[0] = psa::multiply(scalar, m_elements[0]);
-        m_elements[1] = psa::multiply(scalar, m_elements[1]);
-        m_elements[2] = psa::multiply(scalar, m_elements[2]);
-        m_elements[3] = psa::multiply(scalar, m_elements[3]);
+        m_coords[0] = psa::multiply(scalar, m_coords[0]);
+        m_coords[1] = psa::multiply(scalar, m_coords[1]);
+        m_coords[2] = psa::multiply(scalar, m_coords[2]);
+        m_coords[3] = psa::multiply(scalar, m_coords[3]);
     }
-    HVector& operator+=(const HVector& rhs) { this->add(rhs); return *this; }
-    HVector& operator-=(const HVector& rhs) { this->subtract(rhs); return *this; }
     void addInfinite(const HVector& rhs)
     {
-        m_elements[0] = psa::add(m_elements[0], rhs.m_elements[0]);
-        m_elements[1] = psa::add(m_elements[1], rhs.m_elements[1]);
-        m_elements[2] = psa::add(m_elements[2], rhs.m_elements[2]);
-        m_elements[3] = psa::add(m_elements[3], rhs.m_elements[3]);
+        m_coords[0] = psa::add(m_coords[0], rhs.m_coords[0]);
+        m_coords[1] = psa::add(m_coords[1], rhs.m_coords[1]);
+        m_coords[2] = psa::add(m_coords[2], rhs.m_coords[2]);
+        m_coords[3] = psa::add(m_coords[3], rhs.m_coords[3]);
+    }
+
+    bool operator==(const HVector& rhs) const
+    {
+        return psa::isequal(rhs.m_coords[0], m_coords[0]) &&
+            psa::isequal(rhs.m_coords[1], m_coords[1]) &&
+            psa::isequal(rhs.m_coords[2], m_coords[2]) &&
+            psa::isequal(rhs.m_coords[3], m_coords[3]);
+    }
+    bool operator!=(const HVector& rhs) const { return !(rhs == *this); }
+
+    HVector& operator+=(const HVector& rhs)
+    {
+        m_coords[0] += rhs.m_coords[0];
+        m_coords[1] += rhs.m_coords[1];
+        m_coords[2] += rhs.m_coords[2];
+        m_coords[3] += rhs.m_coords[3];
+
+        return *this;
+    }
+    HVector operator+(const HVector& rhs) const
+    {
+        return HVector{m_coords[0] + rhs.m_coords[0],
+            m_coords[1] + rhs.m_coords[1],
+            m_coords[2] + rhs.m_coords[2],
+            m_coords[3] + rhs.m_coords[3]};
+    }
+
+    HVector& operator-=(const HVector& rhs)
+    {
+        m_coords[0] -= rhs.m_coords[0];
+        m_coords[1] -= rhs.m_coords[1];
+        m_coords[2] -= rhs.m_coords[2];
+        m_coords[3] -= rhs.m_coords[3];
+
+        return *this;
+    }
+    HVector operator-(const HVector& rhs) const
+    {
+        return HVector{m_coords[0] - rhs.m_coords[0],
+            m_coords[1] - rhs.m_coords[1],
+            m_coords[2] - rhs.m_coords[2],
+            m_coords[3] - rhs.m_coords[3]};
     }
 
 private:
     void initialize(double x, double y, double z, double w)
     {
-        m_elements[0] = x;
-        m_elements[1] = y;
-        m_elements[2] = z;
-        m_elements[3] = w;
+        m_coords[0] = x;
+        m_coords[1] = y;
+        m_coords[2] = z;
+        m_coords[3] = w;
     }
     void initialize(const double* values)
     {
-        if (nullptr == values)
-            this->initialize(0.0, 0.0, 0.0, 0.0);
-        else
-            this->initialize(values[0], values[1], values[2], values[3]);
-    }
-    void add(const HVector& hv)
-    {
-        m_elements[0] += hv.m_elements[0];
-        m_elements[1] += hv.m_elements[1];
-        m_elements[2] += hv.m_elements[2];
-        m_elements[3] += hv.m_elements[3];
-    }
-    void subtract(const HVector& hv)
-    {
-        m_elements[0] -= hv.m_elements[0];
-        m_elements[1] -= hv.m_elements[1];
-        m_elements[2] -= hv.m_elements[2];
-        m_elements[3] -= hv.m_elements[3];
+        this->initialize(values[0], values[1], values[2], values[3]);
     }
 
-    std::array<double, 4> m_elements;
+    std::array<double, 4> m_coords;
 };
 
 } // namespace Core

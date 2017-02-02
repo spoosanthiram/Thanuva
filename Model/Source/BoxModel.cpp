@@ -50,7 +50,7 @@ BoxModel::BoxModel(const Scene& scene, const Limiter& limiter)
 void BoxModel::setLimiter(const Limiter& limiter)
 {
     if (!limiter.isValid()) {
-        ModelException e{fmt::format(ModelException::kInvalidBoxLimiter, limiter.str())};
+        ModelException e{ModelException::kInvalidBoxLimiter};
         LOG(ERROR) << e.what();
         throw e;
     }

@@ -16,7 +16,7 @@ class ModelException : public Core::ThanuvaException
 {
 public:
     static const char* kEmptyName;
-
+    static const char* kInvalidType;
     static const char* kInvalidBoxLimiter;
 
     static const char* kPathNotFound;

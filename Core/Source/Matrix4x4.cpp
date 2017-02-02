@@ -16,6 +16,7 @@
 #endif
 
 #include "CoreDef.h"
+#include "HPoint.h"
 #include "HVector.h"
 #include "Matrix3x3.h"
 #include "Quaternion.h"
@@ -347,9 +348,9 @@ Matrix4x4 Matrix4x4::operator*(const Matrix4x4& rhs) const
     return result;
 }
 
-HVector Matrix4x4::operator*(const HVector& rhs) const
+HPoint Matrix4x4::operator*(const HPoint& rhs) const
 {
-    HVector result;
+    HPoint result;
     for (std::size_t i = 0; i < result.size(); ++i)
     {
         HVector v2(&m_elements[i * kNRows]);
@@ -359,9 +360,9 @@ HVector Matrix4x4::operator*(const HVector& rhs) const
     return result;
 }
 
-HVector Matrix4x4::multiplyInfinite(const HVector& rhs) const
+HPoint Matrix4x4::multiplyInfinite(const HPoint& rhs) const
 {
-    HVector result;
+    HPoint result;
     for (std::size_t i = 0; i < result.size(); ++i)
     {
         HVector v2(&m_elements[i * kNRows]);

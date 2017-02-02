@@ -7,31 +7,16 @@
 
 #include "Vector3d.h"
 
-#include <sstream>
-
+#include <fmt/format.h>
 #ifdef UNIT_TEST
 #include <gtest/gtest.h>
 #endif
 
-#include "HVector.h"
-
 namespace Core {
-
-Vector3d::Vector3d(const HVector& hv)
-{
-    this->initialize(hv.x(), hv.y(), hv.z());
-}
 
 std::string Vector3d::str() const
 {
-    std::stringstream sstream;
-    sstream << "(" << m_elements[0] << ", " << m_elements[1] << ", " << m_elements[2] << ")";
-    return sstream.str();
-}
-
-void Vector3d::assign(const HVector& hv)
-{
-    this->initialize(hv.x(), hv.y(), hv.z());
+    return fmt::format("({}, {}, {})", m_coords[0], m_coords[1], m_coords[2]);
 }
 
 #ifdef UNIT_TEST

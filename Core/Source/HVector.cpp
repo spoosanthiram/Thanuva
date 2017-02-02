@@ -7,22 +7,16 @@
 
 #include "HVector.h"
 
+#include <fmt/format.h>
 #ifdef UNIT_TEST
 #include <gtest/gtest.h>
 #endif
 
-#include "Vector3d.h"
-
 namespace Core {
 
-HVector::HVector(const Vector3d& v)
+std::string HVector::str() const
 {
-    this->initialize(v.x(), v.y(), v.z(), 1.0);
-}
-
-void HVector::assign(const Vector3d& v)
-{
-    this->initialize(v.x(), v.y(), v.z(), 1.0);
+    return fmt::format("({}, {}, {}, {})", m_coords[0], m_coords[1], m_coords[2], m_coords[3]);
 }
 
 #ifdef UNIT_TEST

@@ -24,7 +24,7 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QLineEdit" name="m_xLowLineEdit"/>
+      <widget class="QLineEdit" name="xLowLineEdit"/>
      </item>
      <item row="0" column="2">
       <spacer name="horizontalSpacer">
@@ -50,7 +50,7 @@
       </widget>
      </item>
      <item row="0" column="4">
-      <widget class="QLineEdit" name="m_xHighLineEdit"/>
+      <widget class="QLineEdit" name="xHighLineEdit"/>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="m_yLowLabel">
@@ -60,7 +60,7 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QLineEdit" name="m_yLowLineEdit"/>
+      <widget class="QLineEdit" name="yLowLineEdit"/>
      </item>
      <item row="1" column="2">
       <spacer name="horizontalSpacer_2">
@@ -86,7 +86,7 @@
       </widget>
      </item>
      <item row="1" column="4">
-      <widget class="QLineEdit" name="m_yHighLineEdit"/>
+      <widget class="QLineEdit" name="yHighLineEdit"/>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="m_zLowLabel">
@@ -96,7 +96,7 @@
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QLineEdit" name="m_zLowLineEdit"/>
+      <widget class="QLineEdit" name="zLowLineEdit"/>
      </item>
      <item row="2" column="2">
       <spacer name="horizontalSpacer_3">
@@ -122,7 +122,7 @@
       </widget>
      </item>
      <item row="2" column="4">
-      <widget class="QLineEdit" name="m_zHighLineEdit"/>
+      <widget class="QLineEdit" name="zHighLineEdit"/>
      </item>
     </layout>
    </item>

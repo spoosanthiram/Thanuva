@@ -16,6 +16,7 @@
 
 #include "CoreDef.h"
 #include "Extent.h"
+#include "Point3d.h"
 #include "Vector3d.h"
 
 namespace Model { class ModelObject; }
@@ -37,9 +38,9 @@ public:
      * @return true if intersecting point is found. 'p' will be filled.
      *         false if no intersecting point is found.
      */
-    static bool intersectPlane(const Core::Vector3d& a, const Core::Vector3d& n,
-                               const Core::Vector3d& np, const Core::Vector3d& l,
-                               Core::Vector3d& p)
+    static bool intersectPlane(const Core::Point3d& a, const Core::Vector3d& n,
+                               const Core::Point3d& np, const Core::Vector3d& l,
+                               Core::Point3d& p)
     {
         double nDotL = n.dot(l);
         if (psa::iszero(nDotL)) // ray is parallel to plane (triangle) either starts outside or inside
@@ -66,9 +67,9 @@ public:
 
     void setExtent(const Extent& extent, Core::EmitSignal emitSignal = Core::EmitSignal::Emit);
 
-    bool intersectBoundingBox(const Core::Vector3d& nearPoint, const Core::Vector3d& farPoint); 
-    virtual bool intersect(const Core::Vector3d& nearPoint, const Core::Vector3d& farPoint,
-                           std::vector<Core::Vector3d>* points) = 0;
+    bool intersectBoundingBox(const Core::Point3d& nearPoint, const Core::Point3d& farPoint);
+    virtual bool intersect(const Core::Point3d& nearPoint, const Core::Point3d& farPoint,
+                           std::vector<Core::Point3d>* points) = 0;
 
 public: // signals
     Nano::Signal<void()> geometryObjectChanged{};
@@ -83,7 +84,7 @@ protected:
 
         m_extent.update(vertex);
     }
-    void insertVertex(const Core::Vector3d& vertex)
+    void insertVertex(const Core::Point3d& vertex)
     {
         m_vertices.push_back(static_cast<float>(vertex.x()));
         m_vertices.push_back(static_cast<float>(vertex.y()));
@@ -112,9 +113,7 @@ protected:
         m_indices.push_back(ic);
     }
 
-    Core::Vector3d computeNormal(const Core::Vector3d& a,
-                                 const Core::Vector3d& b,
-                                 const Core::Vector3d& c)
+    Core::Vector3d computeNormal(const Core::Point3d& a, const Core::Point3d& b, const Core::Point3d& c)
     {
         Core::Vector3d n = (b - a).cross(c - a);
         n.normalize();
@@ -135,7 +134,7 @@ protected:
         m_indices.clear();
     }
 
-    void insertBoundingBoxVertex(std::size_t index, const Core::Vector3d& v)
+    void insertBoundingBoxVertex(std::size_t index, const Core::Point3d& v)
     {
         m_boundingBoxVertices[index] = static_cast<float>(v.x());
         m_boundingBoxVertices[index + 1] = static_cast<float>(v.y());

@@ -25,7 +25,10 @@ public:
     enum class Type
     {
         Box,
-        Stl
+        Stl,
+        Cylinder,
+        // Always add new types before this line!
+        NTypes
     };
     static std::string typeStr(Type type);
 

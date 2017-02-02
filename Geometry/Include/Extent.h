@@ -10,7 +10,7 @@
 
 #include <limits>
 
-#include "Vector3d.h"
+#include "Point3d.h"
 
 namespace Core { class Matrix4x4; }
 
@@ -88,7 +88,7 @@ public:
      */
     double medianLength() const { return this->isAnyInfinite() ?
                     0.0 : std::pow(this->xLength() * this->yLength() * this->zLength(), 1.0 / 3.0); }
-    Core::Vector3d center() const { return Core::Vector3d(this->xMid(), this->yMid(), this->zMid()); }
+    Core::Point3d center() const { return Core::Point3d{this->xMid(), this->yMid(), this->zMid()}; }
 
     void setXMin(double xMin) { m_xMin = xMin; }
     void setXMax(double xMax) { m_xMax = xMax; }
@@ -110,11 +110,11 @@ public:
             psa::isNegativeInfinite(m_zMin) && psa::isPositiveInfinite(m_zMax);
     }
 
-    bool isInside(const Core::Vector3d& v) const
+    bool isInside(const Core::Point3d& p) const
     {
-        return (m_xMin <= v.x() && v.x() <= m_xMax &&
-            m_yMin <= v.y() && v.y() <= m_yMax &&
-            m_zMin <= v.z() && v.z() <= m_zMax);
+        return (m_xMin <= p.x() && p.x() <= m_xMax &&
+            m_yMin <= p.y() && p.y() <= m_yMax &&
+            m_zMin <= p.z() && p.z() <= m_zMax);
     }
 
     bool operator==(const Extent& rhs) const
@@ -148,7 +148,7 @@ public:
     * It is the caller's resposibility to keep the initial values correct
     * ie <min value> = +<INFINITE> and <max value> = -<INFINITE>.
     */
-    void update(const Core::Vector3d& v)
+    void update(const Core::Point3d& v)
     {
         if (v.x() < m_xMin) m_xMin = v.x();
         if (v.y() < m_yMin) m_yMin = v.y();

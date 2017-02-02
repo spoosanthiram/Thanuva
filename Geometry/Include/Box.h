@@ -19,15 +19,15 @@ class Box : public GeometryObject
 public:
     Box(const GeometryContainer& geometryContainer, Model::BoxModel* boxModel);
 
-    bool intersect(const Core::Vector3d& nearPoint, const Core::Vector3d& farPoint,
-                   std::vector<Core::Vector3d>* points) override;
+    bool intersect(const Core::Point3d& nearPoint, const Core::Point3d& farPoint,
+                   std::vector<Core::Point3d>* points) override;
 
 private: // slots
     void initialize();
 
 private:
-    void insertQuad(const Core::Vector3d& a, const Core::Vector3d& b,
-                    const Core::Vector3d& c, const Core::Vector3d& d);
+    void insertQuad(const Core::Point3d& a, const Core::Point3d& b,
+                    const Core::Point3d& c, const Core::Point3d& d);
 };
 
 } // namespace Geometry

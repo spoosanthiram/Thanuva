@@ -21,8 +21,8 @@ Box::Box(const GeometryContainer& geometryContainer, Model::BoxModel* boxModel)
     boxModel->limiterChanged.connect<Box, &Box::initialize>(this);
 }
 
-bool Box::intersect(const Core::Vector3d& nearPoint, const Core::Vector3d& farPoint,
-                    std::vector<Core::Vector3d>* points)
+bool Box::intersect(const Core::Point3d& nearPoint, const Core::Point3d& farPoint,
+                    std::vector<Core::Point3d>* points)
 {
     const std::vector<float>& vertices = this->vertices();
     const std::vector<float>& normals = this->normals();
@@ -33,7 +33,8 @@ bool Box::intersect(const Core::Vector3d& nearPoint, const Core::Vector3d& farPo
 
     bool found = false;
 
-    Core::Vector3d n, a, b, c, p;
+    Core::Vector3d n;
+    Core::Point3d a, b, c, p;
     Core::Vector3d l = farPoint - nearPoint;
 
     size_t len = indices.size();
@@ -78,14 +79,14 @@ void Box::initialize()
     auto box = dynamic_cast<Model::BoxModel*>(this->modelObject());
     const Model::BoxModel::Limiter& limiter = box->limiter();
 
-    Core::Vector3d a{limiter.xlow, limiter.ylow, limiter.zlow};
-    Core::Vector3d b{limiter.xhigh, limiter.ylow, limiter.zlow};
-    Core::Vector3d c{limiter.xhigh, limiter.yhigh, limiter.zlow};
-    Core::Vector3d d{limiter.xlow, limiter.yhigh, limiter.zlow};
-    Core::Vector3d e{limiter.xlow, limiter.ylow, limiter.zhigh};
-    Core::Vector3d f{limiter.xhigh, limiter.ylow, limiter.zhigh};
-    Core::Vector3d g{limiter.xhigh, limiter.yhigh, limiter.zhigh};
-    Core::Vector3d h{limiter.xlow, limiter.yhigh, limiter.zhigh};
+    Core::Point3d a{limiter.xlow, limiter.ylow, limiter.zlow};
+    Core::Point3d b{limiter.xhigh, limiter.ylow, limiter.zlow};
+    Core::Point3d c{limiter.xhigh, limiter.yhigh, limiter.zlow};
+    Core::Point3d d{limiter.xlow, limiter.yhigh, limiter.zlow};
+    Core::Point3d e{limiter.xlow, limiter.ylow, limiter.zhigh};
+    Core::Point3d f{limiter.xhigh, limiter.ylow, limiter.zhigh};
+    Core::Point3d g{limiter.xhigh, limiter.yhigh, limiter.zhigh};
+    Core::Point3d h{limiter.xlow, limiter.yhigh, limiter.zhigh};
 
     this->insertQuad(b, c, g, f); // X Max plane
     this->insertQuad(d, a, e, h); // X Min plane
@@ -103,8 +104,8 @@ void Box::initialize()
     extentChanged.emit_signal();
 }
 
-void Box::insertQuad(const Core::Vector3d& a, const Core::Vector3d& b,
-                     const Core::Vector3d& c, const Core::Vector3d& d)
+void Box::insertQuad(const Core::Point3d& a, const Core::Point3d& b,
+                     const Core::Point3d& c, const Core::Point3d& d)
 {
     int index = static_cast<int>(this->vertices().size() / kValuesPerVertex);
 

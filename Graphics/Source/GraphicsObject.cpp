@@ -71,16 +71,16 @@ void GraphicsObject::render() const
 
 bool GraphicsObject::probe(int x, int y) const
 {
-    Core::Vector3d nearPoint = this->glNearPoint(x, y);
-    Core::Vector3d farPoint = this->glFarPoint(x, y);
+    Core::Point3d nearPoint = this->glNearPoint(x, y);
+    Core::Point3d farPoint = this->glFarPoint(x, y);
 
     return m_geometryObject->intersectBoundingBox(nearPoint, farPoint)
             && m_geometryObject->intersect(nearPoint, farPoint, nullptr);
 }
 
-std::vector<Core::Vector3d> GraphicsObject::probePoints(int x, int y) const
+std::vector<Core::Point3d> GraphicsObject::probePoints(int x, int y) const
 {
-    std::vector<Core::Vector3d> probePoints{};
+    std::vector<Core::Point3d> probePoints{};
     return probePoints;
 }
 
@@ -119,7 +119,7 @@ void GraphicsObject::initialize()
     graphicsObjectChanged.emit_signal(); // emit signal
 }
 
-Core::Vector3d GraphicsObject::glNearPoint(int x, int y) const
+Core::Point3d GraphicsObject::glNearPoint(int x, int y) const
 {
     Core::Matrix4x4 modelViewMatrix = m_graphicsEnvironment.viewpointCamera().viewMatrix()
                                         /** m_geometryObject.transformMatrix()*/;
@@ -128,10 +128,10 @@ Core::Vector3d GraphicsObject::glNearPoint(int x, int y) const
     gluUnProject(x, y, 0.0, modelViewMatrix.data(), projectionMatrix.data(),
                  m_graphicsEnvironment.viewportTransform().data(),
                  &nearPoint[0], &nearPoint[1], &nearPoint[2]);
-    return Core::Vector3d(nearPoint);
+    return Core::Point3d(nearPoint);
 }
 
-Core::Vector3d GraphicsObject::glFarPoint(int x, int y) const
+Core::Point3d GraphicsObject::glFarPoint(int x, int y) const
 {
     Core::Matrix4x4 modelViewMatrix = m_graphicsEnvironment.viewpointCamera().viewMatrix()
                                         /** m_geometryObject.transformMatrix()*/;
@@ -140,7 +140,7 @@ Core::Vector3d GraphicsObject::glFarPoint(int x, int y) const
     gluUnProject(x, y, 1.0, modelViewMatrix.data(), projectionMatrix.data(),
                  m_graphicsEnvironment.viewportTransform().data(),
                  &farPoint[0], &farPoint[1], &farPoint[2]);
-    return Core::Vector3d(farPoint);
+    return Core::Point3d(farPoint);
 }
 
 } // namespace Graphics

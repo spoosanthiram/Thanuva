@@ -13,7 +13,7 @@
 #include <nano_signal_slot.hpp>
 
 #include "OpenGLInterface.h"
-#include "Vector3d.h"
+#include "Point3d.h"
 
 namespace Geometry { class GeometryObject; }
 
@@ -38,15 +38,15 @@ public:
 
     void render() const;
     bool probe(int x, int y) const;
-    std::vector<Core::Vector3d> probePoints(int x, int y) const;
+    std::vector<Core::Point3d> probePoints(int x, int y) const;
 
 public: // signals
     Nano::Signal<void()> graphicsObjectChanged;
 
 private:
     void initialize();
-    Core::Vector3d glNearPoint(int x, int y) const;
-    Core::Vector3d glFarPoint(int x, int y) const;
+    Core::Point3d glNearPoint(int x, int y) const;
+    Core::Point3d glFarPoint(int x, int y) const;
 
     const GraphicsEnvironment& m_graphicsEnvironment;
     Geometry::GeometryObject* m_geometryObject;

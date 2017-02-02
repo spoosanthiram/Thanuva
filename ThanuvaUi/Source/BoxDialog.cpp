@@ -9,7 +9,6 @@
 
 #include <QMessageBox>
 
-#include "AppSettings.h"
 #include "BoxModel.h"
 
 namespace ThanuvaUi {
@@ -24,22 +23,22 @@ BoxDialog::BoxDialog(QWidget* parent, Model::BoxModel* boxModel)
 
     boxModel->limiterChanged.connect<BoxDialog, &BoxDialog::initialize>(this);
 
-    connect(m_boxWidget->m_xLowLineEdit, &QLineEdit::editingFinished, this, &BoxDialog::update);
-    connect(m_boxWidget->m_xHighLineEdit, &QLineEdit::editingFinished, this, &BoxDialog::update);
-    connect(m_boxWidget->m_yLowLineEdit, &QLineEdit::editingFinished, this, &BoxDialog::update);
-    connect(m_boxWidget->m_yHighLineEdit, &QLineEdit::editingFinished, this, &BoxDialog::update);
-    connect(m_boxWidget->m_zLowLineEdit, &QLineEdit::editingFinished, this, &BoxDialog::update);
-    connect(m_boxWidget->m_zHighLineEdit, &QLineEdit::editingFinished, this, &BoxDialog::update);
+    connect(m_boxWidget->xLowLineEdit, &QLineEdit::editingFinished, this, &BoxDialog::update);
+    connect(m_boxWidget->xHighLineEdit, &QLineEdit::editingFinished, this, &BoxDialog::update);
+    connect(m_boxWidget->yLowLineEdit, &QLineEdit::editingFinished, this, &BoxDialog::update);
+    connect(m_boxWidget->yHighLineEdit, &QLineEdit::editingFinished, this, &BoxDialog::update);
+    connect(m_boxWidget->zLowLineEdit, &QLineEdit::editingFinished, this, &BoxDialog::update);
+    connect(m_boxWidget->zHighLineEdit, &QLineEdit::editingFinished, this, &BoxDialog::update);
 }
 
 void BoxDialog::update()
 {
-    double xlow = m_boxWidget->m_xLowLineEdit->text().toDouble();
-    double xhigh = m_boxWidget->m_xHighLineEdit->text().toDouble();
-    double ylow = m_boxWidget->m_yLowLineEdit->text().toDouble();
-    double yhigh = m_boxWidget->m_yHighLineEdit->text().toDouble();
-    double zlow = m_boxWidget->m_zLowLineEdit->text().toDouble();
-    double zhigh = m_boxWidget->m_zHighLineEdit->text().toDouble();
+    double xlow = m_boxWidget->xLowLineEdit->text().toDouble();
+    double xhigh = m_boxWidget->xHighLineEdit->text().toDouble();
+    double ylow = m_boxWidget->yLowLineEdit->text().toDouble();
+    double yhigh = m_boxWidget->yHighLineEdit->text().toDouble();
+    double zlow = m_boxWidget->zLowLineEdit->text().toDouble();
+    double zhigh = m_boxWidget->zHighLineEdit->text().toDouble();
 
     try {
         dynamic_cast<Model::BoxModel*>(this->modelObject())->setLimiter(Model::BoxModel::Limiter(xlow, xhigh, ylow, yhigh, zlow, zhigh));
@@ -53,12 +52,12 @@ void BoxDialog::update()
 void BoxDialog::initialize()
 {
     Model::BoxModel::Limiter limiter = dynamic_cast<Model::BoxModel*>(this->modelObject())->limiter();
-    m_boxWidget->m_xLowLineEdit->setText(QString::number(limiter.xlow));
-    m_boxWidget->m_xHighLineEdit->setText(QString::number(limiter.xhigh));
-    m_boxWidget->m_yLowLineEdit->setText(QString::number(limiter.ylow));
-    m_boxWidget->m_yHighLineEdit->setText(QString::number(limiter.yhigh));
-    m_boxWidget->m_zLowLineEdit->setText(QString::number(limiter.zlow));
-    m_boxWidget->m_zHighLineEdit->setText(QString::number(limiter.zhigh));
+    m_boxWidget->xLowLineEdit->setText(QString::number(limiter.xlow));
+    m_boxWidget->xHighLineEdit->setText(QString::number(limiter.xhigh));
+    m_boxWidget->yLowLineEdit->setText(QString::number(limiter.ylow));
+    m_boxWidget->yHighLineEdit->setText(QString::number(limiter.yhigh));
+    m_boxWidget->zLowLineEdit->setText(QString::number(limiter.zlow));
+    m_boxWidget->zHighLineEdit->setText(QString::number(limiter.zhigh));
 }
 
 } // namespace ThanuvaUi

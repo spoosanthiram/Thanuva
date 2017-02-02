@@ -12,6 +12,7 @@
 
 namespace Core {
 
+class HPoint;
 class HVector;
 class Quaternion;
 
@@ -104,8 +105,8 @@ public:
     bool operator==(const Matrix4x4& rhs) const;
     bool operator!=(const Matrix4x4& rhs) const { return !(*this == rhs); }
     Matrix4x4 operator*(const Matrix4x4& rhs) const;
-    HVector operator*(const HVector& rhs) const;
-    HVector multiplyInfinite(const HVector& rhs) const;
+    HPoint operator*(const HPoint& rhs) const;
+    HPoint multiplyInfinite(const HPoint& rhs) const;
 
 protected:
     std::array<double, kNRows * kNColumns> m_elements;

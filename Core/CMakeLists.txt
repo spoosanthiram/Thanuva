@@ -4,10 +4,12 @@ set(SOURCE_FILES
     ${Core_SOURCE_DIR}/Include/Color.h
     ${Core_SOURCE_DIR}/Include/CoreDef.h
     ${Core_SOURCE_DIR}/Include/ThanuvaException.h
+    ${Core_SOURCE_DIR}/Include/HPoint.h
     ${Core_SOURCE_DIR}/Include/HVector.h
     ${Core_SOURCE_DIR}/Include/Material.h
     ${Core_SOURCE_DIR}/Include/Matrix3x3.h
     ${Core_SOURCE_DIR}/Include/Matrix4x4.h
+    ${Core_SOURCE_DIR}/Include/Point3d.h
     ${Core_SOURCE_DIR}/Include/Quaternion.h
     ${Core_SOURCE_DIR}/Include/Utils.h
     ${Core_SOURCE_DIR}/Include/Vector3d.h
@@ -15,10 +17,12 @@ set(SOURCE_FILES
     ${Core_SOURCE_DIR}/Source/Color.cpp
     ${Core_SOURCE_DIR}/Source/CoreDef.cpp
     ${Core_SOURCE_DIR}/Source/ThanuvaException.cpp
+    ${Core_SOURCE_DIR}/Source/HPoint.cpp
     ${Core_SOURCE_DIR}/Source/HVector.cpp
     ${Core_SOURCE_DIR}/Source/Material.cpp
     ${Core_SOURCE_DIR}/Source/Matrix3x3.cpp
     ${Core_SOURCE_DIR}/Source/Matrix4x4.cpp
+    ${Core_SOURCE_DIR}/Source/Point3d.cpp
     ${Core_SOURCE_DIR}/Source/Quaternion.cpp
     ${Core_SOURCE_DIR}/Source/Utils.cpp
     ${Core_SOURCE_DIR}/Source/Vector3d.cpp

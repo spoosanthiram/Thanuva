@@ -14,7 +14,7 @@
 #include <gtest/gtest.h>
 #endif
 
-#include "HVector.h"
+#include "HPoint.h"
 #include "Matrix4x4.h"
 
 namespace Geometry {
@@ -51,7 +51,7 @@ void Extent::transform(const Core::Matrix4x4& xformMatrix, CalculationModel mode
     if (this->isAnyInfinite())
         return;
 
-    Core::HVector vertices[kNumBoxVertices];
+    Core::HPoint vertices[kNumBoxVertices];
     vertices[0].assign(m_xMin, m_yMin, m_zMin, 1.0);
     vertices[1].assign(m_xMax, m_yMin, m_zMin, 1.0);
     vertices[2].assign(m_xMax, m_yMax, m_zMin, 1.0);
@@ -94,7 +94,7 @@ void Extent::transformInfinite(const Core::Matrix4x4& xformMatrix)
             && psa::isInfinite(m_zMin) && psa::isInfinite(m_zMax)) // this NOT this->isAllInfinite()
         return;
 
-    Core::HVector vertices[kNumBoxVertices];
+    Core::HPoint vertices[kNumBoxVertices];
     vertices[0].assign(m_xMin, m_yMin, m_zMin, 1.0);
     vertices[1].assign(m_xMax, m_yMin, m_zMin, 1.0);
     vertices[2].assign(m_xMax, m_yMax, m_zMin, 1.0);

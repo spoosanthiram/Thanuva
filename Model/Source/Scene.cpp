@@ -12,6 +12,7 @@
 #include <fmt/format.h>
 
 #include "BoxModel.h"
+#include "CylinderModel.h"
 #include "ModelException.h"
 #include "StlModel.h"
 
@@ -137,25 +138,23 @@ void Scene::loadModelObjectList(const boost::property_tree::ptree& modelObjectsP
 {
     using boost::property_tree::ptree;
 
+    std::function<std::unique_ptr<ModelObject>(Scene*)> modelObjectMaker[] = {
+        [](Scene* scene) -> std::unique_ptr<ModelObject> { return std::make_unique<BoxModel>(*scene); },
+        [](Scene* scene) -> std::unique_ptr<ModelObject> { return std::make_unique<StlModel>(*scene); },
+        [](Scene* scene) -> std::unique_ptr<ModelObject> { return std::make_unique<CylinderModel>(*scene); }
+    };
+
     for (const auto& it : modelObjectsPropTree) {
         const ptree& modelObjectPropTree = it.second;
-        auto type = static_cast<ModelObject::Type>(
-                        modelObjectPropTree.get<int>(ModelObject::kTypeTag));
+        unsigned int type = modelObjectPropTree.get<unsigned int>(ModelObject::kTypeTag);
+        if (type > static_cast<unsigned int>(ModelObject::Type::NTypes))
+            throw ModelException{ModelException::kInvalidType};
 
-        std::unique_ptr<ModelObject> modelObjectPtr{};
+        auto modelObject = modelObjectMaker[type](this);
 
-        switch(type) {
-        case ModelObject::Type::Box:
-            modelObjectPtr = std::make_unique<BoxModel>(*this);
-            break;
-        case ModelObject::Type::Stl:
-            modelObjectPtr = std::make_unique<StlModel>(*this);
-            break;
-        }
-
-        if (modelObjectPtr) {
-            modelObjectPtr->load(modelObjectPropTree);
-            this->add(std::move(modelObjectPtr));
+        if (modelObject) {
+            modelObject->load(modelObjectPropTree);
+            this->add(std::move(modelObject));
         }
     }
 }

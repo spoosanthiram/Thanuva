@@ -31,12 +31,13 @@ void GeometryObject::setExtent(const Extent& extent, Core::EmitSignal emitSignal
         extentChanged.emit_signal(); // emit signal
 }
 
-bool GeometryObject::intersectBoundingBox(const Core::Vector3d& nearPoint,
-                                          const Core::Vector3d& farPoint)
+bool GeometryObject::intersectBoundingBox(const Core::Point3d& nearPoint,
+                                          const Core::Point3d& farPoint)
 {
     const unsigned int kNumQuad = 6;
 
-    Core::Vector3d a, b, c, d, n, p;
+    Core::Vector3d n;
+    Core::Point3d a, b, c, d, p;
     Core::Vector3d l = farPoint - nearPoint;
 
     for (unsigned int i = 0, index; i < kNumQuad; ++i) {
@@ -66,14 +67,14 @@ void GeometryObject::initializeBoundingBox()
     if (m_extent.isAnyInfinite())
         return;
 
-    Core::Vector3d a{m_extent.xMin(), m_extent.yMin(), m_extent.zMin()};
-    Core::Vector3d b{m_extent.xMax(), m_extent.yMin(), m_extent.zMin()};
-    Core::Vector3d c{m_extent.xMax(), m_extent.yMax(), m_extent.zMin()};
-    Core::Vector3d d{m_extent.xMin(), m_extent.yMax(), m_extent.zMin()};
-    Core::Vector3d e{m_extent.xMin(), m_extent.yMin(), m_extent.zMax()};
-    Core::Vector3d f{m_extent.xMax(), m_extent.yMin(), m_extent.zMax()};
-    Core::Vector3d g{m_extent.xMax(), m_extent.yMax(), m_extent.zMax()};
-    Core::Vector3d h{m_extent.xMin(), m_extent.yMax(), m_extent.zMax()};
+    Core::Point3d a{m_extent.xMin(), m_extent.yMin(), m_extent.zMin()};
+    Core::Point3d b{m_extent.xMax(), m_extent.yMin(), m_extent.zMin()};
+    Core::Point3d c{m_extent.xMax(), m_extent.yMax(), m_extent.zMin()};
+    Core::Point3d d{m_extent.xMin(), m_extent.yMax(), m_extent.zMin()};
+    Core::Point3d e{m_extent.xMin(), m_extent.yMin(), m_extent.zMax()};
+    Core::Point3d f{m_extent.xMax(), m_extent.yMin(), m_extent.zMax()};
+    Core::Point3d g{m_extent.xMax(), m_extent.yMax(), m_extent.zMax()};
+    Core::Point3d h{m_extent.xMin(), m_extent.yMax(), m_extent.zMax()};
 
     this->insertBoundingBoxVertex(0, a);
     this->insertBoundingBoxVertex(3, b);

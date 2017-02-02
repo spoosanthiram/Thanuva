@@ -28,19 +28,8 @@ const char* ModelObject::kTypeTag = "type";
 
 std::string ModelObject::typeStr(Type type)
 {
-    std::string str{};
-
-    switch (type)
-    {
-        case Type::Box:
-            str = "Box";
-            break;
-        case Type::Stl:
-            str = "Stl";
-            break;
-    }
-
-    return str;
+    static const char* typeString[static_cast<int>(Type::NTypes)] = {"Box", "Stl", "Cylinder"};
+    return typeString[static_cast<int>(type)];
 }
 
 ModelObject::ModelObject(const Scene& scene)
