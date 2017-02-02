@@ -38,13 +38,19 @@ std::string BoxModel::Limiter::str() const
     return fmt::format("[{}, {}]; [{}, {}]; [{}, {}]", xlow, xhigh, ylow, yhigh, zlow, zhigh);
 }
 
+BoxModel::BoxModel(const Scene& scene)
+    : ModelObject{scene}
+{
+    this->connectModelObjectChanged();
+}
+
 BoxModel::BoxModel(const Scene& scene, const Limiter& limiter)
     : ModelObject{scene}
     , m_limiter{limiter}
 {
     this->setLimiter(m_limiter); // to get it validated
 
-    limiterChanged.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
+    this->connectModelObjectChanged();
 }
 
 void BoxModel::setLimiter(const Limiter& limiter)
@@ -80,6 +86,11 @@ void BoxModel::saveModel(boost::property_tree::ptree& modelPropTree)
     modelPropTree.put(kYHighTag, m_limiter.yhigh);
     modelPropTree.put(kZLowTag, m_limiter.zlow);
     modelPropTree.put(kZHighTag, m_limiter.zhigh);
+}
+
+void BoxModel::connectModelObjectChanged()
+{
+    limiterChanged.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
 }
 
 #ifdef UNIT_TEST

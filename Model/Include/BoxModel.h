@@ -57,7 +57,7 @@ public:
     };
 
 public:
-    BoxModel(const Scene& scene) : ModelObject{scene} {}
+    BoxModel(const Scene& scene);
     BoxModel(const Scene& scene, const Limiter& limiter);
     BoxModel(const BoxModel& rhs) = delete; // TODO: needs to be implemented
 
@@ -76,6 +76,8 @@ protected:
     void saveModel(boost::property_tree::ptree& modelPropTree) override;
 
 private:
+    void connectModelObjectChanged();
+
     Limiter m_limiter{};
 };
 

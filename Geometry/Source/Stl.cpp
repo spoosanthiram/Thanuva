@@ -172,10 +172,7 @@ bool Stl::isAsciiFormat(const std::string& filePath) const
     buf.resize(kBufLen, '\0');
     stlInputStream.read(&buf[0], kBufLen-1);
 
-    if (buf.find("facet") != std::string::npos || buf.find("normal") != std::string::npos)
-        return true;
-    else
-        return false;
+    return (buf.find("facet") != std::string::npos || buf.find("normal") != std::string::npos) ? true : false;
 }
 
 void Stl::readAscii(const std::string& filePath)

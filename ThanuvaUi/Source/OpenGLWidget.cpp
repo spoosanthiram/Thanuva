@@ -21,6 +21,8 @@
 #include "AppSettings.h"
 #include "BoxModel.h"
 #include "BoxDialog.h"
+#include "CylinderModel.h"
+#include "CylinderDialog.h"
 #include "OpenGLInterface.h"
 #include "Scene.h"
 #include "StlModel.h"
@@ -39,6 +41,7 @@ OpenGLWidget::OpenGLWidget(QWidget* parent)
 
     m_contextMenu = new QMenu(this);
     m_contextMenu->addAction(tr("Add Box"), this, SLOT(addBox()));
+    m_contextMenu->addAction(tr("Add Cylinder"), this, SLOT(addCylinder()));
     m_contextMenu->addAction(tr("Add STL"), this, SLOT(addStl()));
 
     QSurfaceFormat format = this->format();
@@ -79,8 +82,19 @@ void OpenGLWidget::addBox()
     this->makeCurrent();
 
     auto boxModel = m_scene->newModelObject<Model::BoxModel>();
+    BoxDialog{this, boxModel}.exec();
 
-    BoxDialog(this, boxModel).exec();
+    this->doneCurrent();
+}
+
+void OpenGLWidget::addCylinder()
+{
+    LOG(INFO) << "Creating default Cylinder, adding it to Model::Project. Showing CylinderDialog...";
+
+    this->makeCurrent();
+
+    auto cylinderModel = m_scene->newModelObject<Model::CylinderModel>();
+    CylinderDialog{this, cylinderModel}.exec();
 
     this->doneCurrent();
 }

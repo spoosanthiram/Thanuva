@@ -48,6 +48,7 @@ public:
 protected slots:
     void handleViewChanged() { this->update(); }
     void addBox();
+    void addCylinder();
     void addStl();
 
 protected:

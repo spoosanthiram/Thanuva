@@ -39,6 +39,7 @@ private: // slots
     void initialize();
 
 private:
+    Model::BoxModel* m_boxModel;
     BoxWidget* m_boxWidget{nullptr};
 };
 

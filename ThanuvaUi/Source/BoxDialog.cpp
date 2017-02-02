@@ -15,13 +15,14 @@ namespace ThanuvaUi {
 
 BoxDialog::BoxDialog(QWidget* parent, Model::BoxModel* boxModel)
     : GeometryDialog{parent, boxModel}
+    , m_boxModel{boxModel}
 {
     m_boxWidget = new BoxWidget{this};
     this->geometryPlaceHolderLayout()->addWidget(m_boxWidget);
 
     this->initialize();
 
-    boxModel->limiterChanged.connect<BoxDialog, &BoxDialog::initialize>(this);
+    m_boxModel->limiterChanged.connect<BoxDialog, &BoxDialog::initialize>(this);
 
     connect(m_boxWidget->xLowLineEdit, &QLineEdit::editingFinished, this, &BoxDialog::update);
     connect(m_boxWidget->xHighLineEdit, &QLineEdit::editingFinished, this, &BoxDialog::update);
@@ -41,7 +42,7 @@ void BoxDialog::update()
     double zhigh = m_boxWidget->zHighLineEdit->text().toDouble();
 
     try {
-        dynamic_cast<Model::BoxModel*>(this->modelObject())->setLimiter(Model::BoxModel::Limiter(xlow, xhigh, ylow, yhigh, zlow, zhigh));
+        m_boxModel->setLimiter(Model::BoxModel::Limiter(xlow, xhigh, ylow, yhigh, zlow, zhigh));
         this->setErrorText(QString{});
     }
     catch (const std::exception& e) {
@@ -51,7 +52,7 @@ void BoxDialog::update()
 
 void BoxDialog::initialize()
 {
-    Model::BoxModel::Limiter limiter = dynamic_cast<Model::BoxModel*>(this->modelObject())->limiter();
+    Model::BoxModel::Limiter limiter = m_boxModel->limiter();
     m_boxWidget->xLowLineEdit->setText(QString::number(limiter.xlow));
     m_boxWidget->xHighLineEdit->setText(QString::number(limiter.xhigh));
     m_boxWidget->yLowLineEdit->setText(QString::number(limiter.ylow));

@@ -33,12 +33,21 @@ public:
     CylinderDialog(QWidget* parent, Model::CylinderModel* cylinderModel);
 
 private slots:
-    void update();
+    void updateEndpoint1();
+    void updateRadius1();
+    void updateEndpoint2();
+    void updateRadius2();
+    void updateNumFacets();
 
 private: // slots
-    void initialize();
+    void initEndpoint1();
+    void initRadius1();
+    void initEndpoint2();
+    void initRadius2();
+    void initNumFacets();
 
 private:
+    Model::CylinderModel* m_cylinderModel;
     CylinderWidget* m_cylinderWidget{nullptr};
 };
 
