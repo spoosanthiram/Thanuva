@@ -11,6 +11,8 @@
 
 #include "Box.h"
 #include "BoxModel.h"
+#include "Cylinder.h"
+#include "CylinderModel.h"
 #include "Scene.h"
 #include "Stl.h"
 #include "StlModel.h"
@@ -69,16 +71,17 @@ void GeometryContainer::updateExtent()
 
 std::unique_ptr<GeometryObject> GeometryContainer::makeGeometryObject(Model::ModelObject* modelObject)
 {
-    std::unique_ptr<GeometryObject> geometryObjectPtr{};
-    switch (modelObject->type()) {
-    case Model::ModelObject::Type::Box:
-        geometryObjectPtr = std::make_unique<Box>(*this, dynamic_cast<Model::BoxModel*>(modelObject));
-        break;
-    case Model::ModelObject::Type::Stl:
-        geometryObjectPtr = std::make_unique<Stl>(*this, dynamic_cast<Model::StlModel*>(modelObject));
-        break;
-    }
-    return geometryObjectPtr;
+    std::function<std::unique_ptr<GeometryObject>(GeometryContainer*, Model::ModelObject*)> geometryMaker[] =
+    {
+        [](GeometryContainer* gc, Model::ModelObject* mo) -> std::unique_ptr<GeometryObject>
+            { return std::make_unique<Box>(*gc, dynamic_cast<Model::BoxModel*>(mo)); },
+        [](GeometryContainer* gc, Model::ModelObject* mo) -> std::unique_ptr<GeometryObject>
+            { return std::make_unique<Stl>(*gc, dynamic_cast<Model::StlModel*>(mo)); },
+        [](GeometryContainer* gc, Model::ModelObject* mo) -> std::unique_ptr<GeometryObject>
+            { return std::make_unique<Cylinder>(*gc, dynamic_cast<Model::CylinderModel*>(mo)); }
+    };
+
+    return geometryMaker[static_cast<int>(modelObject->type())](this, modelObject);
 }
 
 } // namespace Geometry

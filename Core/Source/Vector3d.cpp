@@ -7,6 +7,9 @@
 
 #include "Vector3d.h"
 
+#include <cassert>
+#include <cmath>
+
 #include <fmt/format.h>
 #ifdef UNIT_TEST
 #include <gtest/gtest.h>
@@ -17,6 +20,24 @@ namespace Core {
 std::string Vector3d::str() const
 {
     return fmt::format("({}, {}, {})", m_coords[0], m_coords[1], m_coords[2]);
+}
+
+Vector3d Vector3d::orthonormal() const
+{
+    assert(psa::isequal(this->norm(), 1.0));
+
+    Vector3d t{m_coords.data()};
+    int minIndex = 0;
+    for (auto i = 1; i < m_coords.size(); ++i) {
+        if (std::abs(t[i]) <= std::abs(t[minIndex]))
+            minIndex = i;
+    }
+    t.m_coords[minIndex] = 1.0;
+
+    Vector3d pvector = t.cross(*this);
+    pvector.normalize();
+
+    return pvector;
 }
 
 #ifdef UNIT_TEST
@@ -47,6 +68,25 @@ TEST(Vector3dTest, DotProduct)
     Vector3d basisY{ 0.0, 1.0, 0.0 };
     double actual = basisX.dot(basisY);
     EXPECT_EQ(0.0, actual);
+}
+
+TEST(Vector3dTest, PerpendicularVector)
+{
+    Vector3d w{1.0, 0.0, 0.0};
+    Vector3d u = w.orthonormal();
+    Vector3d expected{0.0, 1.0, 0.0};
+    EXPECT_EQ(expected, u);
+
+    w = Vector3d{0.0, 0.0, 1.0};
+    u = w.orthonormal();
+    expected = Vector3d{1.0, 0.0, 0.0};
+    EXPECT_EQ(expected, u);
+
+    w = Vector3d{0.0, 0.0, 1.0} - Vector3d{1.0, 1.0, 0.0};
+    w.normalize();
+    u = w.orthonormal();
+    expected = Vector3d{0.70710678118654757, -0.70710678118654757, 0.0};
+    EXPECT_EQ(expected, u);
 }
 
 #endif // UNIT_TEST

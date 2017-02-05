@@ -60,6 +60,7 @@ public:
                         m_coords[0] * rhs.m_coords[1] - rhs.m_coords[0] * m_coords[1]};
     }
     double norm() const { return std::sqrt(this->dot(*this)); }
+    Vector3d orthonormal() const;
 
     void setNorm(double norm)
     {
@@ -85,6 +86,11 @@ public:
         m_coords[0] = psa::add(m_coords[0], rhs.m_coords[0]);
         m_coords[1] = psa::add(m_coords[1], rhs.m_coords[1]);
         m_coords[2] = psa::add(m_coords[2], rhs.m_coords[2]);
+    }
+
+    Vector3d operator- () const
+    {
+        return Vector3d{-m_coords[0], -m_coords[1], -m_coords[2]};
     }
 
     bool operator==(const Vector3d& rhs) const

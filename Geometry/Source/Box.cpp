@@ -65,19 +65,15 @@ void Box::initialize()
 {
     this->clear();
 
-    this->setExtent(Extent{
-            std::numeric_limits<double>::infinity(),
-            -std::numeric_limits<double>::infinity(),
-            std::numeric_limits<double>::infinity(),
-            -std::numeric_limits<double>::infinity(),
-            std::numeric_limits<double>::infinity(),
-            -std::numeric_limits<double>::infinity()
-        }, Core::EmitSignal::DontEmit);
+    this->setExtent(Extent{std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(),
+                        std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(),
+                        std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity()},
+                    Core::EmitSignal::DontEmit);
 
     this->reserve(24 * GeometryObject::kValuesPerVertex, 24 * GeometryObject::kValuesPerVertex, 36);
 
-    auto box = dynamic_cast<Model::BoxModel*>(this->modelObject());
-    const Model::BoxModel::Limiter& limiter = box->limiter();
+    auto boxModel = dynamic_cast<Model::BoxModel*>(this->modelObject());
+    const Model::BoxModel::Limiter& limiter = boxModel->limiter();
 
     Core::Point3d a{limiter.xlow, limiter.ylow, limiter.zlow};
     Core::Point3d b{limiter.xhigh, limiter.ylow, limiter.zlow};

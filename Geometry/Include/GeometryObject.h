@@ -92,6 +92,14 @@ protected:
 
         m_extent.update(vertex);
     }
+    void duplicateVertices(size_t startIndex, size_t len)
+    {
+        //auto first = m_vertices.begin() + startIndex;
+        //auto last = first + len;
+        //std::copy(first, last, std::back_inserter(m_vertices));
+        for (size_t i = 0; i < len; ++i)
+            m_vertices.push_back(m_vertices[startIndex + i]);
+    }
 
     void insertNormal(const float* normal)
     {
