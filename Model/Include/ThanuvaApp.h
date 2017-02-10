@@ -18,8 +18,6 @@
 #include "GlogWrapper.h"
 #include "Scene.h"
 
-namespace fs = std::experimental::filesystem;
-
 namespace Model {
 
 class ThanuvaApp

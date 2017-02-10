@@ -9,6 +9,7 @@
 #define MODEL_GLOGWRAPPER_H
 
 #include <filesystem>
+#include <set>
 
 namespace fs = std::experimental::filesystem;
 
@@ -23,6 +24,7 @@ public:
 
 private:
     fs::path logPath() const;
+    void removeOldFiles(std::set<fs::path>& filePaths);
 
     const ThanuvaApp& m_app;
 

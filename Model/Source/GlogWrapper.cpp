@@ -9,7 +9,6 @@
 
 #include <cstdlib>
 #include <filesystem>
-#include <set>
 
 #include <glog/logging.h>
 
@@ -51,14 +50,9 @@ GlogWrapper::~GlogWrapper()
             errorPaths.insert(entry.path());
     }
 
-    while (infoPaths.size() > kLogFilesToKeep)
-        infoPaths.erase(infoPaths.begin());
-
-    while (warningPaths.size() > kLogFilesToKeep)
-        warningPaths.erase(warningPaths.begin());
-
-    while (errorPaths.size() > kLogFilesToKeep)
-        errorPaths.erase(errorPaths.begin());
+    this->removeOldFiles(infoPaths);
+    this->removeOldFiles(warningPaths);
+    this->removeOldFiles(errorPaths);
 }
 
 fs::path GlogWrapper::logPath() const
@@ -68,6 +62,18 @@ fs::path GlogWrapper::logPath() const
     if (!fs::exists(dirPath))
         fs::create_directory(dirPath);
     return dirPath;
+}
+
+void GlogWrapper::removeOldFiles(std::set<fs::path>& filePaths)
+{
+    while (filePaths.size() > kLogFilesToKeep) {
+        auto it = filePaths.begin();
+        try {
+            fs::remove(*it);
+        }
+        catch (...) {}
+        filePaths.erase(it);
+    }
 }
 
 }
