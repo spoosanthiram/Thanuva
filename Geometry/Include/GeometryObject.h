@@ -31,33 +31,9 @@ public:
     static const int kValuesPerVertex = 3;
     static const int kVerticesPerTriangle = 3;
 
-    /**
-     * Checks for does the line (np, l) intersects the plane (a, n).
-     * The line characterized by two point np and fp with l = fp - np.
-     * The plane of infinite dimension with 'a' that lies on the plane and 'n' normal to the plane.
-     * @return true if intersecting point is found. 'p' will be filled.
-     *         false if no intersecting point is found.
-     */
-    static bool intersectPlane(const Core::Point3d& a, const Core::Vector3d& n,
-                               const Core::Point3d& np, const Core::Vector3d& l,
-                               Core::Point3d& p)
-    {
-        double nDotL = n.dot(l);
-        if (psa::iszero(nDotL)) // ray is parallel to plane (triangle) either starts outside or inside
-            return false;
-
-        double alpha = n.dot(a - np) / nDotL;
-        if (alpha < 0.0 || alpha > 1.0) // plane is beyond the ray we consider
-            return false;
-
-        p = np + alpha * l; // p intersect the plane (triangle)
-
-        return true;
-    }
-
 public:
     GeometryObject(const GeometryContainer& geometryContainer, Model::ModelObject* modelObject);
-    virtual ~GeometryObject() {}
+    ~GeometryObject() {}
 
     Model::ModelObject* modelObject() const { return m_modelObject; }
     const std::vector<float>& vertices() const { return m_vertices; }
@@ -67,9 +43,9 @@ public:
 
     void setExtent(const Extent& extent, Core::EmitSignal emitSignal = Core::EmitSignal::Emit);
 
-    bool intersectBoundingBox(const Core::Point3d& nearPoint, const Core::Point3d& farPoint);
-    virtual bool intersect(const Core::Point3d& nearPoint, const Core::Point3d& farPoint,
-                           std::vector<Core::Point3d>* points) = 0;
+    bool intersect(const Core::Point3d& nearPoint, const Core::Point3d& farPoint,
+                   std::vector<Core::Point3d>* points) const;
+    bool intersectBoundingBox(const Core::Point3d& nearPoint, const Core::Point3d& farPoint) const;
 
 public: // signals
     Nano::Signal<void()> geometryObjectChanged{};

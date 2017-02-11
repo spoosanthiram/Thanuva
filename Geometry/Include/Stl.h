@@ -64,9 +64,6 @@ public:
 public:
     Stl(const GeometryContainer& gfxProject, Model::StlModel* stlModel);
 
-    bool intersect(const Core::Point3d& nearPoint, const Core::Point3d& farPoint,
-                   std::vector<Core::Point3d>* points) override;
-
 private: // slots
     void initialize();
 

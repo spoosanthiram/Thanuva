@@ -7,7 +7,6 @@
 
 #include "Stl.h"
 
-#include <chrono>
 #include <fstream>
 #include <thread>
 
@@ -18,126 +17,12 @@
 
 namespace Geometry {
 
-const std::size_t k2MillionTriangles = 2000000 * 9;
-const std::size_t k4Point5MillionTriangles = 4500000 * 9;
-
 Stl::Stl(const GeometryContainer& geometryContainer, Model::StlModel* stlModel)
     : GeometryObject(geometryContainer, stlModel)
 {
     this->initialize();
 
     stlModel->filePathChanged.connect<Stl, &Stl::initialize>(this);
-}
-
-struct IntersectionPoints {
-    IntersectionPoints(const std::vector<float>& vertices, const std::vector<float>& normals,
-                       std::size_t istart, std::size_t iend,
-                       const Core::Point3d& nearPoint, const Core::Point3d& farPoint,
-                       volatile bool& found, std::vector<Core::Point3d>* points)
-        : m_vertices{vertices}
-        , m_normals{normals}
-        , m_istart{istart}
-        , m_iend{iend}
-        , m_nearPoint{nearPoint}
-        , m_farPoint{farPoint}
-        , m_found{found}
-        , m_points{points}
-    {}
-
-    void operator()() {
-        Core::Vector3d n;
-        Core::Point3d a, b, c, p;
-        Core::Vector3d l = m_farPoint - m_nearPoint;
-
-        for (size_t i = m_istart; i < m_iend; i += 9) {
-            if (m_found && !m_points)
-                break;
-
-            a.assign(&m_vertices[i]);
-            n.assign(&m_normals[i]);
-
-            if (!GeometryObject::intersectPlane(a, n, m_nearPoint, l, p))
-                continue;
-
-            b.assign(&m_vertices[i + 3]);
-            c.assign(&m_vertices[i + 6]);
-
-            // is the point p inside the triangle?
-            if (n.dot((b - a).cross(p - a)) >= 0.0 &&
-                n.dot((c - b).cross(p - b)) >= 0.0 &&
-                n.dot((a - c).cross(p - c)) >= 0.0)
-            {
-                m_found = true;
-                if (m_points)
-                    m_points->push_back(p);
-                else
-                    break;
-            }
-        }
-    }
-
-    const std::vector<float>& m_vertices;
-    const std::vector<float>& m_normals;
-    std::size_t m_istart;
-    std::size_t m_iend;
-    const Core::Point3d& m_nearPoint;
-    const Core::Point3d& m_farPoint;
-    volatile bool& m_found;
-    std::vector<Core::Point3d>* m_points;
-};
-
-bool Stl::intersect(const Core::Point3d& nearPoint, const Core::Point3d& farPoint,
-                    std::vector<Core::Point3d>* points)
-{
-    const auto& vertices = this->vertices();
-    const auto& normals = this->normals();
-    if (vertices.size() <= 0 || vertices.size() != normals.size() || (vertices.size() % 9) != 0)
-        return false;
-
-    volatile bool found = false;
-
-    auto time1 = std::chrono::steady_clock::now();
-
-    std::size_t size = vertices.size();
-    if (size <= k2MillionTriangles)
-        IntersectionPoints{vertices, normals, 0, size, nearPoint, farPoint, found, points}();
-    else if (size <= k4Point5MillionTriangles) {
-        std::size_t size1 = size / 2;
-        std::thread thread1{IntersectionPoints{vertices, normals, 0, size1,
-                        nearPoint, farPoint, found, points}};
-        IntersectionPoints{vertices, normals, size1, size, nearPoint, farPoint, found, points}();
-        thread1.join();
-    }
-    else {
-        std::size_t sizeInc = size / 4;
-
-        std::size_t istart = 0;
-        std::size_t iend = sizeInc;
-        std::thread thread1{IntersectionPoints{vertices, normals, istart, iend,
-                        nearPoint, farPoint, found, points}};
-
-        istart = iend;
-        iend = istart + sizeInc;
-        std::thread thread2{IntersectionPoints{vertices, normals, istart, iend,
-                        nearPoint, farPoint, found, points}};
-
-        istart = iend;
-        iend = istart + sizeInc;
-        std::thread thread3{IntersectionPoints{vertices, normals, istart, iend,
-                        nearPoint, farPoint, found, points}};
-
-        IntersectionPoints{vertices, normals, iend, size, nearPoint, farPoint, found, points}();
-
-        thread1.join();
-        thread2.join();
-        thread3.join();
-    }
-
-    auto time2 = std::chrono::steady_clock::now();
-    LOG(INFO) << "intersect took: "
-              << std::chrono::duration_cast<std::chrono::milliseconds>(time2 - time1).count();
-
-    return found;
 }
 
 void Stl::initialize()

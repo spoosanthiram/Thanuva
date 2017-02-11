@@ -19,12 +19,6 @@ Cylinder::Cylinder(const GeometryContainer& geometryContainer, Model::CylinderMo
     cylinderModel->endpoint1Changed.connect<Cylinder, &Cylinder::initialize>(this);
 }
 
-bool Cylinder::intersect(const Core::Point3d& nearPoint, const Core::Point3d& farPoint,
-                    std::vector<Core::Point3d>* points)
-{
-    return false;
-}
-
 void Cylinder::initialize()
 {
     this->clear();

@@ -19,9 +19,6 @@ class Box : public GeometryObject
 public:
     Box(const GeometryContainer& geometryContainer, Model::BoxModel* boxModel);
 
-    bool intersect(const Core::Point3d& nearPoint, const Core::Point3d& farPoint,
-                   std::vector<Core::Point3d>* points) override;
-
 private: // slots
     void initialize();
 

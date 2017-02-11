@@ -19,9 +19,6 @@ class Cylinder : public GeometryObject
 public:
     Cylinder(const GeometryContainer& geometryContainer, Model::CylinderModel* cylinderModel);
 
-    bool intersect(const Core::Point3d& nearPoint, const Core::Point3d& farPoint,
-                   std::vector<Core::Point3d>* points) override;
-
 private: // slots
     void initialize();
 

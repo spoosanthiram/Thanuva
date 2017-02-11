@@ -21,46 +21,6 @@ Box::Box(const GeometryContainer& geometryContainer, Model::BoxModel* boxModel)
     boxModel->limiterChanged.connect<Box, &Box::initialize>(this);
 }
 
-bool Box::intersect(const Core::Point3d& nearPoint, const Core::Point3d& farPoint,
-                    std::vector<Core::Point3d>* points)
-{
-    const std::vector<float>& vertices = this->vertices();
-    const std::vector<float>& normals = this->normals();
-    const std::vector<int>& indices = this->indices();
-
-    if (vertices.size() <= 0 || normals.size() <= 0 || indices.size() <= 0)
-        return false;
-
-    bool found = false;
-
-    Core::Vector3d n;
-    Core::Point3d a, b, c, p;
-    Core::Vector3d l = farPoint - nearPoint;
-
-    size_t len = indices.size();
-    for (size_t i = 0; i < len; i += 3) {
-        a.assign(&vertices[indices[i] * 3]);
-        n.assign(&normals[indices[i] * 3]);
-
-        if (!GeometryObject::intersectPlane(a, n, nearPoint, l, p))
-            continue;
-
-        b.assign(&vertices[indices[i + 1] * 3]);
-        c.assign(&vertices[indices[i + 2] * 3]);
-
-        // is the point p inside the triangle?
-        if (n.dot((b - a).cross(p - a)) >= 0.0 && n.dot((c - b).cross(p - b)) >= 0.0 && n.dot((a - c).cross(p - c)) >= 0.0) {
-            found = true;
-            if (points)
-                points->push_back(p);
-            else
-                break;
-        }
-    }
-
-    return found;
-}
-
 void Box::initialize()
 {
     this->clear();
