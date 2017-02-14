@@ -75,13 +75,12 @@ bool GraphicsObject::probe(int x, int y) const
     Core::Point3d farPoint = this->glFarPoint(x, y);
 
     return m_geometryObject->intersectBoundingBox(nearPoint, farPoint)
-            && m_geometryObject->intersect(nearPoint, farPoint, nullptr);
+            && m_geometryObject->intersect(nearPoint, farPoint);
 }
 
-std::vector<Core::Point3d> GraphicsObject::probePoints(int x, int y) const
+const std::vector<Core::Point3d>& GraphicsObject::probePoints() const
 {
-    std::vector<Core::Point3d> probePoints{};
-    return probePoints;
+    return m_geometryObject->probePoints();
 }
 
 void GraphicsObject::initialize()

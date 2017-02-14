@@ -37,7 +37,6 @@ public:
     void setX(double x) { m_coords[0] = x; }
     void setY(double y) { m_coords[1] = y; }
     void setZ(double z) { m_coords[2] = z; }
-
     void assign(float x, float y, float z) { this->initialize(x, y, z); }
     void assign(double x, double y, double z) { this->initialize(x, y, z); }
     void assign(const float* values) { this->initialize(values); }

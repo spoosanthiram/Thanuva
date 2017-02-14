@@ -8,6 +8,7 @@
 #include "GeometryObject.h"
 
 #include <chrono>
+#include <thread>
 
 #include <glog/logging.h>
 
@@ -15,31 +16,8 @@
 
 namespace {
 
-const std::size_t k2MillionTriangles = 2000000 * 9;
-const std::size_t k4Point5MillionTriangles = 4500000 * 9;
-
-/**
-* Checks for: does the line (np, l) intersects the plane (a, n).
-* The line characterized by two point np and fp with l = fp - np.
-* The plane of infinite dimension with 'a' that lies on the plane and 'n' normal to the plane.
-* @return true if intersecting point is found. 'p' will be filled.
-*         false if no intersecting point is found.
-*/
-bool intersectPlane(const Core::Point3d& a, const Core::Vector3d& n, const Core::Point3d& np,
-                    const Core::Vector3d& l, Core::Point3d& p)
-{
-    double nDotL = n.dot(l);
-    if (psa::iszero(nDotL)) // ray is parallel to plane (triangle) either starts outside or inside
-        return false;
-
-    double alpha = n.dot(a - np) / nDotL;
-    if (alpha < 0.0 || alpha > 1.0) // plane is beyond the ray we consider
-        return false;
-
-    p = np + alpha * l; // p intersect the plane (triangle)
-
-    return true;
-}
+const std::size_t kNoThreadSize = 1000000 * 3;
+const std::size_t kTwoThreadSize = 3000000 * 3;
 
 } // anonymous namespace
 
@@ -63,116 +41,39 @@ void GeometryObject::setExtent(const Extent& extent, Core::EmitSignal emitSignal
         extentChanged.emit_signal(); // emit signal
 }
 
-struct TriangleIntersection {
-    TriangleIntersection(const GeometryObject& geometryObject, std::size_t startIndex, std::size_t endIndex,
-                         const Core::Point3d& nearPoint, const Core::Point3d& farPoint,
-                         std::vector<Core::Point3d>* points)
-        : m_geometryObject{geometryObject}
-        , m_startIndex{startIndex}
-        , m_endIndex{endIndex}
-        , m_nearPoint{nearPoint}
-        , m_farPoint{farPoint}
-        , m_points{points}
-    {}
-
-    bool operator()() {
-        const std::vector<float>& vertices = m_geometryObject.vertices();
-        const std::vector<float>& normals = m_geometryObject.normals();
-        const std::vector<int>& indices = m_geometryObject.indices();
-
-        bool found = false;
-
-        Core::Vector3d n;
-        Core::Point3d a, b, c, p;
-        Core::Vector3d l = m_farPoint - m_nearPoint;
-
-        for (size_t i = m_startIndex; i < m_endIndex; i += 3) {
-            a.assign(&vertices[indices[i] * 3]);
-            n.assign(&normals[indices[i] * 3]);
-
-            if (!intersectPlane(a, n, m_nearPoint, l, p))
-                continue;
-
-            b.assign(&vertices[indices[i + 1] * 3]);
-            c.assign(&vertices[indices[i + 2] * 3]);
-
-            // is the point p inside the triangle?
-            if (n.dot((b - a).cross(p - a)) >= 0.0 &&
-                n.dot((c - b).cross(p - b)) >= 0.0 &&
-                n.dot((a - c).cross(p - c)) >= 0.0)
-            {
-                found = true;
-                if (m_points)
-                    m_points->push_back(p);
-                else
-                    break;
-            }
-        }
-
-        return found;
-    }
-
-    const GeometryObject& m_geometryObject;
-    std::size_t m_startIndex;
-    std::size_t m_endIndex;
-    const Core::Point3d& m_nearPoint;
-    const Core::Point3d& m_farPoint;
-    std::vector<Core::Point3d>* m_points;
-};
-
-bool GeometryObject::intersect(const Core::Point3d& nearPoint, const Core::Point3d& farPoint,
-                               std::vector<Core::Point3d>* points) const
+bool GeometryObject::intersect(const Core::Point3d& nearPoint, const Core::Point3d& farPoint)
 {
-    if (this->vertices().size() == 0 ||
-        this->vertices().size() != this->normals().size() ||
-        this->indices().size() == 0)
-    {
+    if (this->vertices().size() == 0 || this->indices().size() == 0)
         return false;
+
+    m_probePoints.clear(); // Remove old probe points
+
+    auto t1 = std::chrono::steady_clock::now();
+
+    std::size_t size = this->indices().size();
+    if (size <= kNoThreadSize)
+        this->intersectInternal(nearPoint, farPoint, 0, size);
+    else {
+        int numThreads = (size > kTwoThreadSize) ? 4 : 2;
+        std::size_t incrementSize = (((size / 3) / numThreads) + 1) * 3;
+
+        std::vector<std::size_t> intervals;
+        for (int i = 0; i < numThreads; ++i)
+            intervals.push_back(i * incrementSize);
+        intervals.push_back(size);
+
+        std::vector<std::thread> threads;
+        for (int i = 0; i < numThreads; ++i)
+            threads.emplace_back(&GeometryObject::intersectInternal, this,
+                                 std::cref(nearPoint), std::cref(farPoint), intervals[i], intervals[i + 1]);
+        for (auto& t : threads)
+            t.join();
     }
 
-    bool found = false;
-    auto time1 = std::chrono::steady_clock::now();
+    auto t2 = std::chrono::steady_clock::now();
+    LOG(INFO) << "intersect took: " << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
 
-    std::size_t size = this->vertices().size();
-    if (size <= k2MillionTriangles)
-        found = TriangleIntersection{*this, 0, size, nearPoint, farPoint, points}();
-    //else if (size <= k4Point5MillionTriangles) {
-    //    std::size_t size1 = size / 2;
-    //    std::thread thread1{IntersectionPoints{vertices, normals, 0, size1,
-    //        nearPoint, farPoint, found, points}};
-    //    IntersectionPoints{vertices, normals, size1, size, nearPoint, farPoint, found, points}();
-    //    thread1.join();
-    //}
-    //else {
-    //    std::size_t sizeInc = size / 4;
-
-    //    std::size_t istart = 0;
-    //    std::size_t iend = sizeInc;
-    //    std::thread thread1{IntersectionPoints{vertices, normals, istart, iend,
-    //        nearPoint, farPoint, found, points}};
-
-    //    istart = iend;
-    //    iend = istart + sizeInc;
-    //    std::thread thread2{IntersectionPoints{vertices, normals, istart, iend,
-    //        nearPoint, farPoint, found, points}};
-
-    //    istart = iend;
-    //    iend = istart + sizeInc;
-    //    std::thread thread3{IntersectionPoints{vertices, normals, istart, iend,
-    //        nearPoint, farPoint, found, points}};
-
-    //    IntersectionPoints{vertices, normals, iend, size, nearPoint, farPoint, found, points}();
-
-    //    thread1.join();
-    //    thread2.join();
-    //    thread3.join();
-    //}
-
-    auto time2 = std::chrono::steady_clock::now();
-    LOG(INFO) << "intersect took: "
-        << std::chrono::duration_cast<std::chrono::milliseconds>(time2 - time1).count();
-
-    return found;
+    return m_probePoints.size() > 0;
 }
 
 bool GeometryObject::intersectBoundingBox(const Core::Point3d& nearPoint, const Core::Point3d& farPoint) const
@@ -189,7 +90,7 @@ bool GeometryObject::intersectBoundingBox(const Core::Point3d& nearPoint, const 
         a.assign(&m_boundingBoxVertices[m_boundingBoxIndices[index]]);
         n.assign(&m_boundingBoxNormals[i * 3]);
 
-        if (!intersectPlane(a, n, nearPoint, l, p))
+        if (!this->intersectPlane(a, n, nearPoint, l, p))
             continue;
 
         b.assign(&m_boundingBoxVertices[m_boundingBoxIndices[index + 1]]);
@@ -247,6 +148,41 @@ void GeometryObject::initializeBoundingBox()
 
     this->insertBoundingBoxQuadIndices(20, 9, 6, 3, 0); // Z Min plane (d, c, b, a)
     this->insertBoundingBoxNormal(15, this->computeNormal(d, c, b));
+}
+
+void GeometryObject::intersectInternal(const Core::Point3d& nearPoint, const Core::Point3d& farPoint,
+                                       std::size_t startIndex, std::size_t endIndex)
+{
+    bool threaded = m_indices.size() != endIndex;
+
+    Core::Vector3d n;
+    Core::Point3d a, b, c, p;
+
+    Core::Vector3d l = farPoint - nearPoint;
+
+    for (size_t i = startIndex; i < endIndex; i += 3) {
+        a.assign(&m_vertices[m_indices[i] * 3]);
+        n.assign(&m_normals[m_indices[i] * 3]);
+
+        if (!intersectPlane(a, n, nearPoint, l, p))
+            continue;
+
+        b.assign(&m_vertices[m_indices[i + 1] * 3]);
+        c.assign(&m_vertices[m_indices[i + 2] * 3]);
+
+        // is the point p inside the triangle?
+        if (n.dot((b - a).cross(p - a)) >= 0.0 &&
+            n.dot((c - b).cross(p - b)) >= 0.0 &&
+            n.dot((a - c).cross(p - c)) >= 0.0)
+        {
+            if (threaded) {
+                std::lock_guard<std::mutex> lg{m_probePointsMutex};
+                m_probePoints.push_back(p);
+            }
+            else
+                m_probePoints.push_back(p);
+        }
+    }
 }
 
 } // namespace Geometry

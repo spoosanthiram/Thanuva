@@ -38,7 +38,7 @@ public:
 
     void render() const;
     bool probe(int x, int y) const;
-    std::vector<Core::Point3d> probePoints(int x, int y) const;
+    const std::vector<Core::Point3d>& probePoints() const;
 
 public: // signals
     Nano::Signal<void()> graphicsObjectChanged;

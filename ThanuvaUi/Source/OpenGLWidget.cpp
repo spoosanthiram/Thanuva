@@ -209,7 +209,17 @@ void OpenGLWidget::mouseReleaseEvent(QMouseEvent* mouseEvent)
     m_currentLocation.y = mouseEvent->y();
 
     if (mouseEvent->button() == Qt::RightButton) {
-        auto probePoints = m_graphicsEnvironment.probe(m_currentLocation.x, m_height - m_currentLocation.y);
+        auto objects = m_graphicsEnvironment.probe(m_currentLocation.x, m_height - m_currentLocation.y);
+        QString message;
+        for (auto object : objects) {
+            auto points = object->probePoints();
+            for (auto& p : points) {
+                message.append(p.str().c_str());
+                message.append("\n");
+            }
+        }
+        if (message.size() > 0)
+            QMessageBox::information(this, "Probe Points", message);
         m_contextMenu->exec(mouseEvent->globalPos());
     }
 

@@ -10,6 +10,7 @@
 
 #include <array>
 #include <memory>
+#include <mutex>
 #include <vector>
 
 #include <nano_signal_slot.hpp>
@@ -40,11 +41,11 @@ public:
     const std::vector<float>& normals() const { return m_normals; }
     const std::vector<int>& indices() const { return m_indices; }
     const Extent& extent() const { return m_extent; }
+    const std::vector<Core::Point3d>& probePoints() const { return m_probePoints; }
 
     void setExtent(const Extent& extent, Core::EmitSignal emitSignal = Core::EmitSignal::Emit);
 
-    bool intersect(const Core::Point3d& nearPoint, const Core::Point3d& farPoint,
-                   std::vector<Core::Point3d>* points) const;
+    bool intersect(const Core::Point3d& nearPoint, const Core::Point3d& farPoint);
     bool intersectBoundingBox(const Core::Point3d& nearPoint, const Core::Point3d& farPoint) const;
 
 public: // signals
@@ -110,7 +111,6 @@ protected:
         m_normals.reserve(nnormals);
         m_indices.reserve(nindices);
     }
-
     void clear()
     {
         m_vertices.clear();
@@ -145,6 +145,32 @@ protected:
     void initializeBoundingBox();
 
 private:
+    void intersectInternal(const Core::Point3d& nearPoint, const Core::Point3d& farPoint,
+                           std::size_t startIndex, std::size_t endIndex);
+    /**
+    * Checks for: does the line (np, l) intersects the plane (a, n).
+    * The line characterized by two point np and fp with l = fp - np.
+    * The plane of infinite dimension with 'a' that lies on the plane and 'n' normal to the plane.
+    * @return true if intersecting point is found. 'p' will be filled.
+    *         false if no intersecting point is found.
+    */
+    bool intersectPlane(const Core::Point3d& a, const Core::Vector3d& n, const Core::Point3d& np,
+                        const Core::Vector3d& l, Core::Point3d& p) const
+    {
+        double nDotL = n.dot(l);
+        if (psa::iszero(nDotL)) // ray is parallel to plane (triangle) either starts outside or inside
+            return false;
+
+        double alpha = n.dot(a - np) / nDotL;
+        if (alpha < 0.0 || alpha > 1.0) // plane is beyond the ray we consider
+            return false;
+
+        p = np + alpha * l; // p intersect the plane (triangle)
+
+        return true;
+    }
+
+private:
     const GeometryContainer& m_geometryContainer;
 
     Model::ModelObject* m_modelObject;
@@ -153,9 +179,13 @@ private:
     std::vector<float> m_normals{};
     std::vector<int> m_indices{};
     Extent m_extent{};
+
     std::array<float, 24> m_boundingBoxVertices{};
     std::array<float, 18> m_boundingBoxNormals{};
     std::array<unsigned short, 24> m_boundingBoxIndices{};
+
+    std::vector<Core::Point3d> m_probePoints{};
+    std::mutex m_probePointsMutex{};
 };
 
 } // namespace Geometry

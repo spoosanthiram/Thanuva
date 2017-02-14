@@ -40,6 +40,8 @@ void Cylinder::initialize()
     this->generateFace2Triangles(initVectors, w);
     this->generateSideTriangles(initVectors);
 
+    this->initializeBoundingBox();
+
     // emit signals
     geometryObjectChanged.emit_signal();
     extentChanged.emit_signal();
