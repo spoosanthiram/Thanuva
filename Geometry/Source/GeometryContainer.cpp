@@ -74,11 +74,11 @@ std::unique_ptr<GeometryObject> GeometryContainer::makeGeometryObject(Model::Mod
     std::function<std::unique_ptr<GeometryObject>(GeometryContainer*, Model::ModelObject*)> geometryMaker[] =
     {
         [](GeometryContainer* gc, Model::ModelObject* mo) -> std::unique_ptr<GeometryObject>
-            { return std::make_unique<Box>(*gc, dynamic_cast<Model::BoxModel*>(mo)); },
+            { return std::make_unique<Box>(gc, dynamic_cast<Model::BoxModel*>(mo)); },
         [](GeometryContainer* gc, Model::ModelObject* mo) -> std::unique_ptr<GeometryObject>
-            { return std::make_unique<Stl>(*gc, dynamic_cast<Model::StlModel*>(mo)); },
+            { return std::make_unique<Stl>(gc, dynamic_cast<Model::StlModel*>(mo)); },
         [](GeometryContainer* gc, Model::ModelObject* mo) -> std::unique_ptr<GeometryObject>
-            { return std::make_unique<Cylinder>(*gc, dynamic_cast<Model::CylinderModel*>(mo)); }
+            { return std::make_unique<Cylinder>(gc, dynamic_cast<Model::CylinderModel*>(mo)); }
     };
 
     return geometryMaker[static_cast<int>(modelObject->type())](this, modelObject);

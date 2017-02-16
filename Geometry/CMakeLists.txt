@@ -8,15 +8,19 @@ add_definitions(-DGLOG_NO_ABBREVIATED_SEVERITIES)
 
 set(SOURCE_FILES
     ${Geometry_SOURCE_DIR}/Include/Box.h
+    ${Geometry_SOURCE_DIR}/Include/Cone.h
     ${Geometry_SOURCE_DIR}/Include/Cylinder.h
     ${Geometry_SOURCE_DIR}/Include/Extent.h
+    ${Geometry_SOURCE_DIR}/Include/GeometryCommon.h
     ${Geometry_SOURCE_DIR}/Include/GeometryContainer.h
     ${Geometry_SOURCE_DIR}/Include/GeometryObject.h
     ${Geometry_SOURCE_DIR}/Include/Stl.h
 
     ${Geometry_SOURCE_DIR}/Source/Box.cpp
+    ${Geometry_SOURCE_DIR}/Source/Cone.cpp
     ${Geometry_SOURCE_DIR}/Source/Cylinder.cpp
     ${Geometry_SOURCE_DIR}/Source/Extent.cpp
+    ${Geometry_SOURCE_DIR}/Source/GeometryCommon.cpp
     ${Geometry_SOURCE_DIR}/Source/GeometryContainer.cpp
     ${Geometry_SOURCE_DIR}/Source/GeometryObject.cpp
     ${Geometry_SOURCE_DIR}/Source/Stl.cpp

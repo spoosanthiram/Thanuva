@@ -62,7 +62,7 @@ public:
     using VertexIndexMapType = std::unordered_map<Vertex, int, VertexHasher>;
 
 public:
-    Stl(const GeometryContainer& gfxProject, Model::StlModel* stlModel);
+    Stl(const GeometryContainer* geometryContainer, Model::StlModel* stlModel);
 
 private: // slots
     void initialize();

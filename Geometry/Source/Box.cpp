@@ -13,8 +13,8 @@
 
 namespace Geometry {
 
-Box::Box(const GeometryContainer& geometryContainer, Model::BoxModel* boxModel)
-    : GeometryObject(geometryContainer, boxModel)
+Box::Box(const GeometryContainer* geometryContainer, Model::BoxModel* boxModel)
+    : GeometryObject{geometryContainer, boxModel}
 {
     this->initialize();
 

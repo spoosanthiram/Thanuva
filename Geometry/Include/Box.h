@@ -17,7 +17,7 @@ namespace Geometry {
 class Box : public GeometryObject
 {
 public:
-    Box(const GeometryContainer& geometryContainer, Model::BoxModel* boxModel);
+    Box(const GeometryContainer* geometryContainer, Model::BoxModel* boxModel);
 
 private: // slots
     void initialize();

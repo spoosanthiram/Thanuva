@@ -20,6 +20,7 @@ int main(int argc, char *argv[])
     qtApp.setApplicationName(app.name().c_str());
     qtApp.setOrganizationDomain(app.domain().c_str());
 
+    const ThanuvaUi::MainWindow* w2 = nullptr;
     ThanuvaUi::MainWindow w{app};
     w.show();
 

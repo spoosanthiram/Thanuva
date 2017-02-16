@@ -17,8 +17,8 @@
 
 namespace Geometry {
 
-Stl::Stl(const GeometryContainer& geometryContainer, Model::StlModel* stlModel)
-    : GeometryObject(geometryContainer, stlModel)
+Stl::Stl(const GeometryContainer* geometryContainer, Model::StlModel* stlModel)
+    : GeometryObject{geometryContainer, stlModel}
 {
     this->initialize();
 

@@ -23,7 +23,7 @@ const std::size_t kTwoThreadSize = 3000000 * 3;
 
 namespace Geometry {
 
-GeometryObject::GeometryObject(const GeometryContainer& geometryContainer,
+GeometryObject::GeometryObject(const GeometryContainer* geometryContainer,
                                Model::ModelObject* modelObject)
     : m_geometryContainer{geometryContainer}
     , m_modelObject{modelObject}

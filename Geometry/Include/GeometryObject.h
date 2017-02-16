@@ -33,7 +33,7 @@ public:
     static const int kVerticesPerTriangle = 3;
 
 public:
-    GeometryObject(const GeometryContainer& geometryContainer, Model::ModelObject* modelObject);
+    GeometryObject(const GeometryContainer* geometryContainer, Model::ModelObject* modelObject);
     ~GeometryObject() {}
 
     Model::ModelObject* modelObject() const { return m_modelObject; }
@@ -171,7 +171,7 @@ private:
     }
 
 private:
-    const GeometryContainer& m_geometryContainer;
+    const GeometryContainer* m_geometryContainer;
 
     Model::ModelObject* m_modelObject;
 

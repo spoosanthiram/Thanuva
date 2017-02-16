@@ -10,6 +10,7 @@
 #include <glog/logging.h>
 #include <nano_signal_slot.hpp>
 
+#include "Cone.h"
 #include "GraphicsObject.h"
 #include "Scene.h"
 
@@ -33,6 +34,8 @@ void GraphicsEnvironment::activate(Model::Scene* scene)
 
     for (auto& geometryObject : m_geometryContainer->geometryObjectList())
         this->add(geometryObject.get());
+    auto cone = new Geometry::Cone{Core::Point3d{0.0, 0.0, 1.0}, Core::Point3d{0.0, 0.0, 0.0}, 1, 32};
+    this->add(cone);
     m_viewpointCamera.setViewpoint(scene->viewpoint());
 
     this->handleExtentChanged();

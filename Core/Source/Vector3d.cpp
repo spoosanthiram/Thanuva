@@ -26,6 +26,7 @@ Vector3d Vector3d::orthonormal() const
 {
     assert(psa::isequal(this->norm(), 1.0));
 
+    // construct vector{t} by replacing minimum absolute value by 1.0
     Vector3d t{m_coords.data()};
     int minIndex = 0;
     for (auto i = 1; i < m_coords.size(); ++i) {
@@ -34,10 +35,11 @@ Vector3d Vector3d::orthonormal() const
     }
     t.m_coords[minIndex] = 1.0;
 
-    Vector3d pvector = t.cross(*this);
-    pvector.normalize();
+    // (t x this) is one of infinitly many orthogonal vector
+    Vector3d u = t.cross(*this);
+    u.normalize();
 
-    return pvector;
+    return u;
 }
 
 #ifdef UNIT_TEST
