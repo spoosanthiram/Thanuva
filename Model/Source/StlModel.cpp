@@ -17,7 +17,7 @@ const char* kFilePathTag = "filePath";
 
 namespace Model {
 
-StlModel::StlModel(const Scene& scene, const std::string& filePath)
+StlModel::StlModel(const Scene* scene, const std::string& filePath)
     : ModelObject{scene}
     , m_filePath{filePath}
 {

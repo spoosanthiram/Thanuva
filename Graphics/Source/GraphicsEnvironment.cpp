@@ -11,6 +11,7 @@
 #include <nano_signal_slot.hpp>
 
 #include "Cone.h"
+#include "ConeModel.h"
 #include "GraphicsObject.h"
 #include "Scene.h"
 
@@ -34,8 +35,12 @@ void GraphicsEnvironment::activate(Model::Scene* scene)
 
     for (auto& geometryObject : m_geometryContainer->geometryObjectList())
         this->add(geometryObject.get());
-    auto cone = new Geometry::Cone{Core::Point3d{0.0, 0.0, 1.0}, Core::Point3d{0.0, 0.0, 0.0}, 1, 32};
-    this->add(cone);
+
+    //auto coneModel = new Model::ConeModel{scene};
+    //coneModel->setNumFacets(32);
+    //auto cone = new Geometry::Cone{m_geometryContainer.get(), coneModel};
+    //this->add(cone);
+
     m_viewpointCamera.setViewpoint(scene->viewpoint());
 
     this->handleExtentChanged();

@@ -33,7 +33,7 @@ const char* kNumFacetsTag = "numfacets";
 
 namespace Model {
 
-CylinderModel::CylinderModel(const Scene& scene)
+CylinderModel::CylinderModel(const Scene* scene)
     : ModelObject{scene}
 {
     endpoint1Changed.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
@@ -79,7 +79,7 @@ void CylinderModel::setRadius2(double radius)
     radius2Changed.emit_signal();
 }
 
-void CylinderModel::numFacets(unsigned int facets)
+void CylinderModel::setNumFacets(unsigned int facets)
 {
     if (m_numFacets == facets)
         return;

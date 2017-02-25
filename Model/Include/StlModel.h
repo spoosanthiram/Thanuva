@@ -17,8 +17,8 @@ namespace Model {
 class StlModel : public ModelObject
 {
 public:
-    StlModel(const Scene& scene) : ModelObject{scene} {}
-    StlModel(const Scene& scene, const std::string& filePath);
+    StlModel(const Scene* scene) : ModelObject{scene} {}
+    StlModel(const Scene* scene, const std::string& filePath);
     StlModel(const StlModel& rhs) = delete; // TODO: needs to be implemented
 
     StlModel& operator=(const StlModel& rhs) = delete; // TODO: needs to be implemented

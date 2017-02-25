@@ -32,7 +32,7 @@ std::string ModelObject::typeStr(Type type)
     return typeString[static_cast<int>(type)];
 }
 
-ModelObject::ModelObject(const Scene& scene)
+ModelObject::ModelObject(const Scene* scene)
     : m_scene{scene}
 {
     nameChanged.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);

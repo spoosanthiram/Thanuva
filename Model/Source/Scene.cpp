@@ -139,9 +139,9 @@ void Scene::loadModelObjectList(const boost::property_tree::ptree& modelObjectsP
     using boost::property_tree::ptree;
 
     std::function<std::unique_ptr<ModelObject>(Scene*)> modelObjectMaker[] = {
-        [](Scene* scene) -> std::unique_ptr<ModelObject> { return std::make_unique<BoxModel>(*scene); },
-        [](Scene* scene) -> std::unique_ptr<ModelObject> { return std::make_unique<StlModel>(*scene); },
-        [](Scene* scene) -> std::unique_ptr<ModelObject> { return std::make_unique<CylinderModel>(*scene); }
+        [](Scene* scene) -> std::unique_ptr<ModelObject> { return std::make_unique<BoxModel>(scene); },
+        [](Scene* scene) -> std::unique_ptr<ModelObject> { return std::make_unique<StlModel>(scene); },
+        [](Scene* scene) -> std::unique_ptr<ModelObject> { return std::make_unique<CylinderModel>(scene); }
     };
 
     for (const auto& it : modelObjectsPropTree) {

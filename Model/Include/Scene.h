@@ -55,7 +55,7 @@ public:
     {
         LOG(INFO) << "Create ModelObject and Add to the list";
 
-        std::unique_ptr<ModelObjectType> modelObjectPtr = std::make_unique<ModelObjectType>(*this, std::forward<Args>(args)...);
+        std::unique_ptr<ModelObjectType> modelObjectPtr = std::make_unique<ModelObjectType>(this, std::forward<Args>(args)...);
         ModelObjectType* modelObject = modelObjectPtr.get();
         this->add(std::move(modelObjectPtr));
         return modelObject;

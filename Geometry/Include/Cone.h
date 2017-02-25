@@ -17,22 +17,14 @@ namespace Geometry {
 class Cone : public GeometryObject
 {
 public:
-    Cone(const Core::Point3d& apex, const Core::Point3d& center, double radius, unsigned int numFacets)
-        : GeometryObject{nullptr, nullptr}
-    {
-        this->initialize(apex, center, radius, numFacets);
-    }
+    Cone(const GeometryContainer* geometryContainer, Model::ConeModel* coneModel);
 
 private: // slots
     void initialize();
 
 private:
-    void initialize(const Core::Point3d& apex, const Core::Point3d& center,
-                    double radius, unsigned int numFacets);
-    void generateBaseTriangles(const Core::Point3d& center, double radius, unsigned int numFacets,
-                               const std::vector<Core::Vector3d>& initVectors, const Core::Vector3d& normal);
-    void generateSideTriangles(const Core::Point3d& apex, unsigned int numFacets,
-                               const std::vector<Core::Vector3d>& initVectors);
+    void generateBaseTriangles(const std::vector<Core::Vector3d>& initVectors, const Core::Vector3d& normal);
+    void generateSideTriangles(const std::vector<Core::Vector3d>& initVectors);
 };
 
 } // namespace Geometry

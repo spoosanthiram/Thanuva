@@ -27,6 +27,7 @@ public:
         Box,
         Stl,
         Cylinder,
+        Cone,
         // Always add new types before this line!
         NTypes
     };
@@ -35,7 +36,7 @@ public:
     static const char* kTypeTag;
 
 public:
-    ModelObject(const Scene& scene);
+    ModelObject(const Scene* scene);
     ModelObject(const ModelObject& rhs) = delete; // TODO: needs to be implemented, for now deleted
     virtual ~ModelObject() {}
 
@@ -70,7 +71,7 @@ protected:
     virtual void saveModel(boost::property_tree::ptree& /*modelPropTree*/) {}
 
 private:
-    const Scene& m_scene;
+    const Scene* m_scene;
 
     std::string m_name{};
     Core::Material m_material{Core::Material::defaultMaterial()};

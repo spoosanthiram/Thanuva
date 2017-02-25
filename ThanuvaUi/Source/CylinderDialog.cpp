@@ -77,7 +77,7 @@ void CylinderDialog::updateRadius2()
 
 void CylinderDialog::updateNumFacets()
 {
-    m_cylinderModel->numFacets(m_cylinderWidget->numFacetsLineEdit->text().toDouble());
+    m_cylinderModel->setNumFacets(m_cylinderWidget->numFacetsLineEdit->text().toDouble());
 }
 
 void CylinderDialog::initEndpoint1()

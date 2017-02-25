@@ -38,13 +38,13 @@ std::string BoxModel::Limiter::str() const
     return fmt::format("[{}, {}]; [{}, {}]; [{}, {}]", xlow, xhigh, ylow, yhigh, zlow, zhigh);
 }
 
-BoxModel::BoxModel(const Scene& scene)
+BoxModel::BoxModel(const Scene* scene)
     : ModelObject{scene}
 {
     this->connectModelObjectChanged();
 }
 
-BoxModel::BoxModel(const Scene& scene, const Limiter& limiter)
+BoxModel::BoxModel(const Scene* scene, const Limiter& limiter)
     : ModelObject{scene}
     , m_limiter{limiter}
 {

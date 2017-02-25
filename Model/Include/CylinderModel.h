@@ -16,7 +16,7 @@ namespace Model {
 class CylinderModel : public ModelObject
 {
 public:
-    CylinderModel(const Scene& scene);
+    CylinderModel(const Scene* scene);
     CylinderModel(const CylinderModel& rhs) = delete; // TODO: needs to be implemented
 
     CylinderModel& operator=(const CylinderModel& rhs) = delete; // TODO: needs to be implemented
@@ -32,7 +32,7 @@ public:
     void setRadius1(double radius);
     void setEndpoint2(const Core::Point3d& point);
     void setRadius2(double radius);
-    void numFacets(unsigned int facets);
+    void setNumFacets(unsigned int facets);
 
 public: // signals
     Nano::Signal<void()> endpoint1Changed{};

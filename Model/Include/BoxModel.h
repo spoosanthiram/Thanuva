@@ -57,8 +57,8 @@ public:
     };
 
 public:
-    BoxModel(const Scene& scene);
-    BoxModel(const Scene& scene, const Limiter& limiter);
+    BoxModel(const Scene* scene);
+    BoxModel(const Scene* scene, const Limiter& limiter);
     BoxModel(const BoxModel& rhs) = delete; // TODO: needs to be implemented
 
     BoxModel& operator=(const BoxModel& rhs) = delete; // TODO: needs to be implemented

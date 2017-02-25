@@ -7,54 +7,73 @@
 
 #include "Cone.h"
 
+#include "ConeModel.h"
 #include "GeometryCommon.h"
 
 namespace Geometry {
 
-void Cone::initialize(const Core::Point3d& apex, const Core::Point3d& center,
-                      double radius, unsigned int numFacets)
+Cone::Cone(const GeometryContainer* geometryContainer, Model::ConeModel* coneModel)
+    : GeometryObject{geometryContainer, coneModel}
 {
+    this->initialize();
+
+    coneModel->apexChanged.connect<Cone, &Cone::initialize>(this);
+}
+
+void Cone::initialize()
+{
+    this->clear();
+
     this->setExtent(Extent{std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(),
                     std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(),
                     std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity()},
                     Core::EmitSignal::DontEmit);
 
+    auto coneModel = dynamic_cast<Model::ConeModel*>(this->modelObject());
+
     // form a coordinate system with apex and center points
-    Core::Vector3d w = apex - center;
+    Core::Vector3d w = coneModel->apex() - coneModel->center();
     w.normalize();
     Core::Vector3d u = w.orthonormal();
     Core::Vector3d v = w.cross(u);
 
     // initial numFacets vectors
-    std::vector<Core::Vector3d> initVectors = genInitialVectors(numFacets, u, v);
+    std::vector<Core::Vector3d> initVectors = genInitialVectors(coneModel->numFacets(), u, v);
 
-    this->generateBaseTriangles(center, radius, numFacets, initVectors, -w);
-    this->generateSideTriangles(apex, numFacets, initVectors);
+    this->generateBaseTriangles(initVectors, -w);
+    this->generateSideTriangles(initVectors);
 }
 
-void Cone::generateBaseTriangles(const Core::Point3d& center, double radius, unsigned int numFacets,
-                                 const std::vector<Core::Vector3d>& initVectors, const Core::Vector3d& normal)
+void Cone::generateBaseTriangles(const std::vector<Core::Vector3d>& initVectors, const Core::Vector3d& normal)
 {
+    auto coneModel = dynamic_cast<Model::ConeModel*>(this->modelObject());
+
+    const Core::Point3d& center = coneModel->center();
     this->insertVertex(center);
     this->insertNormal(normal);
 
+    double radius = coneModel->radius();
     for (size_t i = 0; i < initVectors.size(); ++i) {
         Core::Point3d p = center + radius * initVectors[i];
         this->insertVertex(p);
         this->insertNormal(normal);
     }
 
+    unsigned int numFacets = coneModel->numFacets();
     for (unsigned int index = 0; index < numFacets; ++index)
         this->insertIndices(0, ((index + 1) % numFacets) + 1, index + 1);
 }
 
-void Cone::generateSideTriangles(const Core::Point3d& apex, unsigned int numFacets,
-                                 const std::vector<Core::Vector3d>& initVectors)
+void Cone::generateSideTriangles(const std::vector<Core::Vector3d>& initVectors)
 {
     int aIndex = this->vertices().size() / 3;
     Core::Point3d a{&this->vertices()[3]};
     this->insertVertex(a);
     this->insertNormal(initVectors[0]);
+
+    auto coneModel = dynamic_cast<Model::ConeModel*>(this->modelObject());
+    const Core::Point3d& apex = coneModel->apex();
+    unsigned int numFacets = coneModel->numFacets();
 
     Core::Point3d b;
     int bIndex, apexIndex;

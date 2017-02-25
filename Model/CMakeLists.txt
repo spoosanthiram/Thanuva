@@ -8,6 +8,7 @@ add_definitions(-DGLOG_NO_ABBREVIATED_SEVERITIES)
 
 set(SOURCE_FILES
     ${Model_SOURCE_DIR}/Include/BoxModel.h
+    ${Model_SOURCE_DIR}/Include/ConeModel.h
     ${Model_SOURCE_DIR}/Include/CylinderModel.h
     ${Model_SOURCE_DIR}/Include/GlogWrapper.h
     ${Model_SOURCE_DIR}/Include/ModelException.h
@@ -18,6 +19,7 @@ set(SOURCE_FILES
     ${Model_SOURCE_DIR}/Include/Viewpoint.h
 
     ${Model_SOURCE_DIR}/Source/BoxModel.cpp
+    ${Model_SOURCE_DIR}/Source/ConeModel.cpp
     ${Model_SOURCE_DIR}/Source/CylinderModel.cpp
     ${Model_SOURCE_DIR}/Source/GlogWrapper.cpp
     ${Model_SOURCE_DIR}/Source/ModelException.cpp
