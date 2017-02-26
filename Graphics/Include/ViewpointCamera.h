@@ -39,7 +39,7 @@ public:
         m_viewpointTranslation = viewpointTranslation;
         this->updateViewMatrix();
     }
-    void setViewpoint(const Model::Viewpoint& viewpoint)
+    void setViewpoint(Model::Viewpoint* viewpoint)
     {
         m_viewpoint = viewpoint;
         this->updateViewMatrix();
@@ -58,7 +58,7 @@ private:
     Core::Vector3d projectToSphere(const Location& location);
 
     double m_viewpointTranslation{3.0};
-    Model::Viewpoint m_viewpoint{};
+    Model::Viewpoint* m_viewpoint;
 
     Core::Matrix4x4 m_viewMatrix;
 };

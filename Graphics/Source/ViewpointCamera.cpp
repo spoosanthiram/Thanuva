@@ -25,29 +25,28 @@ void ViewpointCamera::rotate(const Location& startLocation, const Location& endL
     Core::Vector3d axis = startLocOnSphere.cross(endLocOnSphere);
     axis.normalize();
 
-    Core::Matrix3x3& eyeRotationMatrix = m_viewpoint.eyeRotationMatrix();
-    eyeRotationMatrix.rotate(Core::Quaternion{axis, -angle});
+    m_viewpoint->eyeRotationMatrix().rotate(Core::Quaternion{axis, -angle});
 
     this->updateViewMatrix();
 }
 
 void ViewpointCamera::zoom(int steps)
 {
-    m_viewpoint.setZoomLevel(m_viewpoint.zoomLevel() + steps * kZoomIncrement);
+    m_viewpoint->setZoomLevel(m_viewpoint->zoomLevel() + steps * kZoomIncrement);
 
     this->updateViewMatrix();
 }
 
 void ViewpointCamera::updateViewMatrix()
 {
-    Core::Vector3d eye = m_viewpoint.eyeRotationMatrix() *
+    Core::Vector3d eye = m_viewpoint->eyeRotationMatrix() *
                          Core::Vector3d{0.0, 0.0, m_viewpointTranslation};
-    eye.scale(m_viewpoint.zoomLevel());
+    eye.scale(m_viewpoint->zoomLevel());
 
     Core::Vector3d w = eye;
     w.normalize();
 
-    Core::Vector3d upVector = m_viewpoint.eyeRotationMatrix() * Core::Vector3d{0.0, 1.0, 0.0};
+    Core::Vector3d upVector = m_viewpoint->eyeRotationMatrix() * Core::Vector3d{0.0, 1.0, 0.0};
 
     Core::Vector3d u = upVector.cross(w);
     u.normalize();

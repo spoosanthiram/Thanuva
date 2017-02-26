@@ -45,7 +45,7 @@ public:
      * Returns the underlining vector of unique_ptrs. User of the method should keep a const reference and not try to take a copy
      */
     const std::vector<std::unique_ptr<ModelObject>>& modelObjectList() const { return m_modelObjectList; }
-    const Viewpoint& viewpoint() const { return m_viewpoint; }
+    Viewpoint* viewpoint() const { return m_viewpoint.get(); }
     intmax_t index(ModelObject* modelObject);
 
     void setFilePath(const fs::path& filePath);
@@ -80,7 +80,7 @@ private:
     fs::path m_filePath;
     bool m_sceneChanged{false};
     std::vector<std::unique_ptr<ModelObject>> m_modelObjectList;
-    Viewpoint m_viewpoint{};
+    std::unique_ptr<Viewpoint> m_viewpoint{};
 };
 
 } // namespace Model

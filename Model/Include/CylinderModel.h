@@ -17,6 +17,8 @@ class CylinderModel : public ModelObject
 {
 public:
     CylinderModel(const Scene* scene);
+    CylinderModel(const Scene* scene, const Core::Point3d& endpoint1, double radius1,
+                  const Core::Point3d& endpoint2, double radius2, unsigned int numFacets);
     CylinderModel(const CylinderModel& rhs) = delete; // TODO: needs to be implemented
 
     CylinderModel& operator=(const CylinderModel& rhs) = delete; // TODO: needs to be implemented
@@ -46,6 +48,8 @@ protected:
     void saveModel(boost::property_tree::ptree& modelPropTree) override;
 
 private:
+    void connectSignals();
+
     Core::Point3d m_endpoint1{0.0, 0.0, 0.0};
     double m_radius1{1.0};
     Core::Point3d m_endpoint2{0.0, 0.0, 1.0};

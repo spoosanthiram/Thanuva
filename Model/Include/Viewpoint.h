@@ -9,6 +9,7 @@
 #define MODEL_VIEWPOINT_H
 
 #include <boost/property_tree/ptree_fwd.hpp>
+#include <nano_signal_slot.hpp>
 
 #include "Matrix3x3.h"
 
@@ -23,10 +24,7 @@ public:
     Core::Matrix3x3& eyeRotationMatrix() { return m_eyeRotationMatrix; }
     double zoomLevel() const { return m_zoomLevel; }
 
-    void setEyeRotationMatrix(const Core::Matrix3x3& eyeRotationMatrix)
-    {
-        m_eyeRotationMatrix = eyeRotationMatrix;
-    }
+    //void setEyeRotationMatrix(const Core::Matrix3x3& eyeRotationMatrix);
     void setZoomLevel(double zoomLevel) { m_zoomLevel = zoomLevel; }
 
     void load(const boost::property_tree::ptree& cameraPropTree);

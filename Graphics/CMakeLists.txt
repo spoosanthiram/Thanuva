@@ -14,6 +14,7 @@ endif()
 add_definitions(-DGLOG_NO_ABBREVIATED_SEVERITIES)
 
 set(SOURCE_FILES
+    ${Graphics_SOURCE_DIR}/Include/AxisLegend.h
     ${Graphics_SOURCE_DIR}/Include/GraphicsEnvironment.h
     ${Graphics_SOURCE_DIR}/Include/GraphicsException.h
     ${Graphics_SOURCE_DIR}/Include/GraphicsObject.h
@@ -22,6 +23,7 @@ set(SOURCE_FILES
     ${Graphics_SOURCE_DIR}/Include/ShaderProgram.h
     ${Graphics_SOURCE_DIR}/Include/ViewpointCamera.h
 
+    ${Graphics_SOURCE_DIR}/Source/AxisLegend.cpp
     ${Graphics_SOURCE_DIR}/Source/GraphicsEnvironment.cpp
     ${Graphics_SOURCE_DIR}/Source/GraphicsException.cpp
     ${Graphics_SOURCE_DIR}/Source/GraphicsObject.cpp

@@ -13,6 +13,7 @@
 
 #include <QObject>
 
+#include "AxisLegend.h"
 #include "GeometryContainer.h"
 #include "GraphicsObject.h"
 #include "ShaderProgram.h"
@@ -53,6 +54,7 @@ public:
 
     // Needs Graphics context
     void loadShaders();
+    void initializeAxisLegend();
     void render() const;
 
 signals:
@@ -77,12 +79,15 @@ private:
     std::array<float, 4> m_light0DiffuseColor{{0.7f, 0.7f, 0.7f, 1.0f}};
     std::array<float, 4> m_light0SpecularColor{{0.4f, 0.4f, 0.4f, 1.0f}};
 
+    std::unique_ptr<Model::Viewpoint> m_defaultViewpoint{};
     ViewpointCamera m_viewpointCamera{};
 
     double m_windowAspect{1.6};
     Core::Matrix4x4 m_projectionMatrix;
 
     std::array<int, 4> m_viewportTransform;
+
+    std::unique_ptr<AxisLegend> m_axisLegend{};
 
     static const char* kVertexShaderSource;
     static const char* kFragmentShaderSource;

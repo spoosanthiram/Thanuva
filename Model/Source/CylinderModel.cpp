@@ -36,11 +36,19 @@ namespace Model {
 CylinderModel::CylinderModel(const Scene* scene)
     : ModelObject{scene}
 {
-    endpoint1Changed.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
-    radius1Changed.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
-    endpoint2Changed.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
-    radius2Changed.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
-    numFacetsChanged.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
+    this->connectSignals();
+}
+
+CylinderModel::CylinderModel(const Scene* scene, const Core::Point3d& endpoint1, double radius1,
+                             const Core::Point3d& endpoint2, double radius2, unsigned int numFacets)
+    : ModelObject{scene}
+    , m_endpoint1{endpoint1}
+    , m_radius1{radius1}
+    , m_endpoint2{endpoint2}
+    , m_radius2{radius2}
+    , m_numFacets{numFacets}
+{
+    this->connectSignals();
 }
 
 void CylinderModel::setEndpoint1(const Core::Point3d& point)
@@ -120,6 +128,15 @@ void CylinderModel::saveModel(boost::property_tree::ptree& modelPropTree)
     modelPropTree.put(kRadius2Tag, m_radius2);
 
     modelPropTree.put(kNumFacetsTag, m_numFacets);
+}
+
+void CylinderModel::connectSignals()
+{
+    endpoint1Changed.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
+    radius1Changed.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
+    endpoint2Changed.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
+    radius2Changed.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
+    numFacetsChanged.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
 }
 
 #ifdef UNIT_TEST

@@ -153,6 +153,8 @@ void OpenGLWidget::initializeGL()
                               "Loading of GLSL shaders failed...exiting the program.");
         qApp->closeAllWindows();
     }
+
+    m_graphicsEnvironment.initializeAxisLegend();
 }
 
 void OpenGLWidget::resizeGL(int width, int height)

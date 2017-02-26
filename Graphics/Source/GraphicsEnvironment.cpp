@@ -12,6 +12,8 @@
 
 #include "Cone.h"
 #include "ConeModel.h"
+#include "Cylinder.h"
+#include "CylinderModel.h"
 #include "GraphicsObject.h"
 #include "Scene.h"
 
@@ -23,6 +25,10 @@ const double GraphicsEnvironment::kFarProjectionMultiplier = 7.0;
 GraphicsEnvironment::GraphicsEnvironment()
     : m_projectionMatrix{Core::Matrix4x4::identity()}
 {
+    m_defaultViewpoint = std::make_unique<Model::Viewpoint>();
+    m_viewpointCamera.setViewpoint(m_defaultViewpoint.get());
+
+    m_viewpointCamera.viewpointCameraChanged.connect<GraphicsEnvironment, &GraphicsEnvironment::emitViewChanged>(this);
 }
 
 void GraphicsEnvironment::activate(Model::Scene* scene)
@@ -36,32 +42,22 @@ void GraphicsEnvironment::activate(Model::Scene* scene)
     for (auto& geometryObject : m_geometryContainer->geometryObjectList())
         this->add(geometryObject.get());
 
-    //auto coneModel = new Model::ConeModel{scene};
-    //coneModel->setNumFacets(32);
-    //auto cone = new Geometry::Cone{m_geometryContainer.get(), coneModel};
-    //this->add(cone);
-
     m_viewpointCamera.setViewpoint(scene->viewpoint());
 
     this->handleExtentChanged();
 
     m_geometryContainer->geometryObjectAdded.connect<GraphicsEnvironment, &GraphicsEnvironment::add>(this);
-    m_geometryContainer->extentChanged.
-            connect<GraphicsEnvironment, &GraphicsEnvironment::handleExtentChanged>(this);
-    m_viewpointCamera.viewpointCameraChanged.
-            connect<GraphicsEnvironment, &GraphicsEnvironment::emitViewChanged>(this);
+    m_geometryContainer->extentChanged.connect<GraphicsEnvironment, &GraphicsEnvironment::handleExtentChanged>(this);
 }
 
 void GraphicsEnvironment::deactivate()
 {
     LOG(INFO) << "Deactivating GraphicsEnvironment.";
 
-    m_viewpointCamera.viewpointCameraChanged.
-            disconnect<GraphicsEnvironment, &GraphicsEnvironment::emitViewChanged>(this);
-    m_geometryContainer->geometryObjectAdded.
-            disconnect<GraphicsEnvironment, &GraphicsEnvironment::add>(this);
-    m_geometryContainer->extentChanged.
-            disconnect<GraphicsEnvironment, &GraphicsEnvironment::handleExtentChanged>(this);
+    m_geometryContainer->geometryObjectAdded.disconnect<GraphicsEnvironment, &GraphicsEnvironment::add>(this);
+    m_geometryContainer->extentChanged.disconnect<GraphicsEnvironment, &GraphicsEnvironment::handleExtentChanged>(this);
+
+    m_viewpointCamera.setViewpoint(m_defaultViewpoint.get());
 
     m_geometryContainer.release();
 }
@@ -109,6 +105,11 @@ void GraphicsEnvironment::loadShaders()
     }
 }
 
+void GraphicsEnvironment::initializeAxisLegend()
+{
+    m_axisLegend = std::make_unique<AxisLegend>(*this);
+}
+
 void GraphicsEnvironment::render() const
 {
     if (!m_geometryContainer)
@@ -133,6 +134,8 @@ void GraphicsEnvironment::render() const
 
     for (const auto& graphicsObject : m_graphicsObjectList)
         graphicsObject->render();
+
+    m_axisLegend->render();
 }
 
 void GraphicsEnvironment::add(Geometry::GeometryObject* geometryObject)

@@ -34,6 +34,7 @@ Scene::Scene(const ThanuvaApp& thanuvaApp)
     , m_filePath{}
     , m_modelObjectList{}
 {
+    m_viewpoint = std::make_unique<Viewpoint>();
 }
 
 Scene::Scene(const ThanuvaApp& thanuvaApp, const fs::path& filePath)
@@ -43,6 +44,8 @@ Scene::Scene(const ThanuvaApp& thanuvaApp, const fs::path& filePath)
     , m_modelObjectList{}
 {
     m_name = m_filePath.stem().string();
+    m_viewpoint = std::make_unique<Viewpoint>();
+
     this->read();
 }
 
@@ -85,7 +88,7 @@ void Scene::read()
         this->loadModelObjectList(modelObjectsPropTree);
 
         ptree cameraPropTree = scenePropTree.get_child(kViewpointCameraTag);
-        m_viewpoint.load(cameraPropTree);
+        m_viewpoint->load(cameraPropTree);
     }
     catch (const std::exception& e) {
         LOG(ERROR) << e.what();
@@ -110,7 +113,7 @@ void Scene::write()
         scenePropTree.add_child(kModelObjectsTag, modelObjectsPropTree);
 
         ptree cameraPropTree;
-        m_viewpoint.save(cameraPropTree);
+        m_viewpoint->save(cameraPropTree);
         scenePropTree.add_child(kViewpointCameraTag, cameraPropTree);
 
         write_json(m_filePath.string(), scenePropTree);

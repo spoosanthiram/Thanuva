@@ -20,6 +20,15 @@ const char* kZoomLevelTag = "zoomLevel";
 
 namespace Model {
 
+//void Viewpoint::setEyeRotationMatrix(const Core::Matrix3x3& eyeRotationMatrix)
+//{
+//    if (m_eyeRotationMatrix == eyeRotationMatrix)
+//        return;
+//
+//    m_eyeRotationMatrix = eyeRotationMatrix;
+//    viewpointChanged.emit_signal();
+//}
+
 void Viewpoint::load(const boost::property_tree::ptree& cameraPropTree)
 {
     m_eyeRotationMatrix.set(cameraPropTree.get<std::string>(kEyeRotationMatrixTag));
