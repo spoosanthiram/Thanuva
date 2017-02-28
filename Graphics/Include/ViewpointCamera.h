@@ -16,6 +16,8 @@
 
 namespace Graphics {
 
+class GraphicsEnvironment;
+
 class ViewpointCamera
 {
 public:
@@ -30,9 +32,10 @@ public:
     };
 
 public:
-    ViewpointCamera() : m_viewMatrix{Core::Matrix4x4::identity()} {}
+    ViewpointCamera(const GraphicsEnvironment& graphicsEnvironment);
 
     const Core::Matrix4x4& viewMatrix() const { return m_viewMatrix; }
+    const Core::Matrix4x4& legendViewMatrix() const { return m_legendViewMatrix; }
 
     void setViewpointTranslation(double viewpointTranslation)
     {
@@ -44,6 +47,7 @@ public:
         m_viewpoint = viewpoint;
         this->updateViewMatrix();
     }
+    void adjustLegendTranslation();
 
     void rotate(const Location& startLocation, const Location& endLocation);
     void zoom(int steps);
@@ -56,11 +60,17 @@ protected: // slots
 
 private:
     Core::Vector3d projectToSphere(const Location& location);
+    Core::Matrix4x4 buildViewMatrix(const Core::Vector3d& eye);
+
+    const GraphicsEnvironment& m_graphicsEnvironment;
 
     double m_viewpointTranslation{3.0};
     Model::Viewpoint* m_viewpoint;
 
     Core::Matrix4x4 m_viewMatrix;
+
+    Core::Matrix4x4 m_legendTranslationMatrix;
+    Core::Matrix4x4 m_legendViewMatrix;
 };
 
 } // namespace Graphics

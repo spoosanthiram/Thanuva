@@ -35,13 +35,14 @@ GraphicsObject::GraphicsObject(const GraphicsEnvironment& graphicsEnvironment,
     m_geometryObject->geometryObjectChanged.connect<GraphicsObject, &GraphicsObject::initialize>(this);
 }
 
-void GraphicsObject::render() const
+void GraphicsObject::render(bool useLegendViewMatrix) const
 {
     float matrixData[16]; // for passing to opengl (both 3x3 & 4x4 matrix)
     auto& shaderProgram = m_graphicsEnvironment.shaderProgram();
 
-    Core::Matrix4x4 modelViewMatrix = m_graphicsEnvironment.viewpointCamera().viewMatrix()
-                                        /** m_geometryObject.transformMatrix()*/;
+    const ViewpointCamera& camera = m_graphicsEnvironment.viewpointCamera();
+    Core::Matrix4x4 modelViewMatrix = (useLegendViewMatrix ? camera.legendViewMatrix() : camera.viewMatrix()) *
+                                      m_geometryObject->modelObject()->transformMatrix();
     modelViewMatrix.data(matrixData);
     g_OpenGLFuncs->glUniformMatrix4fv(shaderProgram->modelViewMatrixLocation(), 1, GL_FALSE, matrixData);
 

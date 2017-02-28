@@ -36,7 +36,7 @@ public:
 public:
     GraphicsObject(const GraphicsEnvironment& graphicsEnvironment, Geometry::GeometryObject* geometryObject);
 
-    void render() const;
+    void render(bool useLegendViewMatrix = false) const;
     bool probe(int x, int y) const;
     const std::vector<Core::Point3d>& probePoints() const;
 

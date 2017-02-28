@@ -35,10 +35,18 @@ namespace Model {
 ConeModel::ConeModel(const Scene* scene)
     : ModelObject{scene}
 {
-    apexChanged.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
-    centerChanged.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
-    radiusChanged.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
-    numFacetsChanged.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
+    this->connectSignals();
+}
+
+ConeModel::ConeModel(const Scene* scene, const Core::Point3d& apex, const Core::Point3d& center,
+                     double radius, unsigned int numFacets)
+    : ModelObject{scene}
+    , m_apex{apex}
+    , m_center{center}
+    , m_radius{radius}
+    , m_numFacets{numFacets}
+{
+    this->connectSignals();
 }
 
 void ConeModel::setApex(const Core::Point3d& point)
@@ -105,6 +113,14 @@ void ConeModel::saveModel(boost::property_tree::ptree& modelPropTree)
     modelPropTree.put(kRadiusTag, m_radius);
 
     modelPropTree.put(kNumFacetsTag, m_numFacets);
+}
+
+void ConeModel::connectSignals()
+{
+    apexChanged.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
+    centerChanged.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
+    radiusChanged.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
+    numFacetsChanged.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
 }
 
 #ifdef UNIT_TEST

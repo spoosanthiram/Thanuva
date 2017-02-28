@@ -28,6 +28,7 @@ class GraphicsEnvironment : public QObject
 public:
     static const double kViewpointTranslationMultiplier;
     static const double kFarProjectionMultiplier;
+    static const double kLegendFarProjection;
 
 public:
     GraphicsEnvironment();
@@ -39,6 +40,7 @@ public:
     const std::unique_ptr<ShaderProgram>& shaderProgram() const { return m_shaderProgram; }
     const ViewpointCamera& viewpointCamera() const { return m_viewpointCamera; }
     ViewpointCamera& viewpointCamera() { return m_viewpointCamera; }
+    double windowAspect() const { return m_windowAspect; }
     const Core::Matrix4x4& projectionMatrix() const { return m_projectionMatrix; }
     const std::array<int, 4>& viewportTransform() const { return m_viewportTransform; }
 
@@ -80,7 +82,7 @@ private:
     std::array<float, 4> m_light0SpecularColor{{0.4f, 0.4f, 0.4f, 1.0f}};
 
     std::unique_ptr<Model::Viewpoint> m_defaultViewpoint{};
-    ViewpointCamera m_viewpointCamera{};
+    ViewpointCamera m_viewpointCamera;
 
     double m_windowAspect{1.6};
     Core::Matrix4x4 m_projectionMatrix;

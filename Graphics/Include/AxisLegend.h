@@ -11,6 +11,8 @@
 #include <memory>
 #include <vector>
 
+#include "Matrix4x4.h"
+
 namespace Geometry { class GeometryObject; }
 namespace Model { class ModelObject; }
 
@@ -24,10 +26,15 @@ class AxisLegend
 public:
     AxisLegend(const GraphicsEnvironment& graphicsEnvironment);
 
+    const Core::Matrix4x4& projectionMatrix() const { return m_projectionMatrix; }
+
+    void adjustProjection();
     void render() const;
 
 private:
     const GraphicsEnvironment& m_graphicsEnvironment;
+
+    Core::Matrix4x4 m_projectionMatrix;
 
     std::vector<std::unique_ptr<Model::ModelObject>> m_axisLegendModelObjects;
     std::vector<std::unique_ptr<Geometry::GeometryObject>> m_axisLegendGeometryObjects;

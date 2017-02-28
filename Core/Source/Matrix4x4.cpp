@@ -29,7 +29,6 @@ Matrix4x4 Matrix4x4::frustum(double left, double right,
                              double near, double far)
 {
     Matrix4x4 projection;
-
     projection.makeZero();
 
     projection.m_elements[0] = (2.0 * near) / (right - left);
@@ -46,7 +45,6 @@ Matrix4x4 Matrix4x4::frustum(double left, double right,
 Matrix4x4 Matrix4x4::perspective(double fovy, double aspect, double near, double far)
 {
     Matrix4x4 projection;
-
     projection.makeZero();
 
     double q = 1.0 / std::tan(0.5 * fovy * psa::kRadianMultiplier);
@@ -55,6 +53,22 @@ Matrix4x4 Matrix4x4::perspective(double fovy, double aspect, double near, double
     projection.m_elements[10] = (near + far) / (near - far);
     projection.m_elements[11] = -1.0;
     projection.m_elements[14] = (2.0 * near * far) / (near - far);
+
+    return projection;
+}
+
+Matrix4x4 Matrix4x4::ortho(double left, double right, double bottom, double top, double near, double far)
+{
+    Matrix4x4 projection;
+    projection.makeZero();
+
+    projection.m_elements[0] = 2.0 / (right - left);
+    projection.m_elements[5] = 2.0 / (top - bottom);
+    projection.m_elements[10] = -2.0 / (far - near);
+    projection.m_elements[12] = -(right + left) / (right - left);
+    projection.m_elements[13] = -(top + bottom) / (top - bottom);
+    projection.m_elements[14] = -(far + near) / (far - near);
+    projection.m_elements[15] = 1.0;
 
     return projection;
 }

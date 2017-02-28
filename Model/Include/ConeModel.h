@@ -17,6 +17,8 @@ class ConeModel : public ModelObject
 {
 public:
     ConeModel(const Scene* scene);
+    ConeModel(const Scene* scene, const Core::Point3d& apex, const Core::Point3d& center,
+              double radius, unsigned int numFacets);
     ConeModel(const ConeModel& rhs) = delete; // TODO: needs to be implemented
 
     ConeModel& operator=(const ConeModel& rhs) = delete; // TODO: needs to be implemented
@@ -43,6 +45,8 @@ protected:
     void saveModel(boost::property_tree::ptree& modelPropTree) override;
 
 private:
+    void connectSignals();
+
     Core::Point3d m_apex{0.0, 0.0, 1.0};
     Core::Point3d m_center{0.0, 0.0, 0.0};
     double m_radius{1.0};

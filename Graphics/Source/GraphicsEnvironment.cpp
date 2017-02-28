@@ -21,9 +21,11 @@ namespace Graphics {
 
 const double GraphicsEnvironment::kViewpointTranslationMultiplier = 2.5;
 const double GraphicsEnvironment::kFarProjectionMultiplier = 7.0;
+const double GraphicsEnvironment::kLegendFarProjection = 10.0;
 
 GraphicsEnvironment::GraphicsEnvironment()
-    : m_projectionMatrix{Core::Matrix4x4::identity()}
+    : m_viewpointCamera{*this}
+    , m_projectionMatrix{Core::Matrix4x4::identity()}
 {
     m_defaultViewpoint = std::make_unique<Model::Viewpoint>();
     m_viewpointCamera.setViewpoint(m_defaultViewpoint.get());
@@ -66,6 +68,9 @@ void GraphicsEnvironment::adjustProjection(int width, int height)
 {
     m_windowAspect = static_cast<double>(width) / static_cast<double>(height);
     this->updateProjectionMatrix();
+
+    m_viewpointCamera.adjustLegendTranslation();
+    m_axisLegend->adjustProjection();
 }
 
 std::vector<const Graphics::GraphicsObject*> GraphicsEnvironment::probe(int x, int y) const
@@ -127,14 +132,14 @@ void GraphicsEnvironment::render() const
                                 m_light0SpecularColor.data());
 
     float matrixData[16]; // 4x4 matrix
-    const Core::Matrix4x4& projectionMatrix = m_projectionMatrix;
-    projectionMatrix.data(matrixData);
-    g_OpenGLFuncs->glUniformMatrix4fv(m_shaderProgram->projectionMatrixLocation(), 1,
-                                      GL_FALSE, matrixData);
+    m_projectionMatrix.data(matrixData);
+    g_OpenGLFuncs->glUniformMatrix4fv(m_shaderProgram->projectionMatrixLocation(), 1, GL_FALSE, matrixData);
 
     for (const auto& graphicsObject : m_graphicsObjectList)
         graphicsObject->render();
 
+    m_axisLegend->projectionMatrix().data(matrixData);
+    g_OpenGLFuncs->glUniformMatrix4fv(m_shaderProgram->projectionMatrixLocation(), 1, GL_FALSE, matrixData);
     m_axisLegend->render();
 }
 

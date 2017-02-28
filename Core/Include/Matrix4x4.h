@@ -44,6 +44,7 @@ public:
                              double bottom, double top,
                              double near, double far);
     static Matrix4x4 perspective(double fovy, double aspect, double near, double far);
+    static Matrix4x4 ortho(double left, double right, double bottom, double top, double near, double far);
 
 public:
     Matrix4x4() : m_elements() {}
