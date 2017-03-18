@@ -48,11 +48,13 @@ public:
     bool intersect(const Core::Point3d& nearPoint, const Core::Point3d& farPoint);
     bool intersectBoundingBox(const Core::Point3d& nearPoint, const Core::Point3d& farPoint) const;
 
-public: // signals
-    Nano::Signal<void()> geometryObjectChanged{};
-    Nano::Signal<void()> extentChanged{};
+    void reserve(std::size_t nvertices, std::size_t nnormals, std::size_t nindices)
+    {
+        m_vertices.reserve(nvertices);
+        m_normals.reserve(nnormals);
+        m_indices.reserve(nindices);
+    }
 
-protected:
     void insertVertex(const float* vertex)
     {
         m_vertices.push_back(vertex[0]);
@@ -68,14 +70,6 @@ protected:
         m_vertices.push_back(static_cast<float>(vertex.z()));
 
         m_extent.update(vertex);
-    }
-    void duplicateVertices(size_t startIndex, size_t len)
-    {
-        //auto first = m_vertices.begin() + startIndex;
-        //auto last = first + len;
-        //std::copy(first, last, std::back_inserter(m_vertices));
-        for (size_t i = 0; i < len; ++i)
-            m_vertices.push_back(m_vertices[startIndex + i]);
     }
 
     void insertNormal(const float* normal)
@@ -98,6 +92,20 @@ protected:
         m_indices.push_back(ic);
     }
 
+public: // signals
+    Nano::Signal<void()> geometryObjectChanged{};
+    Nano::Signal<void()> extentChanged{};
+
+protected:
+    void duplicateVertices(size_t startIndex, size_t len)
+    {
+        //auto first = m_vertices.begin() + startIndex;
+        //auto last = first + len;
+        //std::copy(first, last, std::back_inserter(m_vertices));
+        for (size_t i = 0; i < len; ++i)
+            m_vertices.push_back(m_vertices[startIndex + i]);
+    }
+
     Core::Vector3d computeNormal(const Core::Point3d& a, const Core::Point3d& b, const Core::Point3d& c)
     {
         Core::Vector3d n = (b - a).cross(c - a);
@@ -105,12 +113,6 @@ protected:
         return n;
     }
 
-    void reserve(std::size_t nvertices, std::size_t nnormals, std::size_t nindices)
-    {
-        m_vertices.reserve(nvertices);
-        m_normals.reserve(nnormals);
-        m_indices.reserve(nindices);
-    }
     void clear()
     {
         m_vertices.clear();

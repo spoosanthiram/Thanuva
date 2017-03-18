@@ -13,8 +13,8 @@
 
 #include "BoxModel.h"
 #include "CylinderModel.h"
+#include "MeshModel.h"
 #include "ModelException.h"
-#include "StlModel.h"
 
 namespace {
 
@@ -143,7 +143,7 @@ void Scene::loadModelObjectList(const boost::property_tree::ptree& modelObjectsP
 
     std::function<std::unique_ptr<ModelObject>(Scene*)> modelObjectMaker[] = {
         [](Scene* scene) -> std::unique_ptr<ModelObject> { return std::make_unique<BoxModel>(scene); },
-        [](Scene* scene) -> std::unique_ptr<ModelObject> { return std::make_unique<StlModel>(scene); },
+        [](Scene* scene) -> std::unique_ptr<ModelObject> { return std::make_unique<MeshModel>(scene); },
         [](Scene* scene) -> std::unique_ptr<ModelObject> { return std::make_unique<CylinderModel>(scene); }
     };
 

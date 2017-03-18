@@ -15,11 +15,15 @@ namespace Model {
 class ModelException : public Core::ThanuvaException
 {
 public:
+    // General
+    static const char* kPathNotFound;
+
+    // ModelObject messages
     static const char* kEmptyName;
     static const char* kInvalidType;
     static const char* kInvalidBoxLimiter;
 
-    static const char* kPathNotFound;
+    // Scene messages
     static const char* kFailedToRead;
     static const char* kFailedToWrite;
     static const char* kInvalidPath;

@@ -11,10 +11,10 @@ set(SOURCE_FILES
     ${Model_SOURCE_DIR}/Include/ConeModel.h
     ${Model_SOURCE_DIR}/Include/CylinderModel.h
     ${Model_SOURCE_DIR}/Include/GlogWrapper.h
+    ${Model_SOURCE_DIR}/Include/MeshModel.h
     ${Model_SOURCE_DIR}/Include/ModelException.h
     ${Model_SOURCE_DIR}/Include/ModelObject.h
     ${Model_SOURCE_DIR}/Include/Scene.h
-    ${Model_SOURCE_DIR}/Include/StlModel.h
     ${Model_SOURCE_DIR}/Include/ThanuvaApp.h
     ${Model_SOURCE_DIR}/Include/Viewpoint.h
 
@@ -22,10 +22,10 @@ set(SOURCE_FILES
     ${Model_SOURCE_DIR}/Source/ConeModel.cpp
     ${Model_SOURCE_DIR}/Source/CylinderModel.cpp
     ${Model_SOURCE_DIR}/Source/GlogWrapper.cpp
+    ${Model_SOURCE_DIR}/Source/MeshModel.cpp
     ${Model_SOURCE_DIR}/Source/ModelException.cpp
     ${Model_SOURCE_DIR}/Source/ModelObject.cpp
     ${Model_SOURCE_DIR}/Source/Scene.cpp
-    ${Model_SOURCE_DIR}/Source/StlModel.cpp
     ${Model_SOURCE_DIR}/Source/ThanuvaApp.cpp
     ${Model_SOURCE_DIR}/Source/Viewpoint.cpp
 )

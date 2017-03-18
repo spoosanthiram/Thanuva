@@ -66,7 +66,7 @@ void Cone::generateBaseTriangles(const std::vector<Core::Vector3d>& initVectors,
 
 void Cone::generateSideTriangles(const std::vector<Core::Vector3d>& initVectors)
 {
-    int aIndex = this->vertices().size() / 3;
+    int aIndex = static_cast<int>(this->vertices().size() / 3);
     Core::Point3d a{&this->vertices()[3]};
     this->insertVertex(a);
     this->insertNormal(initVectors[0]);
@@ -78,12 +78,12 @@ void Cone::generateSideTriangles(const std::vector<Core::Vector3d>& initVectors)
     Core::Point3d b;
     int bIndex, apexIndex;
     for (unsigned int i = 1; i < numFacets; ++i) {
-        bIndex = this->vertices().size() / 3;
+        bIndex = static_cast<int>(this->vertices().size() / 3);
         b.assign(&this->vertices()[(i + 1) * 3]);
         this->insertVertex(b);
         this->insertNormal(initVectors[i]);
 
-        apexIndex = this->vertices().size() / 3;
+        apexIndex = static_cast<int>(this->vertices().size() / 3);
         Core::Vector3d n = this->computeNormal(a, b, apex);
         this->insertVertex(apex);
         this->insertNormal(n);
@@ -97,7 +97,7 @@ void Cone::generateSideTriangles(const std::vector<Core::Vector3d>& initVectors)
     bIndex = numFacets + 1;
     b.assign(&this->vertices()[(numFacets + 1) * 3]);
 
-    apexIndex = this->vertices().size() / 3;
+    apexIndex = static_cast<int>(this->vertices().size() / 3);
     Core::Vector3d n = this->computeNormal(a, b, apex);
     this->insertVertex(apex);
     this->insertNormal(n);

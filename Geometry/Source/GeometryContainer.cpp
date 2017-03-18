@@ -13,9 +13,9 @@
 #include "BoxModel.h"
 #include "Cylinder.h"
 #include "CylinderModel.h"
+#include "Mesh.h"
+#include "MeshModel.h"
 #include "Scene.h"
-#include "Stl.h"
-#include "StlModel.h"
 
 namespace Geometry {
 
@@ -76,7 +76,7 @@ std::unique_ptr<GeometryObject> GeometryContainer::makeGeometryObject(Model::Mod
         [](GeometryContainer* gc, Model::ModelObject* mo) -> std::unique_ptr<GeometryObject>
             { return std::make_unique<Box>(gc, dynamic_cast<Model::BoxModel*>(mo)); },
         [](GeometryContainer* gc, Model::ModelObject* mo) -> std::unique_ptr<GeometryObject>
-            { return std::make_unique<Stl>(gc, dynamic_cast<Model::StlModel*>(mo)); },
+            { return std::make_unique<Mesh>(gc, dynamic_cast<Model::MeshModel*>(mo)); },
         [](GeometryContainer* gc, Model::ModelObject* mo) -> std::unique_ptr<GeometryObject>
             { return std::make_unique<Cylinder>(gc, dynamic_cast<Model::CylinderModel*>(mo)); }
     };

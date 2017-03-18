@@ -153,7 +153,7 @@ void GeometryObject::initializeBoundingBox()
 void GeometryObject::intersectInternal(const Core::Point3d& nearPoint, const Core::Point3d& farPoint,
                                        std::size_t startIndex, std::size_t endIndex)
 {
-    bool threaded = m_indices.size() != endIndex;
+    bool threaded = m_indices.size() != (endIndex - startIndex);
 
     Core::Vector3d n;
     Core::Point3d a, b, c, p;

@@ -14,7 +14,9 @@ set(SOURCE_FILES
     ${Geometry_SOURCE_DIR}/Include/GeometryCommon.h
     ${Geometry_SOURCE_DIR}/Include/GeometryContainer.h
     ${Geometry_SOURCE_DIR}/Include/GeometryObject.h
-    ${Geometry_SOURCE_DIR}/Include/Stl.h
+    ${Geometry_SOURCE_DIR}/Include/Mesh.h
+    ${Geometry_SOURCE_DIR}/Include/MeshReader.h
+    ${Geometry_SOURCE_DIR}/Include/StlMeshReader.h
 
     ${Geometry_SOURCE_DIR}/Source/Box.cpp
     ${Geometry_SOURCE_DIR}/Source/Cone.cpp
@@ -23,7 +25,9 @@ set(SOURCE_FILES
     ${Geometry_SOURCE_DIR}/Source/GeometryCommon.cpp
     ${Geometry_SOURCE_DIR}/Source/GeometryContainer.cpp
     ${Geometry_SOURCE_DIR}/Source/GeometryObject.cpp
-    ${Geometry_SOURCE_DIR}/Source/Stl.cpp
+    ${Geometry_SOURCE_DIR}/Source/Mesh.cpp
+    ${Geometry_SOURCE_DIR}/Source/MeshReader.cpp
+    ${Geometry_SOURCE_DIR}/Source/StlMeshReader.cpp
 )
 
 include_directories(

@@ -5,19 +5,20 @@
  * All rights reserved.
  */
 
-#ifndef GEOMETRY_STL_H
-#define GEOMETRY_STL_H
+#ifndef GEOMETRY_STLMESHREADER_H
+#define GEOMETRY_STLMESHREADER_H
 
 #include <regex>
 #include <unordered_map>
 
-#include "GeometryObject.h"
+#include <AlgoBase.h>
 
-namespace Model { class StlModel; }
+#include "Mesh.h"
+#include "MeshReader.h"
 
 namespace Geometry {
 
-class Stl : public GeometryObject
+class StlMeshReader : public MeshReader
 {
 public:
     static const int kBinaryHeaderLength = 80;
@@ -62,14 +63,13 @@ public:
     using VertexIndexMapType = std::unordered_map<Vertex, int, VertexHasher>;
 
 public:
-    Stl(const GeometryContainer* geometryContainer, Model::StlModel* stlModel);
+    StlMeshReader(const fs::path& filePath);
 
-private: // slots
-    void initialize();
+    void read(Mesh& mesh) override;
 
 private:
-    bool isAsciiFormat(const std::string& filePath) const;
-    void readAscii(const std::string& filePath);
+    bool isAsciiFormat() const;
+    void readAscii(Mesh& mesh);
     void readValues(std::sregex_token_iterator it, float* values)
     {
         const std::sregex_token_iterator endIt{};
@@ -77,32 +77,35 @@ private:
         for (++it; it != endIt; ++it)
             values[i++] = std::stof(it->str());
     }
-    void readBinary(const std::string& filePath);
-    void processData(char* p, char* q, VertexIndexMapType& vertexIndexMap);
+    void readBinary(Mesh& mesh);
+    void processData(Mesh& mesh, char* p, char* q, VertexIndexMapType& vertexIndexMap);
 
     /**
      * Get the index either one already there or newly inserted one.
      */
-    int index(float* vertex, float* normal, VertexIndexMapType& vertexIndexMap)
+    int index(Mesh& mesh, float* vertex, float* normal, VertexIndexMapType& vertexIndexMap)
     {
         Vertex v{vertex};
         auto it = vertexIndexMap.find(v);
         if (it != vertexIndexMap.end()) {
-            const float* currentNormal = &(this->normals()[it->second * kValuesPerVertex]);
+            const float* currentNormal = &(mesh.normals()[it->second * GeometryObject::kValuesPerVertex]);
             if (currentNormal[0] == normal[0] && currentNormal[1] == normal[1] && currentNormal[2] == normal[2])
                 return it->second;
         }
 
-        int index = static_cast<int>(this->vertices().size() / kValuesPerVertex);
+        int index = static_cast<int>(mesh.vertices().size() / GeometryObject::kValuesPerVertex);
         vertexIndexMap[v] = index;
 
-        this->insertVertex(v.values);
-        this->insertNormal(normal);
+        mesh.insertVertex(v.values);
+        mesh.insertNormal(normal);
 
         return index;
     }
+
+private:
+    fs::path m_filePath;
 };
 
 } // namespace Geometry
 
-#endif // GEOMETRY_STL_H
+#endif // GEOMETRY_STLMESHREADER_H

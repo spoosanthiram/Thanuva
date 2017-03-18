@@ -28,7 +28,7 @@ const char* ModelObject::kTypeTag = "type";
 
 std::string ModelObject::typeStr(Type type)
 {
-    static const char* typeString[static_cast<int>(Type::NTypes)] = {"Box", "Stl", "Cylinder"};
+    static const char* typeString[static_cast<int>(Type::NTypes)] = {"Box", "Mesh", "Cylinder"};
     return typeString[static_cast<int>(type)];
 }
 

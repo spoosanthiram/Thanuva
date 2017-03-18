@@ -43,9 +43,9 @@ public:
 
         bool operator==(const Limiter& rhs) const
         {
-            return psa::isequal(rhs.xlow, xlow) && psa::isequal(rhs.xhigh, xhigh)
-                && psa::isequal(rhs.ylow, ylow) && psa::isequal(rhs.yhigh, yhigh)
-                && psa::isequal(rhs.zlow, zlow) && psa::isequal(rhs.zhigh, zhigh);
+            return psa::isequal(rhs.xlow, xlow) && psa::isequal(rhs.xhigh, xhigh) &&
+                psa::isequal(rhs.ylow, ylow) && psa::isequal(rhs.yhigh, yhigh) &&
+                psa::isequal(rhs.zlow, zlow) && psa::isequal(rhs.zhigh, zhigh);
         }
         bool operator!=(const Limiter& rhs) const { return !(rhs == *this); }
 

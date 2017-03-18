@@ -23,9 +23,9 @@
 #include "BoxDialog.h"
 #include "CylinderModel.h"
 #include "CylinderDialog.h"
+#include "MeshModel.h"
 #include "OpenGLInterface.h"
 #include "Scene.h"
-#include "StlModel.h"
 #include "ThanuvaApp.h"
 
 namespace ThanuvaUi {
@@ -42,7 +42,7 @@ OpenGLWidget::OpenGLWidget(QWidget* parent)
     m_contextMenu = new QMenu(this);
     m_contextMenu->addAction(tr("Add Box"), this, SLOT(addBox()));
     m_contextMenu->addAction(tr("Add Cylinder"), this, SLOT(addCylinder()));
-    m_contextMenu->addAction(tr("Add STL"), this, SLOT(addStl()));
+    m_contextMenu->addAction(tr("Add Mesh"), this, SLOT(addStl()));
 
     QSurfaceFormat format = this->format();
     format.setVersion(kOpenGLMajorVersion, kOpenGLMinorVersion);
@@ -113,7 +113,7 @@ void OpenGLWidget::addStl()
     this->makeCurrent();
 
     try {
-        auto stlModel = m_scene->newModelObject<Model::StlModel>(filePath.toStdString());
+        auto meshModel = m_scene->newModelObject<Model::MeshModel>(filePath.toStdString());
     }
     catch (const std::exception& e) {
         LOG(ERROR) << e.what();

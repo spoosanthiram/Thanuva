@@ -66,7 +66,7 @@ void Cylinder::generateFace1Triangles(const std::vector<Core::Vector3d>& initVec
 void Cylinder::generateFace2Triangles(const std::vector<Core::Vector3d>& initVectors,
                                       const Core::Vector3d& normal)
 {
-    unsigned int indexOffset = this->vertices().size() / 3;
+    unsigned int indexOffset = static_cast<unsigned int>(this->vertices().size() / 3);
 
     auto cylinderModel = dynamic_cast<Model::CylinderModel*>(this->modelObject());
 
@@ -93,7 +93,7 @@ void Cylinder::generateFaceVertices(const Core::Point3d& endpoint, double radius
 
 void Cylinder::generateSideTriangles(const std::vector<Core::Vector3d>& initVectors)
 {
-    unsigned int indexOffset = this->vertices().size() / 3;
+    unsigned int indexOffset = static_cast<unsigned int>(this->vertices().size() / 3);
 
     unsigned int numFacets = dynamic_cast<Model::CylinderModel*>(this->modelObject())->numFacets();
 

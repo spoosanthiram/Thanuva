@@ -25,7 +25,7 @@ public:
     enum class Type
     {
         Box,
-        Stl,
+        Mesh,
         Cylinder,
         Cone,
         // Always add new types before this line!

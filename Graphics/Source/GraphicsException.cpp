@@ -12,7 +12,7 @@ namespace Graphics {
 const char* GraphicsException::kCreateShader = "glCreateShader() failed for: ";
 const char* GraphicsException::kCreateProgram = "glCreateProgram() failed.";
 const char* GraphicsException::kCompileShader = "glCompileShader() failed: ";
-const char* GraphicsException::kAttachShader = "glAttachShader() failed!";
+const char* GraphicsException::kAttachShader = "glAttachShader() failed.";
 const char* GraphicsException::kLinkProgram = "glLinkProgram() failed: ";
 
 } // namespace Graphics

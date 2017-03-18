@@ -5,53 +5,37 @@
  * All rights reserved.
  */
 
-#include "Stl.h"
+#include "StlMeshReader.h"
 
 #include <fstream>
 #include <thread>
 
 #include <glog/logging.h>
 
-#include "StlModel.h"
 #include "Utils.h"
 
 namespace Geometry {
 
-Stl::Stl(const GeometryContainer* geometryContainer, Model::StlModel* stlModel)
-    : GeometryObject{geometryContainer, stlModel}
+StlMeshReader::StlMeshReader(const fs::path& filePath)
+    : MeshReader{}
+    , m_filePath{filePath}
 {
-    this->initialize();
-
-    stlModel->filePathChanged.connect<Stl, &Stl::initialize>(this);
 }
 
-void Stl::initialize()
+void StlMeshReader::read(Mesh& mesh)
 {
-    this->clear();
-
-    this->setExtent(Extent{ std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(),
-                    std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(),
-                    std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity() });
-
-    std::string filePath = static_cast<Model::StlModel*>(this->modelObject())->filePath();
-    if (this->isAsciiFormat(filePath))
-        this->readAscii(filePath);
+    if (this->isAsciiFormat())
+        this->readAscii(mesh);
     else
-        this->readBinary(filePath);
-
-    this->initializeBoundingBox();
-
-    // emit signals
-    geometryObjectChanged.emit_signal();
-    extentChanged.emit_signal();
+        this->readBinary(mesh);
 }
 
-bool Stl::isAsciiFormat(const std::string& filePath) const
+bool StlMeshReader::isAsciiFormat() const
 {
     const int kBufLen = 256;
 
-    std::ifstream stlInputStream{filePath};
-    CHECK(stlInputStream) << "STL file stream";
+    std::ifstream stlInputStream{m_filePath};
+    CHECK(stlInputStream);
 
     std::string buf{};
     buf.resize(kBufLen, '\0');
@@ -60,9 +44,9 @@ bool Stl::isAsciiFormat(const std::string& filePath) const
     return (buf.find("facet") != std::string::npos || buf.find("normal") != std::string::npos) ? true : false;
 }
 
-void Stl::readAscii(const std::string& filePath)
+void StlMeshReader::readAscii(Mesh& mesh)
 {
-    std::ifstream textStream{filePath}; // At this point the file path should be valid. so no error check
+    std::ifstream textStream{m_filePath}; // At this point the file path should be valid. so no error check
     Core::skipWhitespace(textStream);
 
     std::string line;
@@ -95,7 +79,7 @@ void Stl::readAscii(const std::string& filePath)
                     it = std::sregex_token_iterator{line.begin(), line.end(), spacePattern, -1};
                     if (it->str() == "vertex") // vertex <number> <number> <number>
                         this->readValues(it, &vertex[nvertex * 3]);
-                    indices[nvertex] = this->index(&vertex[nvertex * 3], normal, vertexIndexMap);
+                    indices[nvertex] = this->index(mesh, &vertex[nvertex * 3], normal, vertexIndexMap);
                     ++nvertex;
                 }
 
@@ -106,14 +90,14 @@ void Stl::readAscii(const std::string& filePath)
             Core::skipWhitespace(textStream);
             std::getline(textStream, line); // "endfacet"
 
-            this->insertIndices(indices[0], indices[1], indices[2]);
+            mesh.insertIndices(indices[0], indices[1], indices[2]);
         }
     }
 }
 
-void Stl::readBinary(const std::string& filePath)
+void StlMeshReader::readBinary(Mesh& mesh)
 {
-    std::ifstream dataStream{filePath, std::ios::binary}; // At this point the file path should be valid. so no error check
+    std::ifstream dataStream{m_filePath, std::ios::binary}; // At this point the file path should be valid. so no error check
 
     auto dataStreamRdBuf = std::make_unique<char[]>(kDataStreamReadBufferSize);
     dataStream.rdbuf()->pubsetbuf(dataStreamRdBuf.get(), kDataStreamReadBufferSize);
@@ -124,7 +108,7 @@ void Stl::readBinary(const std::string& filePath)
     dataStream.read(buf.get(), sizeof(int)); // read number of facets
     unsigned int nFacets = *reinterpret_cast<int*>(buf.get());
 
-    this->reserve(nFacets * GeometryObject::kVerticesPerTriangle * GeometryObject::kValuesPerVertex,
+    mesh.reserve(nFacets * GeometryObject::kVerticesPerTriangle * GeometryObject::kValuesPerVertex,
                   nFacets * GeometryObject::kVerticesPerTriangle * GeometryObject::kValuesPerVertex, 0);
 
     VertexIndexMapType vertexIndexMap{nFacets * 2};
@@ -133,28 +117,28 @@ void Stl::readBinary(const std::string& filePath)
     for (unsigned int i = 0; i < nFacets; i += readSize) {
         readSize = ((nFacets - i) > kNFacetChunk) ? kNFacetChunk : (nFacets - i);
         dataStream.read(buf.get(), readSize * kFacetSize);
-        this->processData(buf.get(), buf.get() + (readSize * kFacetSize), vertexIndexMap);
+        this->processData(mesh, buf.get(), buf.get() + (readSize * kFacetSize), vertexIndexMap);
     }
 }
 
-void Stl::processData(char* p, char* q, VertexIndexMapType& vertexIndexMap)
+void StlMeshReader::processData(Mesh& mesh, char* p, char* q, VertexIndexMapType& vertexIndexMap)
 {
     while (p < q) {
         float* normal = reinterpret_cast<float*>(p);
         p += 3 * sizeof(float);
 
-        int i1 = this->index(reinterpret_cast<float*>(p), normal, vertexIndexMap);
+        int i1 = this->index(mesh, reinterpret_cast<float*>(p), normal, vertexIndexMap);
         p += 3 * sizeof(float);
 
-        int i2 = this->index(reinterpret_cast<float*>(p), normal, vertexIndexMap);
+        int i2 = this->index(mesh, reinterpret_cast<float*>(p), normal, vertexIndexMap);
         p += 3 * sizeof(float);
 
-        int i3 = this->index(reinterpret_cast<float*>(p), normal, vertexIndexMap);
+        int i3 = this->index(mesh, reinterpret_cast<float*>(p), normal, vertexIndexMap);
         p += 3 * sizeof(float);
 
         p += sizeof(uint16_t);
 
-        this->insertIndices(i1, i2, i3);
+        mesh.insertIndices(i1, i2, i3);
     }
 }
 
