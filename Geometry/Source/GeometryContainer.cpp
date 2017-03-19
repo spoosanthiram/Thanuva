@@ -11,11 +11,15 @@
 
 #include "Box.h"
 #include "BoxModel.h"
+#include "Cone.h"
+#include "ConeModel.h"
 #include "Cylinder.h"
 #include "CylinderModel.h"
 #include "Mesh.h"
 #include "MeshModel.h"
 #include "Scene.h"
+#include "Sphere.h"
+#include "SphereModel.h"
 
 namespace Geometry {
 
@@ -71,17 +75,24 @@ void GeometryContainer::updateExtent()
 
 std::unique_ptr<GeometryObject> GeometryContainer::makeGeometryObject(Model::ModelObject* modelObject)
 {
-    std::function<std::unique_ptr<GeometryObject>(GeometryContainer*, Model::ModelObject*)> geometryMaker[] =
+    static std::function<std::unique_ptr<GeometryObject>(GeometryContainer*, Model::ModelObject*)> geometryMaker[] =
     {
         [](GeometryContainer* gc, Model::ModelObject* mo) -> std::unique_ptr<GeometryObject>
             { return std::make_unique<Box>(gc, dynamic_cast<Model::BoxModel*>(mo)); },
         [](GeometryContainer* gc, Model::ModelObject* mo) -> std::unique_ptr<GeometryObject>
             { return std::make_unique<Mesh>(gc, dynamic_cast<Model::MeshModel*>(mo)); },
         [](GeometryContainer* gc, Model::ModelObject* mo) -> std::unique_ptr<GeometryObject>
-            { return std::make_unique<Cylinder>(gc, dynamic_cast<Model::CylinderModel*>(mo)); }
+            { return std::make_unique<Cylinder>(gc, dynamic_cast<Model::CylinderModel*>(mo)); },
+        [](GeometryContainer* gc, Model::ModelObject* mo) -> std::unique_ptr<GeometryObject>
+            { return std::make_unique<Cone>(gc, dynamic_cast<Model::ConeModel*>(mo)); },
+        [](GeometryContainer* gc, Model::ModelObject* mo) -> std::unique_ptr<GeometryObject>
+            { return std::make_unique<Sphere>(gc, dynamic_cast<Model::SphereModel*>(mo)); }
     };
 
-    return geometryMaker[static_cast<int>(modelObject->type())](this, modelObject);
+    int index = static_cast<int>(modelObject->type());
+    CHECK(index < sizeof(geometryMaker) / sizeof(std::function<std::unique_ptr<GeometryObject>(GeometryContainer*, Model::ModelObject*)>));
+
+    return geometryMaker[index](this, modelObject);
 }
 
 } // namespace Geometry

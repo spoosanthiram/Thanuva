@@ -22,14 +22,14 @@
 #include "BoxModel.h"
 #include "BoxDialog.h"
 #include "ConeModel.h"
-//#include "ConeDialog.h"
+#include "ConeDialog.h"
 #include "CylinderModel.h"
 #include "CylinderDialog.h"
 #include "MeshModel.h"
 #include "OpenGLInterface.h"
 #include "Scene.h"
 #include "SphereModel.h"
-//#include "SphereDialog.h"
+#include "SphereDialog.h"
 #include "ThanuvaApp.h"
 
 namespace ThanuvaUi {
@@ -115,7 +115,7 @@ void OpenGLWidget::createCone()
     this->makeCurrent();
 
     auto coneModel = m_scene->newModelObject<Model::ConeModel>();
-    //ConeDialog{this, coneModel}.exec();
+    ConeDialog{this, coneModel}.exec();
 
     this->doneCurrent();
 }
@@ -127,7 +127,7 @@ void OpenGLWidget::createSphere()
     this->makeCurrent();
 
     auto sphereModel = m_scene->newModelObject<Model::SphereModel>();
-    //SphereDialog{this, sphereModel}.exec();
+    SphereDialog{this, sphereModel}.exec();
 
     this->doneCurrent();
 }

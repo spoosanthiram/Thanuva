@@ -12,9 +12,11 @@
 #include <fmt/format.h>
 
 #include "BoxModel.h"
+#include "ConeModel.h"
 #include "CylinderModel.h"
 #include "MeshModel.h"
 #include "ModelException.h"
+#include "SphereModel.h"
 
 namespace {
 
@@ -141,18 +143,21 @@ void Scene::loadModelObjectList(const boost::property_tree::ptree& modelObjectsP
 {
     using boost::property_tree::ptree;
 
-    std::function<std::unique_ptr<ModelObject>(Scene*)> modelObjectMaker[] = {
+    static std::function<std::unique_ptr<ModelObject>(Scene*)> modelObjectMaker[] = {
         [](Scene* scene) -> std::unique_ptr<ModelObject> { return std::make_unique<BoxModel>(scene); },
         [](Scene* scene) -> std::unique_ptr<ModelObject> { return std::make_unique<MeshModel>(scene); },
-        [](Scene* scene) -> std::unique_ptr<ModelObject> { return std::make_unique<CylinderModel>(scene); }
+        [](Scene* scene) -> std::unique_ptr<ModelObject> { return std::make_unique<CylinderModel>(scene); },
+        [](Scene* scene) -> std::unique_ptr<ModelObject> { return std::make_unique<ConeModel>(scene); },
+        [](Scene* scene) -> std::unique_ptr<ModelObject> { return std::make_unique<SphereModel>(scene); }
     };
 
     for (const auto& it : modelObjectsPropTree) {
         const ptree& modelObjectPropTree = it.second;
         unsigned int type = modelObjectPropTree.get<unsigned int>(ModelObject::kTypeTag);
-        if (type > static_cast<unsigned int>(ModelObject::Type::NTypes))
+        if (type >= static_cast<unsigned int>(ModelObject::Type::NTypes))
             throw ModelException{ModelException::kInvalidType};
 
+        CHECK(type < sizeof(modelObjectMaker) / sizeof(std::function<std::unique_ptr<ModelObject>(Scene*)>));
         auto modelObject = modelObjectMaker[type](this);
 
         if (modelObject) {

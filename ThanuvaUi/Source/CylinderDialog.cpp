@@ -7,8 +7,6 @@
 
 #include "CylinderDialog.h"
 
-#include <QMessageBox>
-
 #include "CylinderModel.h"
 
 namespace ThanuvaUi {

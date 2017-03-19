@@ -28,8 +28,11 @@ const char* ModelObject::kTypeTag = "type";
 
 std::string ModelObject::typeStr(Type type)
 {
-    static const char* typeString[static_cast<int>(Type::NTypes)] = {"Box", "Mesh", "Cylinder"};
-    return typeString[static_cast<int>(type)];
+    static const char* typeString[] = {"Box", "Mesh", "Cylinder", "Cone", "Sphere"};
+
+    int index = static_cast<int>(type);
+    CHECK(index < sizeof(typeString) / sizeof(const char*));
+    return typeString[index];
 }
 
 ModelObject::ModelObject(const Scene* scene)

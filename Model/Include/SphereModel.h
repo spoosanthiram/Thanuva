@@ -16,6 +16,10 @@ namespace Model {
 class SphereModel : public ModelObject
 {
 public:
+    static const int kMaxSubdivisions = 5;
+    static int numFacets(int subdivisions) { return static_cast<int>(8 * std::pow(4, subdivisions)); }
+
+public:
     SphereModel(const Scene* scene);
     SphereModel(const Scene* scene, const Core::Point3d& center, double radius, unsigned int subdivisions);
     SphereModel(const SphereModel& rhs) = delete; // TODO: needs to be implemented

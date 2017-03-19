@@ -18,28 +18,34 @@ add_definitions(-DGLOG_NO_ABBREVIATED_SEVERITIES)
 set(SOURCE_FILES
     ${ThanuvaUi_SOURCE_DIR}/Include/AppSettings.h
     ${ThanuvaUi_SOURCE_DIR}/Include/BoxDialog.h
+    ${ThanuvaUi_SOURCE_DIR}/Include/ConeDialog.h
     ${ThanuvaUi_SOURCE_DIR}/Include/CylinderDialog.h
     ${ThanuvaUi_SOURCE_DIR}/Include/GeometryDialog.h
     ${ThanuvaUi_SOURCE_DIR}/Include/GeometryListUiModel.h
     ${ThanuvaUi_SOURCE_DIR}/Include/MainWindow.h
     ${ThanuvaUi_SOURCE_DIR}/Include/OpenGLWidget.h
+    ${ThanuvaUi_SOURCE_DIR}/Include/SphereDialog.h
     ${ThanuvaUi_SOURCE_DIR}/Include/StartUpPage.h
 
     ${ThanuvaUi_SOURCE_DIR}/Source/AppSettings.cpp
     ${ThanuvaUi_SOURCE_DIR}/Source/BoxDialog.cpp
+    ${ThanuvaUi_SOURCE_DIR}/Source/ConeDialog.cpp
     ${ThanuvaUi_SOURCE_DIR}/Source/CylinderDialog.cpp
     ${ThanuvaUi_SOURCE_DIR}/Source/GeometryDialog.cpp
     ${ThanuvaUi_SOURCE_DIR}/Source/GeometryListUiModel.cpp
     ${ThanuvaUi_SOURCE_DIR}/Source/main.cpp
     ${ThanuvaUi_SOURCE_DIR}/Source/MainWindow.cpp
     ${ThanuvaUi_SOURCE_DIR}/Source/OpenGLWidget.cpp
+    ${ThanuvaUi_SOURCE_DIR}/Source/SphereDialog.cpp
     ${ThanuvaUi_SOURCE_DIR}/Source/StartUpPage.cpp
 )
 
 qt5_wrap_ui(UI_FILES
     ${ThanuvaUi_SOURCE_DIR}/Form/BoxWidget.ui
+    ${ThanuvaUi_SOURCE_DIR}/Form/ConeWidget.ui
     ${ThanuvaUi_SOURCE_DIR}/Form/CylinderWidget.ui
     ${ThanuvaUi_SOURCE_DIR}/Form/GeometryDialog.ui
+    ${ThanuvaUi_SOURCE_DIR}/Form/SphereWidget.ui
     ${ThanuvaUi_SOURCE_DIR}/Form/StartUpPage.ui
 )
 

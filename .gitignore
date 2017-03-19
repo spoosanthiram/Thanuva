@@ -1,6 +1,7 @@
 Build
 CMakeLists.txt.user*
 MSVC
+x64
 *.7z
 *.gfx
 *.nas

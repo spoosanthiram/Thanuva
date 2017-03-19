@@ -7,8 +7,6 @@
 
 #include "BoxDialog.h"
 
-#include <QMessageBox>
-
 #include "BoxModel.h"
 
 namespace ThanuvaUi {
