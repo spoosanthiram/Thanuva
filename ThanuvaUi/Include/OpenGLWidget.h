@@ -47,9 +47,13 @@ public:
 
 protected slots:
     void handleViewChanged() { this->update(); }
-    void addBox();
-    void addCylinder();
-    void addStl();
+
+    void createBox();
+    void createCylinder();
+    void createCone();
+    void createSphere();
+
+    void importMesh();
 
 protected:
     void initializeGL() override;

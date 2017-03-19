@@ -42,6 +42,12 @@ void Cone::initialize()
 
     this->generateBaseTriangles(initVectors, -w);
     this->generateSideTriangles(initVectors);
+
+    this->initializeBoundingBox();
+
+    // emit signals
+    geometryObjectChanged.emit_signal();
+    extentChanged.emit_signal();
 }
 
 void Cone::generateBaseTriangles(const std::vector<Core::Vector3d>& initVectors, const Core::Vector3d& normal)

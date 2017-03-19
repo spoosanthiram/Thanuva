@@ -104,8 +104,8 @@ void GraphicsObject::initialize()
     const std::vector<float>& normals = m_geometryObject->normals();
     g_OpenGLFuncs->glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(float),
                                 normals.data(), GL_STATIC_DRAW);
-    g_OpenGLFuncs->glVertexAttribPointer(kNormalLocation,
-            Geometry::GeometryObject::kValuesPerVertex, GL_FLOAT, GL_FALSE, 0, 0);
+    g_OpenGLFuncs->glVertexAttribPointer(kNormalLocation, Geometry::GeometryObject::kValuesPerVertex,
+                                         GL_FLOAT, GL_FALSE, 0, 0);
     g_OpenGLFuncs->glEnableVertexAttribArray(kNormalLocation);
 
     const std::vector<int>& indices = m_geometryObject->indices();

@@ -15,6 +15,7 @@ set(SOURCE_FILES
     ${Model_SOURCE_DIR}/Include/ModelException.h
     ${Model_SOURCE_DIR}/Include/ModelObject.h
     ${Model_SOURCE_DIR}/Include/Scene.h
+    ${Model_SOURCE_DIR}/Include/SphereModel.h
     ${Model_SOURCE_DIR}/Include/ThanuvaApp.h
     ${Model_SOURCE_DIR}/Include/Viewpoint.h
 
@@ -26,6 +27,7 @@ set(SOURCE_FILES
     ${Model_SOURCE_DIR}/Source/ModelException.cpp
     ${Model_SOURCE_DIR}/Source/ModelObject.cpp
     ${Model_SOURCE_DIR}/Source/Scene.cpp
+    ${Model_SOURCE_DIR}/Source/SphereModel.cpp
     ${Model_SOURCE_DIR}/Source/ThanuvaApp.cpp
     ${Model_SOURCE_DIR}/Source/Viewpoint.cpp
 )

@@ -70,13 +70,7 @@ public:
 private:
     bool isAsciiFormat() const;
     void readAscii(Mesh& mesh);
-    void readValues(std::sregex_token_iterator it, float* values)
-    {
-        const std::sregex_token_iterator endIt{};
-        int i = 0;
-        for (++it; it != endIt; ++it)
-            values[i++] = std::stof(it->str());
-    }
+    void readValues(std::sregex_token_iterator it, int nValues, float* values);
     void readBinary(Mesh& mesh);
     void processData(Mesh& mesh, char* p, char* q, VertexIndexMapType& vertexIndexMap);
 

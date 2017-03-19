@@ -55,7 +55,8 @@ public:
         m_indices.reserve(nindices);
     }
 
-    void insertVertex(const float* vertex)
+    template<typename Type>
+    void insertVertex(const Type* vertex)
     {
         m_vertices.push_back(vertex[0]);
         m_vertices.push_back(vertex[1]);
@@ -72,7 +73,8 @@ public:
         m_extent.update(vertex);
     }
 
-    void insertNormal(const float* normal)
+    template<typename Type>
+    void insertNormal(const Type* normal)
     {
         m_normals.push_back(normal[0]);
         m_normals.push_back(normal[1]);
@@ -90,6 +92,14 @@ public:
         m_indices.push_back(ia);
         m_indices.push_back(ib);
         m_indices.push_back(ic);
+    }
+
+    Core::Vector3d computeNormal(int ia, int ib, int ic)
+    {
+        Core::Point3d a{&m_vertices[ia * kValuesPerVertex]};
+        Core::Point3d b{&m_vertices[ib * kValuesPerVertex]};
+        Core::Point3d c{&m_vertices[ic * kValuesPerVertex]};
+        return this->computeNormal(a, b, c);
     }
 
 public: // signals

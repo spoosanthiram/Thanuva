@@ -131,7 +131,8 @@ public:
     * It is the caller's resposibility to keep the initial values correct
     * ie <min value> = +<INFINITE> and <max value> = -<INFINITE>.
     */
-    void update(const float* vertex)
+    template<typename Type>
+    void update(const Type* vertex)
     {
         if (vertex[0] < m_xMin) m_xMin = vertex[0];
         if (vertex[1] < m_yMin) m_yMin = vertex[1];

@@ -21,11 +21,15 @@
 #include "AppSettings.h"
 #include "BoxModel.h"
 #include "BoxDialog.h"
+#include "ConeModel.h"
+//#include "ConeDialog.h"
 #include "CylinderModel.h"
 #include "CylinderDialog.h"
 #include "MeshModel.h"
 #include "OpenGLInterface.h"
 #include "Scene.h"
+#include "SphereModel.h"
+//#include "SphereDialog.h"
 #include "ThanuvaApp.h"
 
 namespace ThanuvaUi {
@@ -40,9 +44,14 @@ OpenGLWidget::OpenGLWidget(QWidget* parent)
     this->setFocusPolicy(Qt::StrongFocus);
 
     m_contextMenu = new QMenu(this);
-    m_contextMenu->addAction(tr("Add Box"), this, SLOT(addBox()));
-    m_contextMenu->addAction(tr("Add Cylinder"), this, SLOT(addCylinder()));
-    m_contextMenu->addAction(tr("Add Mesh"), this, SLOT(addStl()));
+
+    QMenu* createMenu = m_contextMenu->addMenu("Create");
+    createMenu->addAction(tr("Box"), this, SLOT(createBox()));
+    createMenu->addAction(tr("Cylinder"), this, SLOT(createCylinder()));
+    createMenu->addAction(tr("Cone"), this, SLOT(createCone()));
+    createMenu->addAction(tr("Sphere"), this, SLOT(createSphere()));
+
+    m_contextMenu->addAction(tr("Import Mesh"), this, SLOT(importMesh()));
 
     QSurfaceFormat format = this->format();
     format.setVersion(kOpenGLMajorVersion, kOpenGLMinorVersion);
@@ -75,7 +84,7 @@ void OpenGLWidget::deactivate()
     disconnect(&m_graphicsEnvironment, 0, this, 0);
 }
 
-void OpenGLWidget::addBox()
+void OpenGLWidget::createBox()
 {
     LOG(INFO) << "Creating default Box, adding it to Model::Project. Showing BoxDialog...";
 
@@ -87,7 +96,7 @@ void OpenGLWidget::addBox()
     this->doneCurrent();
 }
 
-void OpenGLWidget::addCylinder()
+void OpenGLWidget::createCylinder()
 {
     LOG(INFO) << "Creating default Cylinder, adding it to Model::Project. Showing CylinderDialog...";
 
@@ -99,16 +108,40 @@ void OpenGLWidget::addCylinder()
     this->doneCurrent();
 }
 
-void OpenGLWidget::addStl()
+void OpenGLWidget::createCone()
 {
-    QString caption{"Add Stl"};
+    LOG(INFO) << "Creating default Cone, adding it to Model::Project. Showing ConeDialog...";
+
+    this->makeCurrent();
+
+    auto coneModel = m_scene->newModelObject<Model::ConeModel>();
+    //ConeDialog{this, coneModel}.exec();
+
+    this->doneCurrent();
+}
+
+void OpenGLWidget::createSphere()
+{
+    LOG(INFO) << "Creating default Sphere, adding it to Model::Project. Showing SphereDialog...";
+
+    this->makeCurrent();
+
+    auto sphereModel = m_scene->newModelObject<Model::SphereModel>();
+    //SphereDialog{this, sphereModel}.exec();
+
+    this->doneCurrent();
+}
+
+void OpenGLWidget::importMesh()
+{
+    QString caption{"Import Mesh"};
     QString filePath = QFileDialog::getOpenFileName(this, caption,
                                                     m_scene->thanuvaApp().recentDirPath().string().c_str(),
-                                                    "STL Files (*.stl)");
+                                                    "Mesh Files (*.off *.stl)");
     if (filePath.isEmpty())
         return;
 
-    LOG(INFO) << "Creating Stl object with chosen file, adding it to Model::Project.";
+    LOG(INFO) << "Creating Mesh object with chosen file, adding it to Model::Project.";
 
     this->makeCurrent();
 

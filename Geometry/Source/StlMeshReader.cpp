@@ -8,7 +8,6 @@
 #include "StlMeshReader.h"
 
 #include <fstream>
-#include <thread>
 
 #include <glog/logging.h>
 
@@ -56,7 +55,7 @@ void StlMeshReader::readAscii(Mesh& mesh)
     float normal[3];
     float vertex[9];
     int indices[3];
-    std::regex spacePattern{ R"(\s+)" };
+    std::regex spacePattern{MeshReader::kWhitespaceRegexPattern};
 
     while (textStream) {
         Core::skipWhitespace(textStream);
@@ -67,7 +66,7 @@ void StlMeshReader::readAscii(Mesh& mesh)
 
         auto it = std::sregex_token_iterator{line.begin(), line.end(), spacePattern, -1};
         if (it->str() == "facet") { // "facet normal <number> <number> <number>"
-            this->readValues(++it, normal);
+            this->readValues(++it, 3, normal);
             Core::skipWhitespace(textStream);
 
             std::getline(textStream, line);
@@ -78,7 +77,7 @@ void StlMeshReader::readAscii(Mesh& mesh)
                     std::getline(textStream, line);
                     it = std::sregex_token_iterator{line.begin(), line.end(), spacePattern, -1};
                     if (it->str() == "vertex") // vertex <number> <number> <number>
-                        this->readValues(it, &vertex[nvertex * 3]);
+                        this->readValues(it, 3, &vertex[nvertex * 3]);
                     indices[nvertex] = this->index(mesh, &vertex[nvertex * 3], normal, vertexIndexMap);
                     ++nvertex;
                 }
@@ -95,6 +94,14 @@ void StlMeshReader::readAscii(Mesh& mesh)
     }
 }
 
+void StlMeshReader::readValues(std::sregex_token_iterator it, int nValues, float* values)
+{
+    const std::sregex_token_iterator endIt{};
+    ++it;
+    for (int i = 0; i < nValues && it != endIt; i++, ++it)
+        values[i] = std::stof(it->str());
+}
+
 void StlMeshReader::readBinary(Mesh& mesh)
 {
     std::ifstream dataStream{m_filePath, std::ios::binary}; // At this point the file path should be valid. so no error check
@@ -109,7 +116,7 @@ void StlMeshReader::readBinary(Mesh& mesh)
     unsigned int nFacets = *reinterpret_cast<int*>(buf.get());
 
     mesh.reserve(nFacets * GeometryObject::kVerticesPerTriangle * GeometryObject::kValuesPerVertex,
-                  nFacets * GeometryObject::kVerticesPerTriangle * GeometryObject::kValuesPerVertex, 0);
+                 nFacets * GeometryObject::kVerticesPerTriangle * GeometryObject::kValuesPerVertex, 0);
 
     VertexIndexMapType vertexIndexMap{nFacets * 2};
     int readSize = kNFacetChunk;

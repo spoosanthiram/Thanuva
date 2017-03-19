@@ -28,6 +28,7 @@ public:
         Mesh,
         Cylinder,
         Cone,
+        Sphere,
         // Always add new types before this line!
         NTypes
     };

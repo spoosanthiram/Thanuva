@@ -16,6 +16,8 @@ set(SOURCE_FILES
     ${Geometry_SOURCE_DIR}/Include/GeometryObject.h
     ${Geometry_SOURCE_DIR}/Include/Mesh.h
     ${Geometry_SOURCE_DIR}/Include/MeshReader.h
+    ${Geometry_SOURCE_DIR}/Include/OffMeshReader.h
+    ${Geometry_SOURCE_DIR}/Include/Sphere.h
     ${Geometry_SOURCE_DIR}/Include/StlMeshReader.h
 
     ${Geometry_SOURCE_DIR}/Source/Box.cpp
@@ -27,6 +29,8 @@ set(SOURCE_FILES
     ${Geometry_SOURCE_DIR}/Source/GeometryObject.cpp
     ${Geometry_SOURCE_DIR}/Source/Mesh.cpp
     ${Geometry_SOURCE_DIR}/Source/MeshReader.cpp
+    ${Geometry_SOURCE_DIR}/Source/OffMeshReader.cpp
+    ${Geometry_SOURCE_DIR}/Source/Sphere.cpp
     ${Geometry_SOURCE_DIR}/Source/StlMeshReader.cpp
 )
 
