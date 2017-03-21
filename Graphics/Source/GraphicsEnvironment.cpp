@@ -152,7 +152,7 @@ void GraphicsEnvironment::add(Geometry::GeometryObject* geometryObject)
     m_graphicsObjectList.back()->graphicsObjectChanged.
         connect<GraphicsEnvironment, &GraphicsEnvironment::emitViewChanged>(this);
 
-    emit viewChanged();
+    this->emitViewChanged();
 }
 
 void GraphicsEnvironment::handleExtentChanged()
@@ -230,12 +230,13 @@ void main()
     vec3 normalVec = normalize(normal);
 
     vec3 lightDir = normalize(light0Position.xyz - vertexPos);
-    vec3 halfVec = normalize(lightDir + eyeDir);
+    //vec3 halfVec = normalize(lightDir + eyeDir);
 
     vec4 lambert = light0DiffuseColor * diffuseColor * max(dot(normalVec, lightDir), 0.0);
-    vec4 phong = light0SpecularColor * specularColor * pow(max(dot(normalVec, halfVec), 0.0), shininess);
+    //vec4 phong = light0SpecularColor * specularColor * pow(max(dot(normalVec, halfVec), 0.0), shininess);
 
-    color = min(ambientLight + lambert + phong, vec4(1.0));
+    color = min(ambientLight + lambert, vec4(1.0));
+    //color = min(ambientLight + lambert + phong, vec4(1.0));
 }
 )FRAG";
 

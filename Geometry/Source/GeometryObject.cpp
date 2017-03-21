@@ -29,11 +29,27 @@ GeometryObject::GeometryObject(const GeometryContainer* geometryContainer,
     , m_modelObject{modelObject}
 {
     CHECK(modelObject) << "GeometryObject::ctor: Model::ModelObject nullptr!";
+
+    this->updateTransformMatrix();
+
+    m_modelObject->transformChanged.connect<GeometryObject, &GeometryObject::updateTransformMatrix>(this);
+}
+
+bool GeometryObject::setTransformMatrix(const Core::Matrix4x4& transformMatrix,
+                                        Core::EmitSignal emitSignal)
+{
+    if (m_transformMatrix == transformMatrix)
+        return false;
+
+    m_transformMatrix = transformMatrix;
+    if (Core::EmitSignal::Emit == emitSignal)
+        transformMatrixChanged.emit_signal(); // emit signal
+    return true;
 }
 
 void GeometryObject::setExtent(const Extent& extent, Core::EmitSignal emitSignal)
 {
-    if (extent == m_extent)
+    if (m_extent == extent)
         return;
 
     m_extent = extent;
@@ -108,19 +124,26 @@ bool GeometryObject::intersectBoundingBox(const Core::Point3d& nearPoint, const 
     return false;
 }
 
+void GeometryObject::updateExtent()
+{
+    Extent extent = m_boundingBox;
+    extent.transform(m_transformMatrix);
+    this->setExtent(extent);
+}
+
 void GeometryObject::initializeBoundingBox()
 {
-    if (m_extent.isAnyInfinite())
+    if (m_boundingBox.isAnyInfinite())
         return;
 
-    Core::Point3d a{m_extent.xMin(), m_extent.yMin(), m_extent.zMin()};
-    Core::Point3d b{m_extent.xMax(), m_extent.yMin(), m_extent.zMin()};
-    Core::Point3d c{m_extent.xMax(), m_extent.yMax(), m_extent.zMin()};
-    Core::Point3d d{m_extent.xMin(), m_extent.yMax(), m_extent.zMin()};
-    Core::Point3d e{m_extent.xMin(), m_extent.yMin(), m_extent.zMax()};
-    Core::Point3d f{m_extent.xMax(), m_extent.yMin(), m_extent.zMax()};
-    Core::Point3d g{m_extent.xMax(), m_extent.yMax(), m_extent.zMax()};
-    Core::Point3d h{m_extent.xMin(), m_extent.yMax(), m_extent.zMax()};
+    Core::Point3d a{m_boundingBox.xMin(), m_boundingBox.yMin(), m_boundingBox.zMin()};
+    Core::Point3d b{m_boundingBox.xMax(), m_boundingBox.yMin(), m_boundingBox.zMin()};
+    Core::Point3d c{m_boundingBox.xMax(), m_boundingBox.yMax(), m_boundingBox.zMin()};
+    Core::Point3d d{m_boundingBox.xMin(), m_boundingBox.yMax(), m_boundingBox.zMin()};
+    Core::Point3d e{m_boundingBox.xMin(), m_boundingBox.yMin(), m_boundingBox.zMax()};
+    Core::Point3d f{m_boundingBox.xMax(), m_boundingBox.yMin(), m_boundingBox.zMax()};
+    Core::Point3d g{m_boundingBox.xMax(), m_boundingBox.yMax(), m_boundingBox.zMax()};
+    Core::Point3d h{m_boundingBox.xMin(), m_boundingBox.yMax(), m_boundingBox.zMax()};
 
     this->insertBoundingBoxVertex(0, a);
     this->insertBoundingBoxVertex(3, b);
@@ -148,6 +171,16 @@ void GeometryObject::initializeBoundingBox()
 
     this->insertBoundingBoxQuadIndices(20, 9, 6, 3, 0); // Z Min plane (d, c, b, a)
     this->insertBoundingBoxNormal(15, this->computeNormal(d, c, b));
+}
+
+void GeometryObject::updateTransformMatrix()
+{
+    auto modelXfrom = m_modelObject->transform();
+
+    Core::Matrix4x4 xformMatrix = Core::Matrix4x4::identity();
+    xformMatrix.translate(modelXfrom.translateX, modelXfrom.translateY, modelXfrom.translateZ);
+    if (this->setTransformMatrix(xformMatrix))
+        this->updateExtent();
 }
 
 void GeometryObject::intersectInternal(const Core::Point3d& nearPoint, const Core::Point3d& farPoint,

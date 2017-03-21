@@ -24,10 +24,9 @@ void Cone::initialize()
 {
     this->clear();
 
-    this->setExtent(Extent{std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(),
-                    std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(),
-                    std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity()},
-                    Core::EmitSignal::DontEmit);
+    this->setBoundingBox(Extent{std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(),
+                         std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(),
+                         std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity()});
 
     auto coneModel = dynamic_cast<Model::ConeModel*>(this->modelObject());
 
@@ -44,6 +43,7 @@ void Cone::initialize()
     this->generateSideTriangles(initVectors);
 
     this->initializeBoundingBox();
+    this->updateExtent();
 
     // emit signals
     geometryObjectChanged.emit_signal();

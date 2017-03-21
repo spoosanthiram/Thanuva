@@ -33,6 +33,7 @@ GraphicsObject::GraphicsObject(const GraphicsEnvironment& graphicsEnvironment,
     this->initialize();
 
     m_geometryObject->geometryObjectChanged.connect<GraphicsObject, &GraphicsObject::initialize>(this);
+    m_geometryObject->transformMatrixChanged.connect<GraphicsObject, &GraphicsObject::emitGraphicsObjectChanged>(this);
 }
 
 void GraphicsObject::render(bool useLegendViewMatrix) const
@@ -42,7 +43,7 @@ void GraphicsObject::render(bool useLegendViewMatrix) const
 
     const ViewpointCamera& camera = m_graphicsEnvironment.viewpointCamera();
     Core::Matrix4x4 modelViewMatrix = (useLegendViewMatrix ? camera.legendViewMatrix() : camera.viewMatrix()) *
-                                      m_geometryObject->modelObject()->transformMatrix();
+                                      m_geometryObject->transformMatrix();
     modelViewMatrix.data(matrixData);
     g_OpenGLFuncs->glUniformMatrix4fv(shaderProgram->modelViewMatrixLocation(), 1, GL_FALSE, matrixData);
 
@@ -116,13 +117,13 @@ void GraphicsObject::initialize()
     g_OpenGLFuncs->glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(int),
                                 indices.data(), GL_STATIC_DRAW);
 
-    graphicsObjectChanged.emit_signal(); // emit signal
+    this->emitGraphicsObjectChanged(); // emit signal
 }
 
 Core::Point3d GraphicsObject::glNearPoint(int x, int y) const
 {
-    Core::Matrix4x4 modelViewMatrix = m_graphicsEnvironment.viewpointCamera().viewMatrix()
-                                        /** m_geometryObject.transformMatrix()*/;
+    Core::Matrix4x4 modelViewMatrix = m_graphicsEnvironment.viewpointCamera().viewMatrix() *
+                                      m_geometryObject->transformMatrix();
     Core::Matrix4x4 projectionMatrix = m_graphicsEnvironment.projectionMatrix();
     double nearPoint[3];
     gluUnProject(x, y, 0.0, modelViewMatrix.data(), projectionMatrix.data(),
@@ -133,8 +134,8 @@ Core::Point3d GraphicsObject::glNearPoint(int x, int y) const
 
 Core::Point3d GraphicsObject::glFarPoint(int x, int y) const
 {
-    Core::Matrix4x4 modelViewMatrix = m_graphicsEnvironment.viewpointCamera().viewMatrix()
-                                        /** m_geometryObject.transformMatrix()*/;
+    Core::Matrix4x4 modelViewMatrix = m_graphicsEnvironment.viewpointCamera().viewMatrix() *
+                                      m_geometryObject->transformMatrix();
     Core::Matrix4x4 projectionMatrix = m_graphicsEnvironment.projectionMatrix();
     double farPoint[3];
     gluUnProject(x, y, 1.0, modelViewMatrix.data(), projectionMatrix.data(),

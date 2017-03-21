@@ -34,13 +34,14 @@ void Mesh::initialize()
         return;
 
     this->clear();
-    this->setExtent(Extent{std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(),
-                    std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(),
-                    std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity()});
+    this->setBoundingBox(Extent{std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(),
+                         std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(),
+                         std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity()});
 
     reader->read(*this);
 
     this->initializeBoundingBox();
+    this->updateExtent();
 
     // emit signals
     geometryObjectChanged.emit_signal();

@@ -35,7 +35,7 @@ SphereDialog::SphereDialog(QWidget* parent, Model::SphereModel* sphereModel)
 
     connect(m_sphereWidget->radiusLineEdit, &QLineEdit::editingFinished, this, &SphereDialog::updateRadius);
 
-    connect(m_sphereWidget->subdivisionsComboBox, SIGNAL(activated()), this, SLOT(updateSubdivisions()));
+    connect(m_sphereWidget->subdivisionsComboBox, SIGNAL(activated(int)), this, SLOT(updateSubdivisions()));
 }
 
 void SphereDialog::updateCenter()

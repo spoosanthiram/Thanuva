@@ -17,6 +17,7 @@
 
 #include "CoreDef.h"
 #include "Extent.h"
+#include "Matrix4x4.h"
 #include "Point3d.h"
 #include "Vector3d.h"
 
@@ -40,9 +41,12 @@ public:
     const std::vector<float>& vertices() const { return m_vertices; }
     const std::vector<float>& normals() const { return m_normals; }
     const std::vector<int>& indices() const { return m_indices; }
+    const Core::Matrix4x4& transformMatrix() const { return m_transformMatrix; }
     const Extent& extent() const { return m_extent; }
     const std::vector<Core::Point3d>& probePoints() const { return m_probePoints; }
 
+    bool setTransformMatrix(const Core::Matrix4x4& transformMatrix,
+                            Core::EmitSignal emitSignal = Core::EmitSignal::Emit);
     void setExtent(const Extent& extent, Core::EmitSignal emitSignal = Core::EmitSignal::Emit);
 
     bool intersect(const Core::Point3d& nearPoint, const Core::Point3d& farPoint);
@@ -62,7 +66,7 @@ public:
         m_vertices.push_back(vertex[1]);
         m_vertices.push_back(vertex[2]);
 
-        m_extent.update(vertex);
+        m_boundingBox.update(vertex);
     }
     void insertVertex(const Core::Point3d& vertex)
     {
@@ -70,7 +74,7 @@ public:
         m_vertices.push_back(static_cast<float>(vertex.y()));
         m_vertices.push_back(static_cast<float>(vertex.z()));
 
-        m_extent.update(vertex);
+        m_boundingBox.update(vertex);
     }
 
     template<typename Type>
@@ -104,9 +108,12 @@ public:
 
 public: // signals
     Nano::Signal<void()> geometryObjectChanged{};
+    Nano::Signal<void()> transformMatrixChanged{};
     Nano::Signal<void()> extentChanged{};
 
 protected:
+    void setBoundingBox(const Extent& extent) { m_boundingBox = extent; }
+
     void duplicateVertices(size_t startIndex, size_t len)
     {
         //auto first = m_vertices.begin() + startIndex;
@@ -129,6 +136,8 @@ protected:
         m_normals.clear();
         m_indices.clear();
     }
+
+    void updateExtent();
 
     void insertBoundingBoxVertex(std::size_t index, const Core::Point3d& v)
     {
@@ -155,6 +164,9 @@ protected:
     }
 
     void initializeBoundingBox();
+
+private: // slots
+    void updateTransformMatrix();
 
 private:
     void intersectInternal(const Core::Point3d& nearPoint, const Core::Point3d& farPoint,
@@ -190,6 +202,9 @@ private:
     std::vector<float> m_vertices{};
     std::vector<float> m_normals{};
     std::vector<int> m_indices{};
+
+    Extent m_boundingBox{};
+    Core::Matrix4x4 m_transformMatrix{Core::Matrix4x4::identity()};
     Extent m_extent{};
 
     std::array<float, 24> m_boundingBoxVertices{};

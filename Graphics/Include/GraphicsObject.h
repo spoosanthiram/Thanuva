@@ -43,6 +43,9 @@ public:
 public: // signals
     Nano::Signal<void()> graphicsObjectChanged;
 
+private: // slots
+    void emitGraphicsObjectChanged() { graphicsObjectChanged.emit_signal(); }
+
 private:
     void initialize();
     Core::Point3d glNearPoint(int x, int y) const;

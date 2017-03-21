@@ -27,11 +27,13 @@ public:
     void setErrorText(const QString& text) { m_errorLabel->setText(text); }
 
 private slots:
-    bool update();
+    bool updateModelName();
+    void updateModelTransform();
     void done();
 
 private: // slots
-    void initialize();
+    void updateUiName();
+    void updateUiTransform();
 
 private:
     Model::ModelObject* m_modelObject;

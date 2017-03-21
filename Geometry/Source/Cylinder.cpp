@@ -24,10 +24,9 @@ void Cylinder::initialize()
 {
     this->clear();
 
-    this->setExtent(Extent{std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(),
-                    std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(),
-                    std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity()},
-                    Core::EmitSignal::DontEmit);
+    this->setBoundingBox(Extent{std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(),
+                         std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(),
+                         std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity()});
 
     auto cylinderModel = dynamic_cast<Model::CylinderModel*>(this->modelObject());
 
@@ -45,6 +44,7 @@ void Cylinder::initialize()
     this->generateSideTriangles(initVectors);
 
     this->initializeBoundingBox();
+    this->updateExtent();
 
     // emit signals
     geometryObjectChanged.emit_signal();

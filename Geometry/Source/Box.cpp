@@ -25,10 +25,9 @@ void Box::initialize()
 {
     this->clear();
 
-    this->setExtent(Extent{std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(),
-                        std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(),
-                        std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity()},
-                    Core::EmitSignal::DontEmit);
+    this->setBoundingBox(Extent{std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(),
+                         std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(),
+                         std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity()});
 
     this->reserve(24 * GeometryObject::kValuesPerVertex, 24 * GeometryObject::kValuesPerVertex, 36);
 
@@ -54,6 +53,7 @@ void Box::initialize()
     this->insertQuad(d, c, b, a); // Z Min plane
 
     this->initializeBoundingBox();
+    this->updateExtent();
 
     // emit signals
     geometryObjectChanged.emit_signal();

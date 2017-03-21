@@ -8,6 +8,9 @@
 #ifndef GEOMETRY_SPHERE_H
 #define GEOMETRY_SPHERE_H
 
+#include <deque>
+#include <map>
+
 #include "GeometryObject.h"
 
 namespace Model { class SphereModel; }
@@ -23,7 +26,9 @@ private: // slots
     void initialize();
 
 private:
-    void initializeOctahedron();
+    void initializeOctahedron(std::deque<int>& indices);
+    void subdivide(std::deque<int>& indices);
+    int midVertexIndex(int i0, int i1, std::map<int64_t, int>&midVertexIndexMap);
 };
 
 } // namespace Geometry

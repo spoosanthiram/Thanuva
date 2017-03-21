@@ -7,10 +7,13 @@
 
 #include "ModelObject.h"
 
+#include <regex>
+
 #include <boost/property_tree/ptree.hpp>
 #include <fmt/format.h>
 #include <glog/logging.h>
 
+#include "CoreDef.h"
 #include "ModelException.h"
 #include "Utils.h"
 
@@ -18,7 +21,7 @@ namespace {
 
 const char* kNameTag = "name";
 const char* kMaterialTag = "material";
-const char* kTransformMatrixTag = "transformMatrix";
+const char* kTransformTag = "transform";
 
 } // anonymous
 
@@ -35,12 +38,26 @@ std::string ModelObject::typeStr(Type type)
     return typeString[index];
 }
 
+std::string ModelObject::Transform::str() const
+{
+    return fmt::format("{} {} {}", translateX, translateY, translateZ);
+}
+
+void ModelObject::Transform::set(const std::string& str)
+{
+    std::regex re{Core::kWhitespaceRegEx};
+    auto it = std::sregex_token_iterator(str.begin(), str.end(), re, -1);
+    translateX = std::stod((*it++).str());
+    translateY = std::stod((*it++).str());
+    translateZ = std::stod((*it).str());
+}
+
 ModelObject::ModelObject(const Scene* scene)
     : m_scene{scene}
 {
     nameChanged.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
     materialChanged.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
-    transformMatrixChanged.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
+    transformChanged.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
 }
 
 std::string ModelObject::label() const
@@ -57,7 +74,7 @@ void ModelObject::setName(const std::string& name)
         throw e;
     }
 
-    if (newName == m_name)
+    if (m_name == newName)
         return;
 
     m_name = newName;
@@ -66,29 +83,27 @@ void ModelObject::setName(const std::string& name)
 
 void ModelObject::setMaterial(const Core::Material& material)
 {
-    if (material == m_material)
+    if (m_material == material)
         return;
 
     m_material = material;
     materialChanged.emit_signal(); // emit signal
 }
 
-void ModelObject::setTransformMatrix(const Core::Matrix4x4& transformMatrix,
-                                     Core::EmitSignal emitSignal)
+void ModelObject::setTransform(const Transform& transform)
 {
-    if (transformMatrix == m_transformMatrix)
+    if (m_transform == transform)
         return;
 
-    m_transformMatrix = transformMatrix;
-    if (Core::EmitSignal::Emit == emitSignal)
-        transformMatrixChanged.emit_signal(); // emit signal
+    m_transform = transform;
+    transformChanged.emit_signal(); // emit signal
 }
 
 void ModelObject::load(const boost::property_tree::ptree& modelPropTree)
 {
     m_name = modelPropTree.get<std::string>(kNameTag);
     m_material.set(modelPropTree.get<std::string>(kMaterialTag));
-    m_transformMatrix.set(modelPropTree.get<std::string>(kTransformMatrixTag));
+    m_transform.set(modelPropTree.get<std::string>(kTransformTag));
 
     this->loadModel(modelPropTree);
 }
@@ -98,7 +113,7 @@ void ModelObject::save(boost::property_tree::ptree& modelPropTree)
     modelPropTree.put(kTypeTag, static_cast<int>(this->type()));
     modelPropTree.put(kNameTag, m_name);
     modelPropTree.put(kMaterialTag, m_material.str());
-    modelPropTree.put(kTransformMatrixTag, m_transformMatrix.str());
+    modelPropTree.put(kTransformTag, m_transform.str());
 
     this->saveModel(modelPropTree);
 }
