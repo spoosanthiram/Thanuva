@@ -55,7 +55,7 @@ void StlMeshReader::readAscii(Mesh& mesh)
     float normal[3];
     float vertex[9];
     int indices[3];
-    std::regex spacePattern{MeshReader::kWhitespaceRegexPattern};
+    std::regex spacePattern{Core::kWhitespaceRegEx};
 
     while (textStream) {
         Core::skipWhitespace(textStream);

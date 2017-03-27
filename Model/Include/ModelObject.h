@@ -80,6 +80,7 @@ public: // signals
     Nano::Signal<void()> nameChanged{};
     Nano::Signal<void()> materialChanged{};
     Nano::Signal<void()> transformChanged{};
+
     Nano::Signal<void(ModelObject*)> modelObjectChanged{}; // meant for most generic change, should be used sparingly
 
 protected:

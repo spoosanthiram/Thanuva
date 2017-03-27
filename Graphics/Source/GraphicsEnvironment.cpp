@@ -226,7 +226,7 @@ void main()
 
     vec3 vertexPos = vertex.xyz / vertex.z;
 
-    vec3 eyeDir = normalize(eyePos - vertexPos);
+    //vec3 eyeDir = normalize(eyePos - vertexPos);
     vec3 normalVec = normalize(normal);
 
     vec3 lightDir = normalize(light0Position.xyz - vertexPos);

@@ -9,7 +9,6 @@
 #define MODEL_VIEWPOINT_H
 
 #include <boost/property_tree/ptree_fwd.hpp>
-#include <nano_signal_slot.hpp>
 
 #include "Matrix3x3.h"
 

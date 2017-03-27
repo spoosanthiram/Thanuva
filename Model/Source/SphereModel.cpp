@@ -45,12 +45,12 @@ SphereModel::SphereModel(const Scene* scene, const Core::Point3d& center,
     this->connectSignals();
 }
 
-void SphereModel::setCenter(const Core::Point3d& point)
+void SphereModel::setCenter(const Core::Point3d& center)
 {
-    if (m_center == point)
+    if (m_center == center)
         return;
 
-    m_center = point;
+    m_center = center;
     centerChanged.emit_signal();
 }
 
@@ -63,12 +63,12 @@ void SphereModel::setRadius(double radius)
     radiusChanged.emit_signal();
 }
 
-void SphereModel::setSubdivisions(unsigned int facets)
+void SphereModel::setSubdivisions(unsigned int subdivisions)
 {
-    if (m_subdivisions == facets)
+    if (m_subdivisions == subdivisions)
         return;
 
-    m_subdivisions = facets;
+    m_subdivisions = subdivisions;
     subdivisionsChanged.emit_signal();
 }
 

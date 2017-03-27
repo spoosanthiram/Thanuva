@@ -8,9 +8,6 @@
 #ifndef GEOMETRY_MESH_H
 #define GEOMETRY_MESH_H
 
-#include <regex>
-#include <unordered_map>
-
 #include "GeometryObject.h"
 
 namespace Model { class MeshModel; }

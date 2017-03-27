@@ -9,7 +9,6 @@
 #define MODEL_MESHMODEL_H
 
 #include <filesystem>
-#include <string>
 
 #include "ModelObject.h"
 

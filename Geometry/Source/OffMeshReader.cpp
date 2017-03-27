@@ -31,7 +31,7 @@ void OffMeshReader::read(Mesh& mesh)
 
     Core::skipWhitespace(textStream);
 
-    std::regex wsRegex{MeshReader::kWhitespaceRegexPattern};
+    std::regex wsRegex{Core::kWhitespaceRegEx};
 
     std::getline(textStream, line); // numVertices numFaces numEdges
     auto it = std::sregex_token_iterator{line.begin(), line.end(), wsRegex, -1};

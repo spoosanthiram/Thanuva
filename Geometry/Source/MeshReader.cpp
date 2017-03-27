@@ -9,11 +9,8 @@
 
 #include "OffMeshReader.h"
 #include "StlMeshReader.h"
-#include "Utils.h"
 
 namespace Geometry {
-
-const char* MeshReader::kWhitespaceRegexPattern = R"(\s+)";
 
 std::unique_ptr<MeshReader> MeshReader::getInstance(const fs::path& filePath)
 {

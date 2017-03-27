@@ -8,8 +8,8 @@
 #ifndef MODEL_SPHEREMODEL_H
 #define MODEL_SPHEREMODEL_H
 
-#include "Point3d.h"
 #include "ModelObject.h"
+#include "Point3d.h"
 
 namespace Model {
 

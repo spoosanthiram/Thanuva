@@ -8,8 +8,8 @@
 #ifndef MODEL_CONEMODEL_H
 #define MODEL_CONEMODEL_H
 
-#include "Point3d.h"
 #include "ModelObject.h"
+#include "Point3d.h"
 
 namespace Model {
 

@@ -36,7 +36,7 @@ MeshModel::MeshModel(const Scene* scene, const fs::path& filePath)
 
 void MeshModel::setFilePath(const fs::path& filePath, Core::EmitSignal emitSignal)
 {
-    if (filePath == m_filePath)
+    if (m_filePath == filePath)
         return;
 
     if (!fs::exists(filePath)) {

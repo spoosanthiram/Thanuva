@@ -10,7 +10,6 @@
 
 #include <filesystem>
 #include <memory>
-#include <string>
 
 namespace fs = std::experimental::filesystem;
 
@@ -22,8 +21,6 @@ class MeshReader
 {
 public:
     static std::unique_ptr<MeshReader> getInstance(const fs::path& filePath);
-
-    static const char* kWhitespaceRegexPattern;
 
 public:
     MeshReader() {}

@@ -49,21 +49,21 @@ ConeModel::ConeModel(const Scene* scene, const Core::Point3d& apex, const Core::
     this->connectSignals();
 }
 
-void ConeModel::setApex(const Core::Point3d& point)
+void ConeModel::setApex(const Core::Point3d& apex)
 {
-    if (m_apex == point)
+    if (m_apex == apex)
         return;
 
-    m_apex = point;
+    m_apex = apex;
     apexChanged.emit_signal();
 }
 
-void ConeModel::setCenter(const Core::Point3d& point)
+void ConeModel::setCenter(const Core::Point3d& center)
 {
-    if (m_center == point)
+    if (m_center == center)
         return;
 
-    m_center = point;
+    m_center = center;
     centerChanged.emit_signal();
 }
 

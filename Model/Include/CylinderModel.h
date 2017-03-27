@@ -8,8 +8,8 @@
 #ifndef MODEL_CYLINDERMODEL_H
 #define MODEL_CYLINDERMODEL_H
 
-#include "Point3d.h"
 #include "ModelObject.h"
+#include "Point3d.h"
 
 namespace Model {
 
