@@ -32,15 +32,17 @@ const char* kNumFacetsTag = "numfacets";
 
 namespace Model {
 
+const char* ConeModel::kType = "Cone";
+
 ConeModel::ConeModel(const Scene* scene)
-    : ModelObject{scene}
+    : GeometryModel{scene}
 {
     this->connectSignals();
 }
 
 ConeModel::ConeModel(const Scene* scene, const Core::Point3d& apex, const Core::Point3d& center,
                      double radius, unsigned int numFacets)
-    : ModelObject{scene}
+    : GeometryModel{scene}
     , m_apex{apex}
     , m_center{center}
     , m_radius{radius}
@@ -85,7 +87,7 @@ void ConeModel::setNumFacets(unsigned int facets)
     numFacetsChanged.emit_signal();
 }
 
-void ConeModel::loadModel(const boost::property_tree::ptree& modelPropTree)
+void ConeModel::loadGeometryModel(const boost::property_tree::ptree& modelPropTree)
 {
     m_apex.setX(modelPropTree.get<double>(kApexXTag));
     m_apex.setY(modelPropTree.get<double>(kApexYTag));
@@ -100,7 +102,7 @@ void ConeModel::loadModel(const boost::property_tree::ptree& modelPropTree)
     m_numFacets = modelPropTree.get<unsigned int>(kNumFacetsTag);
 }
 
-void ConeModel::saveModel(boost::property_tree::ptree& modelPropTree)
+void ConeModel::saveGeometryModel(boost::property_tree::ptree& modelPropTree)
 {
     modelPropTree.put(kApexXTag, m_apex.x());
     modelPropTree.put(kApexYTag, m_apex.y());
@@ -117,10 +119,10 @@ void ConeModel::saveModel(boost::property_tree::ptree& modelPropTree)
 
 void ConeModel::connectSignals()
 {
-    apexChanged.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
-    centerChanged.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
-    radiusChanged.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
-    numFacetsChanged.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
+    apexChanged.connect<ThanuvaModel, &ThanuvaModel::emitThanuvaModelChanged>(this);
+    centerChanged.connect<ThanuvaModel, &ThanuvaModel::emitThanuvaModelChanged>(this);
+    radiusChanged.connect<ThanuvaModel, &ThanuvaModel::emitThanuvaModelChanged>(this);
+    numFacetsChanged.connect<ThanuvaModel, &ThanuvaModel::emitThanuvaModelChanged>(this);
 }
 
 #ifdef UNIT_TEST

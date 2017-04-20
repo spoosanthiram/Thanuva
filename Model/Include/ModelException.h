@@ -18,7 +18,7 @@ public:
     // General
     static const char* kPathNotFound;
 
-    // ModelObject messages
+    // ThanuvaModel messages
     static const char* kEmptyName;
     static const char* kInvalidType;
     static const char* kInvalidBoxLimiter;

@@ -13,8 +13,8 @@
 
 #include "Matrix4x4.h"
 
-namespace Geometry { class GeometryObject; }
-namespace Model { class ModelObject; }
+namespace Geometry { class Geometry; }
+namespace Model { class GeometryModel; }
 
 namespace Graphics {
 
@@ -36,8 +36,8 @@ private:
 
     Core::Matrix4x4 m_projectionMatrix;
 
-    std::vector<std::unique_ptr<Model::ModelObject>> m_axisLegendModelObjects;
-    std::vector<std::unique_ptr<Geometry::GeometryObject>> m_axisLegendGeometryObjects;
+    std::vector<std::unique_ptr<Model::GeometryModel>> m_axisLegendModelObjects;
+    std::vector<std::unique_ptr<Geometry::Geometry>> m_axisLegendGeometryObjects;
     std::vector<std::unique_ptr<Graphics::GraphicsObject>> m_axisLegendGraphicsObjects;
 };
 

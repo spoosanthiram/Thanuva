@@ -10,7 +10,7 @@
 
 #include "ui_GeometryDialog.h"
 
-namespace Model { class ModelObject; }
+namespace Model { class GeometryModel; }
 
 namespace ThanuvaUi {
 
@@ -19,9 +19,9 @@ class GeometryDialog : public QDialog, private Ui::GeometryDialog
     Q_OBJECT
 
 public:
-    GeometryDialog(QWidget* parent, Model::ModelObject* modelObject);
+    GeometryDialog(QWidget* parent, Model::GeometryModel* geometryModel);
 
-    Model::ModelObject* modelObject() const { return m_modelObject; }
+    Model::GeometryModel* geometryModel() const { return m_geometryModel; }
     QVBoxLayout* geometryPlaceHolderLayout() const { return m_geometryPlaceHolderLayout; }
 
     void setErrorText(const QString& text) { m_errorLabel->setText(text); }
@@ -36,7 +36,7 @@ private: // slots
     void updateUiTransform();
 
 private:
-    Model::ModelObject* m_modelObject;
+    Model::GeometryModel* m_geometryModel;
 };
 
 } // namespace ThanuvaUi

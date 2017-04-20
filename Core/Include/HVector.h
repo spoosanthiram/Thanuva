@@ -27,7 +27,7 @@ public:
     HVector() { this->initialize(0.0, 0.0, 0.0, 0.0); }
     HVector(double x, double y, double z, double w) { this->initialize(x, y, z, w); }
     explicit HVector(const double* values) { this->initialize(values); }
-    explicit HVector(const Vector3d& v) { this->initialize(v.x(), v.y(), v.z(), 1.0); }
+    explicit HVector(const Vector3d& v, double w = 1.0) { this->initialize(v.x(), v.y(), v.z(), w); }
 
     double x() const { return m_coords[0]; }
     double y() const { return m_coords[1]; }

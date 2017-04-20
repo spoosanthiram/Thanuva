@@ -29,15 +29,17 @@ const char* kSubdivisionsTag = "subdivisions";
 
 namespace Model {
 
+const char* SphereModel::kType = "Sphere";
+
 SphereModel::SphereModel(const Scene* scene)
-    : ModelObject{scene}
+    : GeometryModel{scene}
 {
     this->connectSignals();
 }
 
 SphereModel::SphereModel(const Scene* scene, const Core::Point3d& center,
                          double radius, unsigned int subdivisions)
-    : ModelObject{scene}
+    : GeometryModel{scene}
     , m_center{center}
     , m_radius{radius}
     , m_subdivisions{subdivisions}
@@ -72,7 +74,7 @@ void SphereModel::setSubdivisions(unsigned int subdivisions)
     subdivisionsChanged.emit_signal();
 }
 
-void SphereModel::loadModel(const boost::property_tree::ptree& modelPropTree)
+void SphereModel::loadGeometryModel(const boost::property_tree::ptree& modelPropTree)
 {
     m_center.setX(modelPropTree.get<double>(kCenterXTag));
     m_center.setY(modelPropTree.get<double>(kCenterYTag));
@@ -83,7 +85,7 @@ void SphereModel::loadModel(const boost::property_tree::ptree& modelPropTree)
     m_subdivisions = modelPropTree.get<unsigned int>(kSubdivisionsTag);
 }
 
-void SphereModel::saveModel(boost::property_tree::ptree& modelPropTree)
+void SphereModel::saveGeometryModel(boost::property_tree::ptree& modelPropTree)
 {
     modelPropTree.put(kCenterXTag, m_center.x());
     modelPropTree.put(kCenterYTag, m_center.y());
@@ -96,9 +98,9 @@ void SphereModel::saveModel(boost::property_tree::ptree& modelPropTree)
 
 void SphereModel::connectSignals()
 {
-    centerChanged.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
-    radiusChanged.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
-    subdivisionsChanged.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
+    centerChanged.connect<ThanuvaModel, &ThanuvaModel::emitThanuvaModelChanged>(this);
+    radiusChanged.connect<ThanuvaModel, &ThanuvaModel::emitThanuvaModelChanged>(this);
+    subdivisionsChanged.connect<ThanuvaModel, &ThanuvaModel::emitThanuvaModelChanged>(this);
 }
 
 #ifdef UNIT_TEST

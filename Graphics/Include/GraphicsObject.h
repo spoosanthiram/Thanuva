@@ -5,8 +5,8 @@
  * All rights reserved.
  */
 
-#ifndef GRAPHICS_GRAPHICSOBJECT_H
-#define GRAPHICS_GRAPHICSOBJECT_H
+#ifndef Graphics_GraphicsObject_h
+#define Graphics_GraphicsObject_h
 
 #include <vector>
 
@@ -15,7 +15,7 @@
 #include "OpenGLInterface.h"
 #include "Point3d.h"
 
-namespace Geometry { class GeometryObject; }
+namespace Geometry { class Geometry; }
 
 namespace Graphics {
 
@@ -34,7 +34,7 @@ public:
     static const int kNormalLocation = 1;
 
 public:
-    GraphicsObject(const GraphicsEnvironment& graphicsEnvironment, Geometry::GeometryObject* geometryObject);
+    GraphicsObject(const GraphicsEnvironment& graphicsEnvironment, Geometry::Geometry* geometry);
 
     void render(bool useLegendViewMatrix = false) const;
     bool probe(int x, int y) const;
@@ -52,11 +52,11 @@ private:
     Core::Point3d glFarPoint(int x, int y) const;
 
     const GraphicsEnvironment& m_graphicsEnvironment;
-    Geometry::GeometryObject* m_geometryObject;
+    Geometry::Geometry* m_geometry;
     GLuint m_vaoHandle{0};
     GLuint m_bufferHandle[kBufferSize];
 };
 
 } // namespace Graphics
 
-#endif // GRAPHICS_GRAPHICSOBJECT_H
+#endif // Graphics_GraphicsObject_h

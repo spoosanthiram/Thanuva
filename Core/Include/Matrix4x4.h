@@ -83,6 +83,7 @@ public:
     }
     void setColumn(int icolumn, double val0, double val1, double val2, double val3);
     void setColumn(int icolumn, const double* values);
+    void setColumn(int icolumn, const HPoint& hp);
     void setColumn(int icolumn, const HVector& hv);
     void set(const std::string& str);
 

@@ -28,9 +28,9 @@ public:
     HPoint() { this->initialize(0.0, 0.0, 0.0, 0.0); }
     HPoint(double x, double y, double z, double w) { this->initialize(x, y, z, w); }
     explicit HPoint(const double* values) { this->initialize(values); }
-    explicit HPoint(const Point3d& point)
+    explicit HPoint(const Point3d& point, double w = 1.0)
     {
-        this->initialize(point.x(), point.y(), point.z(), 1.0);
+        this->initialize(point.x(), point.y(), point.z(), w);
     }
 
     double x() const { return m_coords[0]; }

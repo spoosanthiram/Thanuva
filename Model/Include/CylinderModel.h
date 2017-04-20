@@ -8,13 +8,16 @@
 #ifndef MODEL_CYLINDERMODEL_H
 #define MODEL_CYLINDERMODEL_H
 
-#include "ModelObject.h"
+#include "GeometryModel.h"
 #include "Point3d.h"
 
 namespace Model {
 
-class CylinderModel : public ModelObject
+class CylinderModel : public GeometryModel
 {
+public:
+    static const char* kType;
+
 public:
     CylinderModel(const Scene* scene);
     CylinderModel(const Scene* scene, const Core::Point3d& endpoint1, double radius1,
@@ -23,7 +26,7 @@ public:
 
     CylinderModel& operator=(const CylinderModel& rhs) = delete; // TODO: needs to be implemented
 
-    Type type() const override { return Type::Cylinder; }
+    std::string type() const override { return kType; }
     const Core::Point3d& endpoint1() const { return m_endpoint1; }
     double radius1() const { return m_radius1; }
     const Core::Point3d& endpoint2() const { return m_endpoint2; }
@@ -44,8 +47,8 @@ public: // signals
     Nano::Signal<void()> numFacetsChanged{};
 
 protected:
-    void loadModel(const boost::property_tree::ptree& modelPropTree) override;
-    void saveModel(boost::property_tree::ptree& modelPropTree) override;
+    void loadGeometryModel(const boost::property_tree::ptree& modelPropTree) override;
+    void saveGeometryModel(boost::property_tree::ptree& modelPropTree) override;
 
 private:
     void connectSignals();

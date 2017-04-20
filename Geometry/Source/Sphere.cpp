@@ -11,8 +11,8 @@
 
 namespace Geometry {
 
-Sphere::Sphere(const GeometryContainer* geometryContainer, Model::SphereModel* sphereModel)
-    : GeometryObject{geometryContainer, sphereModel}
+Sphere::Sphere(const SceneGeometry* sceneGeometry, Model::SphereModel* sphereModel)
+    : Geometry{sceneGeometry, sphereModel}
 {
     this->initialize();
 
@@ -44,7 +44,7 @@ void Sphere::initialize()
     this->updateExtent();
 
     // emit signals
-    geometryObjectChanged.emit_signal();
+    geometryChanged.emit_signal();
     extentChanged.emit_signal();
 }
 
@@ -133,13 +133,13 @@ int Sphere::midVertexIndex(int i0, int i1, std::map<int64_t, int>&midVertexIndex
     auto it = midVertexIndexMap.find(key);
     if (it == midVertexIndexMap.end()) {
         auto& vertices = this->vertices();
-        Core::Vector3d v0{&vertices[i0 * GeometryObject::kValuesPerVertex]};
-        Core::Vector3d v1{&vertices[i1 * GeometryObject::kValuesPerVertex]};
+        Core::Vector3d v0{&vertices[i0 * Geometry::kValuesPerVertex]};
+        Core::Vector3d v1{&vertices[i1 * Geometry::kValuesPerVertex]};
 
         Core::Vector3d mid = v0 + v1;
         mid.normalize();
 
-        midIndex = vertices.size() / GeometryObject::kValuesPerVertex;
+        midIndex = vertices.size() / Geometry::kValuesPerVertex;
 
         this->insertVertex(mid.data());
         this->insertNormal(mid);

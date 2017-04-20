@@ -5,17 +5,18 @@
  * All rights reserved.
  */
 
-#ifndef MODEL_SPHEREMODEL_H
-#define MODEL_SPHEREMODEL_H
+#ifndef Model_SphereModel_h
+#define Model_SphereModel_h
 
-#include "ModelObject.h"
+#include "GeometryModel.h"
 #include "Point3d.h"
 
 namespace Model {
 
-class SphereModel : public ModelObject
+class SphereModel : public GeometryModel
 {
 public:
+    static const char* kType;
     static const int kMaxSubdivisions = 5;
     static int numFacets(int subdivisions) { return static_cast<int>(8 * std::pow(4, subdivisions)); }
 
@@ -26,7 +27,7 @@ public:
 
     SphereModel& operator=(const SphereModel& rhs) = delete; // TODO: needs to be implemented
 
-    Type type() const override { return Type::Sphere; }
+    std::string type() const override { return kType; }
     const Core::Point3d& center() const { return m_center; }
     double radius() const { return m_radius; }
     unsigned int subdivisions() const { return m_subdivisions; }
@@ -41,8 +42,8 @@ public: // signals
     Nano::Signal<void()> subdivisionsChanged{};
 
 protected:
-    void loadModel(const boost::property_tree::ptree& modelPropTree) override;
-    void saveModel(boost::property_tree::ptree& modelPropTree) override;
+    void loadGeometryModel(const boost::property_tree::ptree& modelPropTree) override;
+    void saveGeometryModel(boost::property_tree::ptree& modelPropTree) override;
 
 private:
     void connectSignals();
@@ -54,4 +55,4 @@ private:
 
 } // namespace Model
 
-#endif // MODEL_SPHEREMODEL_H
+#endif // Model_SphereModel_h

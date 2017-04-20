@@ -5,19 +5,19 @@
  * All rights reserved.
  */
 
-#ifndef GEOMETRY_CONE_H
-#define GEOMETRY_CONE_H
+#ifndef Geometry_Cone_h
+#define Geometry_Cone_h
 
-#include "GeometryObject.h"
+#include "Geometry.h"
 
 namespace Model { class ConeModel; }
 
 namespace Geometry {
 
-class Cone : public GeometryObject
+class Cone : public Geometry
 {
 public:
-    Cone(const GeometryContainer* geometryContainer, Model::ConeModel* coneModel);
+    Cone(const SceneGeometry* sceneGeometry, Model::ConeModel* coneModel);
 
 private: // slots
     void initialize();
@@ -29,4 +29,4 @@ private:
 
 } // namespace Geometry
 
-#endif // GEOMETRY_CONE_H
+#endif // Geometry_Cone_h

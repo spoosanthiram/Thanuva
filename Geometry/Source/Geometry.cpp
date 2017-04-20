@@ -5,14 +5,16 @@
  * All rights reserved.
  */
 
-#include "GeometryObject.h"
+#include "Geometry.h"
 
 #include <chrono>
 #include <thread>
 
 #include <glog/logging.h>
 
-#include "ModelObject.h"
+#include "CoordinateSystem.h"
+#include "GeometryModel.h"
+#include "SceneGeometry.h"
 
 namespace {
 
@@ -23,31 +25,25 @@ const std::size_t kTwoThreadSize = 3000000 * 3;
 
 namespace Geometry {
 
-GeometryObject::GeometryObject(const GeometryContainer* geometryContainer,
-                               Model::ModelObject* modelObject)
-    : m_geometryContainer{geometryContainer}
-    , m_modelObject{modelObject}
+Geometry::Geometry(const SceneGeometry* sceneGeometry, Model::GeometryModel* geometryModel)
+    : ThanuvaGeometry{sceneGeometry, geometryModel}
 {
-    CHECK(modelObject) << "GeometryObject::ctor: Model::ModelObject nullptr!";
+    m_coordinateSystem = sceneGeometry->coordinateSystem(geometryModel->coordinateSystemModel());
 
-    this->updateTransformMatrix();
-
-    m_modelObject->transformChanged.connect<GeometryObject, &GeometryObject::updateTransformMatrix>(this);
+    geometryModel->coordinateSystemModelChanged.connect<Geometry, &Geometry::updateCoordinateSystem>(this);
 }
 
-bool GeometryObject::setTransformMatrix(const Core::Matrix4x4& transformMatrix,
-                                        Core::EmitSignal emitSignal)
+void Geometry::setCoordinateSystem(const CoordinateSystem* coordinateSystem, Core::EmitSignal emitSignal)
 {
-    if (m_transformMatrix == transformMatrix)
-        return false;
+    if (m_coordinateSystem == coordinateSystem)
+        return;
 
-    m_transformMatrix = transformMatrix;
+    m_coordinateSystem = coordinateSystem;
     if (Core::EmitSignal::Emit == emitSignal)
-        transformMatrixChanged.emit_signal(); // emit signal
-    return true;
+        coordinateSystemChanged.emit_signal(); // emit signal
 }
 
-void GeometryObject::setExtent(const Extent& extent, Core::EmitSignal emitSignal)
+void Geometry::setExtent(const Extent& extent, Core::EmitSignal emitSignal)
 {
     if (m_extent == extent)
         return;
@@ -57,7 +53,7 @@ void GeometryObject::setExtent(const Extent& extent, Core::EmitSignal emitSignal
         extentChanged.emit_signal(); // emit signal
 }
 
-bool GeometryObject::intersect(const Core::Point3d& nearPoint, const Core::Point3d& farPoint)
+bool Geometry::intersect(const Core::Point3d& nearPoint, const Core::Point3d& farPoint)
 {
     if (this->vertices().size() == 0 || this->indices().size() == 0)
         return false;
@@ -80,7 +76,7 @@ bool GeometryObject::intersect(const Core::Point3d& nearPoint, const Core::Point
 
         std::vector<std::thread> threads;
         for (int i = 0; i < numThreads; ++i)
-            threads.emplace_back(&GeometryObject::intersectInternal, this,
+            threads.emplace_back(&Geometry::intersectInternal, this,
                                  std::cref(nearPoint), std::cref(farPoint), intervals[i], intervals[i + 1]);
         for (auto& t : threads)
             t.join();
@@ -92,7 +88,7 @@ bool GeometryObject::intersect(const Core::Point3d& nearPoint, const Core::Point
     return m_probePoints.size() > 0;
 }
 
-bool GeometryObject::intersectBoundingBox(const Core::Point3d& nearPoint, const Core::Point3d& farPoint) const
+bool Geometry::intersectBoundingBox(const Core::Point3d& nearPoint, const Core::Point3d& farPoint) const
 {
     const unsigned int kNumQuad = 6;
 
@@ -124,14 +120,14 @@ bool GeometryObject::intersectBoundingBox(const Core::Point3d& nearPoint, const 
     return false;
 }
 
-void GeometryObject::updateExtent()
+void Geometry::updateExtent()
 {
     Extent extent = m_boundingBox;
-    extent.transform(m_transformMatrix);
+    extent.transform(m_coordinateSystem->transformMatrix());
     this->setExtent(extent);
 }
 
-void GeometryObject::initializeBoundingBox()
+void Geometry::initializeBoundingBox()
 {
     if (m_boundingBox.isAnyInfinite())
         return;
@@ -173,18 +169,17 @@ void GeometryObject::initializeBoundingBox()
     this->insertBoundingBoxNormal(15, this->computeNormal(d, c, b));
 }
 
-void GeometryObject::updateTransformMatrix()
+void Geometry::updateCoordinateSystem()
 {
-    auto modelXfrom = m_modelObject->transform();
+    auto csysModel = dynamic_cast<Model::GeometryModel*>(this->thanuvaModel())->coordinateSystemModel();
+    auto coordinateSystem = this->sceneGeometry()->coordinateSystem(csysModel);
+    this->setCoordinateSystem(coordinateSystem);
 
-    Core::Matrix4x4 xformMatrix = Core::Matrix4x4::identity();
-    xformMatrix.translate(modelXfrom.translateX, modelXfrom.translateY, modelXfrom.translateZ);
-    if (this->setTransformMatrix(xformMatrix))
-        this->updateExtent();
+    this->updateExtent();
 }
 
-void GeometryObject::intersectInternal(const Core::Point3d& nearPoint, const Core::Point3d& farPoint,
-                                       std::size_t startIndex, std::size_t endIndex)
+void Geometry::intersectInternal(const Core::Point3d& nearPoint, const Core::Point3d& farPoint,
+                                 std::size_t startIndex, std::size_t endIndex)
 {
     bool threaded = m_indices.size() != (endIndex - startIndex);
 

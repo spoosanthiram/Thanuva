@@ -12,8 +12,8 @@
 
 namespace Geometry {
 
-Cylinder::Cylinder(const GeometryContainer* geometryContainer, Model::CylinderModel* cylinderModel)
-    : GeometryObject{geometryContainer, cylinderModel}
+Cylinder::Cylinder(const SceneGeometry* sceneGeometry, Model::CylinderModel* cylinderModel)
+    : Geometry{sceneGeometry, cylinderModel}
 {
     this->initialize();
 
@@ -28,7 +28,7 @@ void Cylinder::initialize()
                          std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(),
                          std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity()});
 
-    auto cylinderModel = dynamic_cast<Model::CylinderModel*>(this->modelObject());
+    auto cylinderModel = dynamic_cast<Model::CylinderModel*>(this->thanuvaModel());
 
     // form a coordinate system with center line
     Core::Vector3d w = cylinderModel->endpoint2() - cylinderModel->endpoint1();
@@ -47,14 +47,14 @@ void Cylinder::initialize()
     this->updateExtent();
 
     // emit signals
-    geometryObjectChanged.emit_signal();
+    geometryChanged.emit_signal();
     extentChanged.emit_signal();
 }
 
 void Cylinder::generateFace1Triangles(const std::vector<Core::Vector3d>& initVectors,
                                       const Core::Vector3d& normal)
 {
-    auto cylinderModel = dynamic_cast<Model::CylinderModel*>(this->modelObject());
+    auto cylinderModel = dynamic_cast<Model::CylinderModel*>(this->thanuvaModel());
 
     this->generateFaceVertices(cylinderModel->endpoint1(), cylinderModel->radius1(), initVectors, normal);
 
@@ -68,7 +68,7 @@ void Cylinder::generateFace2Triangles(const std::vector<Core::Vector3d>& initVec
 {
     unsigned int indexOffset = static_cast<unsigned int>(this->vertices().size() / 3);
 
-    auto cylinderModel = dynamic_cast<Model::CylinderModel*>(this->modelObject());
+    auto cylinderModel = dynamic_cast<Model::CylinderModel*>(this->thanuvaModel());
 
     this->generateFaceVertices(cylinderModel->endpoint2(), cylinderModel->radius2(), initVectors, normal);
 
@@ -95,7 +95,7 @@ void Cylinder::generateSideTriangles(const std::vector<Core::Vector3d>& initVect
 {
     unsigned int indexOffset = static_cast<unsigned int>(this->vertices().size() / 3);
 
-    unsigned int numFacets = dynamic_cast<Model::CylinderModel*>(this->modelObject())->numFacets();
+    unsigned int numFacets = dynamic_cast<Model::CylinderModel*>(this->thanuvaModel())->numFacets();
 
     this->duplicateVertices(3, numFacets * 3);
     this->duplicateVertices((numFacets + 2) * 3, numFacets * 3);

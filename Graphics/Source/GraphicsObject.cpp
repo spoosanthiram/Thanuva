@@ -10,20 +10,20 @@
 #include <GL/glu.h>
 #include <glog/logging.h>
 
-#include "GeometryObject.h"
+#include "CoordinateSystem.h"
+#include "Geometry.h"
 #include "GraphicsEnvironment.h"
+#include "GeometryModel.h"
 #include "Matrix3x3.h"
-#include "ModelObject.h"
 #include "ViewpointCamera.h"
 
 namespace Graphics {
 
-GraphicsObject::GraphicsObject(const GraphicsEnvironment& graphicsEnvironment,
-                               Geometry::GeometryObject* geometryObject)
+GraphicsObject::GraphicsObject(const GraphicsEnvironment& graphicsEnvironment, Geometry::Geometry* geometry)
     : m_graphicsEnvironment{graphicsEnvironment}
-    , m_geometryObject{geometryObject}
+    , m_geometry{geometry}
 {
-    CHECK(geometryObject);
+    CHECK(geometry);
     LOG(INFO) << "Creating VAO and buffers for vertex, normal and index data.";
 
     g_OpenGLFuncs->glGenVertexArrays(1, &m_vaoHandle);
@@ -32,8 +32,8 @@ GraphicsObject::GraphicsObject(const GraphicsEnvironment& graphicsEnvironment,
 
     this->initialize();
 
-    m_geometryObject->geometryObjectChanged.connect<GraphicsObject, &GraphicsObject::initialize>(this);
-    m_geometryObject->transformMatrixChanged.connect<GraphicsObject, &GraphicsObject::emitGraphicsObjectChanged>(this);
+    m_geometry->geometryChanged.connect<GraphicsObject, &GraphicsObject::initialize>(this);
+    m_geometry->coordinateSystemChanged.connect<GraphicsObject, &GraphicsObject::emitGraphicsObjectChanged>(this);
 }
 
 void GraphicsObject::render(bool useLegendViewMatrix) const
@@ -43,7 +43,7 @@ void GraphicsObject::render(bool useLegendViewMatrix) const
 
     const ViewpointCamera& camera = m_graphicsEnvironment.viewpointCamera();
     Core::Matrix4x4 modelViewMatrix = (useLegendViewMatrix ? camera.legendViewMatrix() : camera.viewMatrix()) *
-                                      m_geometryObject->transformMatrix();
+                                      m_geometry->coordinateSystem()->transformMatrix();
     modelViewMatrix.data(matrixData);
     g_OpenGLFuncs->glUniformMatrix4fv(shaderProgram->modelViewMatrixLocation(), 1, GL_FALSE, matrixData);
 
@@ -53,7 +53,7 @@ void GraphicsObject::render(bool useLegendViewMatrix) const
     normalMatrix.data(matrixData);
     g_OpenGLFuncs->glUniformMatrix3fv(shaderProgram->normalMatrixLocation(), 1, GL_FALSE, matrixData);
 
-    const Core::Material& material = m_geometryObject->modelObject()->material();
+    const Core::Material& material = dynamic_cast<Model::GeometryModel*>(m_geometry->thanuvaModel())->material();
 
     const Core::Color& diffuseColor = material.diffuseColor();
     g_OpenGLFuncs->glUniform4f(shaderProgram->diffuseColorLocation(),
@@ -66,7 +66,7 @@ void GraphicsObject::render(bool useLegendViewMatrix) const
     g_OpenGLFuncs->glUniform1f(shaderProgram->shininessLocation(), material.shininess());
 
     g_OpenGLFuncs->glBindVertexArray(m_vaoHandle);
-    const std::vector<int>& indices = m_geometryObject->indices();
+    const std::vector<int>& indices = m_geometry->indices();
     g_OpenGLFuncs->glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()),
                                       GL_UNSIGNED_INT, 0);
 }
@@ -76,13 +76,13 @@ bool GraphicsObject::probe(int x, int y) const
     Core::Point3d nearPoint = this->glNearPoint(x, y);
     Core::Point3d farPoint = this->glFarPoint(x, y);
 
-    return m_geometryObject->intersectBoundingBox(nearPoint, farPoint)
-            && m_geometryObject->intersect(nearPoint, farPoint);
+    return m_geometry->intersectBoundingBox(nearPoint, farPoint) &&
+        m_geometry->intersect(nearPoint, farPoint);
 }
 
 const std::vector<Core::Point3d>& GraphicsObject::probePoints() const
 {
-    return m_geometryObject->probePoints();
+    return m_geometry->probePoints();
 }
 
 void GraphicsObject::initialize()
@@ -92,24 +92,24 @@ void GraphicsObject::initialize()
     LOG(INFO) << "Binding vertex buffer, filling vertex data and using vertex shader location 0.";
 
     g_OpenGLFuncs->glBindBuffer(GL_ARRAY_BUFFER, m_bufferHandle[kVertexBuffer]);
-    const std::vector<float>& vertices = m_geometryObject->vertices();
+    const std::vector<float>& vertices = m_geometry->vertices();
     g_OpenGLFuncs->glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float),
                                 vertices.data(), GL_STATIC_DRAW);
     g_OpenGLFuncs->glVertexAttribPointer(kVertexLocation,
-            Geometry::GeometryObject::kValuesPerVertex, GL_FLOAT, GL_FALSE, 0, 0);
+            Geometry::Geometry::kValuesPerVertex, GL_FLOAT, GL_FALSE, 0, 0);
     g_OpenGLFuncs->glEnableVertexAttribArray(kVertexLocation);
 
     LOG(INFO) << "Binding normal buffer, filling normal data and using vertex shader location 1.";
 
     g_OpenGLFuncs->glBindBuffer(GL_ARRAY_BUFFER, m_bufferHandle[kNormalBuffer]);
-    const std::vector<float>& normals = m_geometryObject->normals();
+    const std::vector<float>& normals = m_geometry->normals();
     g_OpenGLFuncs->glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(float),
                                 normals.data(), GL_STATIC_DRAW);
-    g_OpenGLFuncs->glVertexAttribPointer(kNormalLocation, Geometry::GeometryObject::kValuesPerVertex,
+    g_OpenGLFuncs->glVertexAttribPointer(kNormalLocation, Geometry::Geometry::kValuesPerVertex,
                                          GL_FLOAT, GL_FALSE, 0, 0);
     g_OpenGLFuncs->glEnableVertexAttribArray(kNormalLocation);
 
-    const std::vector<int>& indices = m_geometryObject->indices();
+    const std::vector<int>& indices = m_geometry->indices();
 
     LOG(INFO) << "Binding index buffer, filling index data.";
 
@@ -123,7 +123,7 @@ void GraphicsObject::initialize()
 Core::Point3d GraphicsObject::glNearPoint(int x, int y) const
 {
     Core::Matrix4x4 modelViewMatrix = m_graphicsEnvironment.viewpointCamera().viewMatrix() *
-                                      m_geometryObject->transformMatrix();
+                                      m_geometry->coordinateSystem()->transformMatrix();
     Core::Matrix4x4 projectionMatrix = m_graphicsEnvironment.projectionMatrix();
     double nearPoint[3];
     gluUnProject(x, y, 0.0, modelViewMatrix.data(), projectionMatrix.data(),
@@ -135,7 +135,7 @@ Core::Point3d GraphicsObject::glNearPoint(int x, int y) const
 Core::Point3d GraphicsObject::glFarPoint(int x, int y) const
 {
     Core::Matrix4x4 modelViewMatrix = m_graphicsEnvironment.viewpointCamera().viewMatrix() *
-                                      m_geometryObject->transformMatrix();
+                                      m_geometry->coordinateSystem()->transformMatrix();
     Core::Matrix4x4 projectionMatrix = m_graphicsEnvironment.projectionMatrix();
     double farPoint[3];
     gluUnProject(x, y, 1.0, modelViewMatrix.data(), projectionMatrix.data(),

@@ -35,11 +35,11 @@ public:
     void setX(double x) { m_coords[0] = x; }
     void setY(double y) { m_coords[1] = y; }
     void setZ(double z) { m_coords[2] = z; }
-
     void assign(float x, float y, float z) { this->initialize(x, y, z); }
     void assign(double x, double y, double z) { this->initialize(x, y, z); }
     void assign(const float* values) { this->initialize(values); }
     void assign(const double* values) { this->initialize(values); }
+    void set(const std::string& str);
 
     bool iszero() const
     {
@@ -60,6 +60,10 @@ public:
                         m_coords[0] * rhs.m_coords[1] - rhs.m_coords[0] * m_coords[1]};
     }
     double norm() const { return std::sqrt(this->dot(*this)); }
+
+    /**
+     * Returns one orthonormal vector. NOTE: this calling vector needs to be a normalized vector.
+     */
     Vector3d orthonormal() const;
 
     void setNorm(double norm)

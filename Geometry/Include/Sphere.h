@@ -5,22 +5,22 @@
  * All rights reserved.
  */
 
-#ifndef GEOMETRY_SPHERE_H
-#define GEOMETRY_SPHERE_H
+#ifndef Geometry_Sphere_h
+#define Geometry_Sphere_h
 
 #include <deque>
 #include <map>
 
-#include "GeometryObject.h"
+#include "Geometry.h"
 
 namespace Model { class SphereModel; }
 
 namespace Geometry {
 
-class Sphere : public GeometryObject
+class Sphere : public Geometry
 {
 public:
-    Sphere(const GeometryContainer* geometryContainer, Model::SphereModel* sphereModel);
+    Sphere(const SceneGeometry* sceneGeometry, Model::SphereModel* sphereModel);
 
 private: // slots
     void initialize();
@@ -33,4 +33,4 @@ private:
 
 } // namespace Geometry
 
-#endif // GEOMETRY_SPHERE_H
+#endif // Geometry_Sphere_h

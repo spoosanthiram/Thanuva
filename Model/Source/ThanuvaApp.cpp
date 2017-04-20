@@ -155,8 +155,12 @@ TEST(ThanuvaAppTest, Simple)
     ThanuvaApp app;
     Scene* scene = app.newScene();
     BoxModel* boxModel = scene->newModelObject<BoxModel>();
+    boxModel->setName("basicBox");
     boxModel->setLimiter(BoxModel::Limiter{0.0, 2.0, 0.0, 1.0, -1.0, 1.0});
     app.saveSceneAs("SimpleTest.tha");
+    app.closeScene();
+
+    scene = app.openScene("SimpleTest.tha");
 }
 
 #endif // UNIT_TEST

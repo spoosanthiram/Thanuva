@@ -21,8 +21,15 @@ const char* kFilePathTag = "filePath";
 
 namespace Model {
 
+const char* MeshModel::kType = "Mesh";
+
+MeshModel::MeshModel(const Scene* scene)
+    : GeometryModel{scene}
+{
+}
+
 MeshModel::MeshModel(const Scene* scene, const fs::path& filePath)
-    : ModelObject{scene}
+    : GeometryModel{scene}
     , m_filePath{filePath}
 {
     if (!fs::exists(m_filePath)) {
@@ -31,7 +38,7 @@ MeshModel::MeshModel(const Scene* scene, const fs::path& filePath)
         throw e;
     }
 
-    filePathChanged.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
+    filePathChanged.connect<ThanuvaModel, &ThanuvaModel::emitThanuvaModelChanged>(this);
 }
 
 void MeshModel::setFilePath(const fs::path& filePath, Core::EmitSignal emitSignal)
@@ -50,12 +57,12 @@ void MeshModel::setFilePath(const fs::path& filePath, Core::EmitSignal emitSigna
         filePathChanged.emit_signal(); // emit signal
 }
 
-void MeshModel::loadModel(const boost::property_tree::ptree& modelPropTree)
+void MeshModel::loadGeometryModel(const boost::property_tree::ptree& modelPropTree)
 {
     m_filePath = modelPropTree.get<std::string>(kFilePathTag);
 }
 
-void MeshModel::saveModel(boost::property_tree::ptree& modelPropTree)
+void MeshModel::saveGeometryModel(boost::property_tree::ptree& modelPropTree)
 {
     modelPropTree.put(kFilePathTag, m_filePath);
 }

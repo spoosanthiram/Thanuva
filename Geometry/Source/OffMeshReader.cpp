@@ -38,8 +38,8 @@ void OffMeshReader::read(Mesh& mesh)
     int nVertices = std::stoi(it->str());
     int nFacets = std::stoi((++it)->str());
 
-    mesh.reserve(nVertices * GeometryObject::kValuesPerVertex,
-                 nFacets * GeometryObject::kVerticesPerTriangle * GeometryObject::kValuesPerVertex, 0);
+    mesh.reserve(nVertices * Geometry::kValuesPerVertex,
+                 nFacets * Geometry::kVerticesPerTriangle * Geometry::kValuesPerVertex, 0);
 
     std::array<float, 3> vertex;
     while (nVertices-- > 0) {
@@ -59,7 +59,7 @@ void OffMeshReader::read(Mesh& mesh)
             std::array<int, 3> sortedIndices = indices;
             std::sort(sortedIndices.begin(), sortedIndices.end());
             for (auto index : sortedIndices) {
-                if (index * GeometryObject::kValuesPerVertex == mesh.normals().size())
+                if (index * Geometry::kValuesPerVertex == mesh.normals().size())
                     mesh.insertNormal(normal);
             }
         }
@@ -85,7 +85,7 @@ bool OffMeshReader::isAllNormalAvailable(Mesh& mesh, const std::array<int, 3>& i
 {
     auto& normals = mesh.normals();
     for (auto index : indices) {
-        if (index * GeometryObject::kValuesPerVertex >= normals.size())
+        if (index * Geometry::kValuesPerVertex >= normals.size())
             return false;
     }
 

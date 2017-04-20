@@ -5,19 +5,19 @@
  * All rights reserved.
  */
 
-#ifndef GEOMETRY_CYLINDER_H
-#define GEOMETRY_CYLINDER_H
+#ifndef Geometry_Cylinder_h
+#define Geometry_Cylinder_h
 
-#include "GeometryObject.h"
+#include "Geometry.h"
 
 namespace Model { class CylinderModel; }
 
 namespace Geometry {
 
-class Cylinder : public GeometryObject
+class Cylinder : public Geometry
 {
 public:
-    Cylinder(const GeometryContainer* geometryContainer, Model::CylinderModel* cylinderModel);
+    Cylinder(const SceneGeometry* sceneGeometry, Model::CylinderModel* cylinderModel);
 
 private: // slots
     void initialize();
@@ -32,4 +32,4 @@ private:
 
 } // namespace Geometry
 
-#endif // GEOMETRY_CYLINDER_H
+#endif // Geometry_Cylinder_h

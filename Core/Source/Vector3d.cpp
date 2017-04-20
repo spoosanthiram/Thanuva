@@ -7,25 +7,35 @@
 
 #include "Vector3d.h"
 
-#include <cassert>
 #include <cmath>
+#include <regex>
 
 #include <fmt/format.h>
 #ifdef UNIT_TEST
 #include <gtest/gtest.h>
 #endif
 
+#include "CoreDef.h"
+
 namespace Core {
 
 std::string Vector3d::str() const
 {
-    return fmt::format("({}, {}, {})", m_coords[0], m_coords[1], m_coords[2]);
+    return fmt::format("{} {} {}", m_coords[0], m_coords[1], m_coords[2]);
+}
+
+void Vector3d::set(const std::string& str)
+{
+    std::regex re{kWhitespaceRegEx};
+
+    auto it = std::sregex_token_iterator(str.begin(), str.end(), re, -1);
+    std::sregex_token_iterator endIt{};
+    for (int i = 0; i < m_coords.size() && it != endIt; ++i, ++it)
+        m_coords[i] = std::stod((*it).str());
 }
 
 Vector3d Vector3d::orthonormal() const
 {
-    assert(psa::isequal(this->norm(), 1.0));
-
     // construct vector{t} by replacing minimum absolute value by 1.0
     Vector3d t{m_coords.data()};
     int minIndex = 0;

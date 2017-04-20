@@ -12,8 +12,8 @@
 
 namespace Geometry {
 
-Cone::Cone(const GeometryContainer* geometryContainer, Model::ConeModel* coneModel)
-    : GeometryObject{geometryContainer, coneModel}
+Cone::Cone(const SceneGeometry* sceneGeometry, Model::ConeModel* coneModel)
+    : Geometry{sceneGeometry, coneModel}
 {
     this->initialize();
 
@@ -28,7 +28,7 @@ void Cone::initialize()
                          std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(),
                          std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity()});
 
-    auto coneModel = dynamic_cast<Model::ConeModel*>(this->modelObject());
+    auto coneModel = dynamic_cast<Model::ConeModel*>(this->thanuvaModel());
 
     // form a coordinate system with apex and center points
     Core::Vector3d w = coneModel->apex() - coneModel->center();
@@ -46,13 +46,13 @@ void Cone::initialize()
     this->updateExtent();
 
     // emit signals
-    geometryObjectChanged.emit_signal();
+    geometryChanged.emit_signal();
     extentChanged.emit_signal();
 }
 
 void Cone::generateBaseTriangles(const std::vector<Core::Vector3d>& initVectors, const Core::Vector3d& normal)
 {
-    auto coneModel = dynamic_cast<Model::ConeModel*>(this->modelObject());
+    auto coneModel = dynamic_cast<Model::ConeModel*>(this->thanuvaModel());
 
     const Core::Point3d& center = coneModel->center();
     this->insertVertex(center);
@@ -77,7 +77,7 @@ void Cone::generateSideTriangles(const std::vector<Core::Vector3d>& initVectors)
     this->insertVertex(a);
     this->insertNormal(initVectors[0]);
 
-    auto coneModel = dynamic_cast<Model::ConeModel*>(this->modelObject());
+    auto coneModel = dynamic_cast<Model::ConeModel*>(this->thanuvaModel());
     const Core::Point3d& apex = coneModel->apex();
     unsigned int numFacets = coneModel->numFacets();
 

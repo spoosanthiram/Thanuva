@@ -82,12 +82,12 @@ private:
         Vertex v{vertex};
         auto it = vertexIndexMap.find(v);
         if (it != vertexIndexMap.end()) {
-            const float* currentNormal = &(mesh.normals()[it->second * GeometryObject::kValuesPerVertex]);
+            const float* currentNormal = &(mesh.normals()[it->second * Geometry::kValuesPerVertex]);
             if (currentNormal[0] == normal[0] && currentNormal[1] == normal[1] && currentNormal[2] == normal[2])
                 return it->second;
         }
 
-        int index = static_cast<int>(mesh.vertices().size() / GeometryObject::kValuesPerVertex);
+        int index = static_cast<int>(mesh.vertices().size() / Geometry::kValuesPerVertex);
         vertexIndexMap[v] = index;
 
         mesh.insertVertex(v.values);

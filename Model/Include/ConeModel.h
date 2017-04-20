@@ -5,16 +5,19 @@
  * All rights reserved.
  */
 
-#ifndef MODEL_CONEMODEL_H
-#define MODEL_CONEMODEL_H
+#ifndef Model_ConeModel_h
+#define Model_ConeModel_h
 
-#include "ModelObject.h"
+#include "GeometryModel.h"
 #include "Point3d.h"
 
 namespace Model {
 
-class ConeModel : public ModelObject
+class ConeModel : public GeometryModel
 {
+public:
+    static const char* kType;
+
 public:
     ConeModel(const Scene* scene);
     ConeModel(const Scene* scene, const Core::Point3d& apex, const Core::Point3d& center,
@@ -23,7 +26,7 @@ public:
 
     ConeModel& operator=(const ConeModel& rhs) = delete; // TODO: needs to be implemented
 
-    Type type() const override { return Type::Cone; }
+    std::string type() const override { return kType; }
     const Core::Point3d& apex() const { return m_apex; }
     const Core::Point3d& center() const { return m_center; }
     double radius() const { return m_radius; }
@@ -41,8 +44,8 @@ public: // signals
     Nano::Signal<void()> numFacetsChanged{};
 
 protected:
-    void loadModel(const boost::property_tree::ptree& modelPropTree) override;
-    void saveModel(boost::property_tree::ptree& modelPropTree) override;
+    void loadGeometryModel(const boost::property_tree::ptree& modelPropTree) override;
+    void saveGeometryModel(boost::property_tree::ptree& modelPropTree) override;
 
 private:
     void connectSignals();
@@ -55,4 +58,4 @@ private:
 
 } // namespace Model
 
-#endif // MODEL_CONEMODEL_H
+#endif // Model_ConeModel_h

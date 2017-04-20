@@ -115,8 +115,8 @@ void StlMeshReader::readBinary(Mesh& mesh)
     dataStream.read(buf.get(), sizeof(int)); // read number of facets
     unsigned int nFacets = *reinterpret_cast<int*>(buf.get());
 
-    mesh.reserve(nFacets * GeometryObject::kVerticesPerTriangle * GeometryObject::kValuesPerVertex,
-                 nFacets * GeometryObject::kVerticesPerTriangle * GeometryObject::kValuesPerVertex, 0);
+    mesh.reserve(nFacets * Geometry::kVerticesPerTriangle * Geometry::kValuesPerVertex,
+                 nFacets * Geometry::kVerticesPerTriangle * Geometry::kValuesPerVertex, 0);
 
     VertexIndexMapType vertexIndexMap{nFacets * 2};
     int readSize = kNFacetChunk;

@@ -14,8 +14,8 @@
 #include <QObject>
 
 #include "AxisLegend.h"
-#include "GeometryContainer.h"
 #include "GraphicsObject.h"
+#include "SceneGeometry.h"
 #include "ShaderProgram.h"
 #include "ViewpointCamera.h"
 
@@ -33,10 +33,7 @@ public:
 public:
     GraphicsEnvironment();
 
-    const std::unique_ptr<Geometry::GeometryContainer>& geometryContainer() const
-    {
-        return m_geometryContainer;
-    }
+    const std::unique_ptr<Geometry::SceneGeometry>& sceneGeometry() const { return m_sceneGeometry; }
     const std::unique_ptr<ShaderProgram>& shaderProgram() const { return m_shaderProgram; }
     const ViewpointCamera& viewpointCamera() const { return m_viewpointCamera; }
     ViewpointCamera& viewpointCamera() { return m_viewpointCamera; }
@@ -63,14 +60,14 @@ signals:
     void viewChanged();
 
 private: // slots
-    void add(Geometry::GeometryObject* graphicsObject);
+    void add(Geometry::Geometry* geometry);
     void handleExtentChanged();
     void emitViewChanged() { emit viewChanged(); } // needed for connecting Nano signal to Qt signal
 
 private:
     void updateProjectionMatrix();
 
-    std::unique_ptr<Geometry::GeometryContainer> m_geometryContainer{};
+    std::unique_ptr<Geometry::SceneGeometry> m_sceneGeometry{};
     std::vector<GraphicsObject*> m_graphicsObjectList{};
 
     std::unique_ptr<ShaderProgram> m_shaderProgram{};

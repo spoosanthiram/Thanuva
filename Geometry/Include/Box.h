@@ -5,19 +5,19 @@
  * All rights reserved.
  */
 
-#ifndef GEOMETRY_BOX_H
-#define GEOMETRY_BOX_H
+#ifndef Geometry_Box_h
+#define Geometry_Box_h
 
-#include "GeometryObject.h"
+#include "Geometry.h"
 
 namespace Model { class BoxModel; }
 
 namespace Geometry {
 
-class Box : public GeometryObject
+class Box : public Geometry
 {
 public:
-    Box(const GeometryContainer* geometryContainer, Model::BoxModel* boxModel);
+    Box(const SceneGeometry* sceneGeometry, Model::BoxModel* boxModel);
 
 private: // slots
     void initialize();
@@ -29,4 +29,4 @@ private:
 
 } // namespace Geometry
 
-#endif // GEOMETRY_BOX_H
+#endif // Geometry_Box_h

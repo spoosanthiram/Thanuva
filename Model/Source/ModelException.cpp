@@ -12,9 +12,9 @@ namespace Model {
 // General
 const char* ModelException::kPathNotFound = "The file, {} could not be opened.";
 
-// ModelObject messages
+// ThanuvaModel messages
 const char* ModelException::kEmptyName = "Name cannot be empty.";
-const char* ModelException::kInvalidType = "Invalid ModelObjec type.";
+const char* ModelException::kInvalidType = "Invalid ThanuvaModel type.";
 const char* ModelException::kInvalidBoxLimiter = "Invalid Box limiters.";
 
 // Scene messages

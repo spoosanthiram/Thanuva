@@ -41,6 +41,7 @@ public:
     void assign(double x, double y, double z) { this->initialize(x, y, z); }
     void assign(const float* values) { this->initialize(values); }
     void assign(const double* values) { this->initialize(values); }
+    void set(const std::string& str);
 
     bool iszero() const
     {

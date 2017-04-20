@@ -33,15 +33,17 @@ const char* kNumFacetsTag = "numfacets";
 
 namespace Model {
 
+const char* CylinderModel::kType = "Cylinder";
+
 CylinderModel::CylinderModel(const Scene* scene)
-    : ModelObject{scene}
+    : GeometryModel{scene}
 {
     this->connectSignals();
 }
 
 CylinderModel::CylinderModel(const Scene* scene, const Core::Point3d& endpoint1, double radius1,
                              const Core::Point3d& endpoint2, double radius2, unsigned int numFacets)
-    : ModelObject{scene}
+    : GeometryModel{scene}
     , m_endpoint1{endpoint1}
     , m_radius1{radius1}
     , m_endpoint2{endpoint2}
@@ -96,7 +98,7 @@ void CylinderModel::setNumFacets(unsigned int facets)
     numFacetsChanged.emit_signal();
 }
 
-void CylinderModel::loadModel(const boost::property_tree::ptree& modelPropTree)
+void CylinderModel::loadGeometryModel(const boost::property_tree::ptree& modelPropTree)
 {
     m_endpoint1.setX(modelPropTree.get<double>(kEndpoint1XTag));
     m_endpoint1.setY(modelPropTree.get<double>(kEndpoint1YTag));
@@ -113,7 +115,7 @@ void CylinderModel::loadModel(const boost::property_tree::ptree& modelPropTree)
     m_numFacets = modelPropTree.get<unsigned int>(kNumFacetsTag);
 }
 
-void CylinderModel::saveModel(boost::property_tree::ptree& modelPropTree)
+void CylinderModel::saveGeometryModel(boost::property_tree::ptree& modelPropTree)
 {
     modelPropTree.put(kEndpoint1XTag, m_endpoint1.x());
     modelPropTree.put(kEndpoint1YTag, m_endpoint1.y());
@@ -132,11 +134,11 @@ void CylinderModel::saveModel(boost::property_tree::ptree& modelPropTree)
 
 void CylinderModel::connectSignals()
 {
-    endpoint1Changed.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
-    radius1Changed.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
-    endpoint2Changed.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
-    radius2Changed.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
-    numFacetsChanged.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
+    endpoint1Changed.connect<ThanuvaModel, &ThanuvaModel::emitThanuvaModelChanged>(this);
+    radius1Changed.connect<ThanuvaModel, &ThanuvaModel::emitThanuvaModelChanged>(this);
+    endpoint2Changed.connect<ThanuvaModel, &ThanuvaModel::emitThanuvaModelChanged>(this);
+    radius2Changed.connect<ThanuvaModel, &ThanuvaModel::emitThanuvaModelChanged>(this);
+    numFacetsChanged.connect<ThanuvaModel, &ThanuvaModel::emitThanuvaModelChanged>(this);
 }
 
 #ifdef UNIT_TEST

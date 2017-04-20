@@ -5,16 +5,16 @@
  * All rights reserved.
  */
 
-#ifndef MODEL_BOXMODEL_H
-#define MODEL_BOXMODEL_H
+#ifndef Model_BoxModel_h
+#define Model_BoxModel_h
 
 #include <AlgoBase.h>
 
-#include "ModelObject.h"
+#include "GeometryModel.h"
 
 namespace Model {
 
-class BoxModel : public ModelObject
+class BoxModel : public GeometryModel
 {
 public:
     struct Limiter
@@ -56,6 +56,8 @@ public:
         double zlow, zhigh;
     };
 
+    static const char* kType;
+
 public:
     BoxModel(const Scene* scene);
     BoxModel(const Scene* scene, const Limiter& limiter);
@@ -63,7 +65,7 @@ public:
 
     BoxModel& operator=(const BoxModel& rhs) = delete; // TODO: needs to be implemented
 
-    Type type() const override { return Type::Box; }
+    std::string type() const override { return kType; }
     const Limiter& limiter() const { return m_limiter; }
 
     void setLimiter(const Limiter& limiter);
@@ -72,15 +74,13 @@ public: // signals
     Nano::Signal<void()> limiterChanged{};
 
 protected:
-    void loadModel(const boost::property_tree::ptree& modelPropTree) override;
-    void saveModel(boost::property_tree::ptree& modelPropTree) override;
+    void loadGeometryModel(const boost::property_tree::ptree& modelPropTree) override;
+    void saveGeometryModel(boost::property_tree::ptree& modelPropTree) override;
 
 private:
-    void connectModelObjectChanged();
-
     Limiter m_limiter{};
 };
 
 } // namespace Model
 
-#endif // MODEL_BOXMODEL_H
+#endif // Model_BoxModel_h

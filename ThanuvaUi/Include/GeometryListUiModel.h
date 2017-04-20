@@ -11,8 +11,9 @@
 #include <QAbstractListModel>
 
 namespace Model {
-    class ModelObject;
     class Scene;
+    class GeometryModel;
+    class ThanuvaModel;
 }
 
 namespace ThanuvaUi {
@@ -29,8 +30,8 @@ public:
     void dectivate();
 
 private: // slots
-    void handleModelObjectChanged(Model::ModelObject* modelObject);
-    void add(Model::ModelObject* modelObject);
+    void handleGeometryModelChanged(Model::ThanuvaModel* thanuvaModel);
+    void add(Model::GeometryModel* geometryModel);
 
 private:
     Model::Scene* m_scene{nullptr};

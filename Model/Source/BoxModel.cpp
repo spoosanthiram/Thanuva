@@ -33,24 +33,26 @@ const char* kZHighTag = "zhigh";
 
 namespace Model {
 
+const char* BoxModel::kType = "Box";
+
 std::string BoxModel::Limiter::str() const
 {
     return fmt::format("[{}, {}]; [{}, {}]; [{}, {}]", xlow, xhigh, ylow, yhigh, zlow, zhigh);
 }
 
 BoxModel::BoxModel(const Scene* scene)
-    : ModelObject{scene}
+    : GeometryModel{scene}
 {
-    this->connectModelObjectChanged();
+    limiterChanged.connect<ThanuvaModel, &ThanuvaModel::emitThanuvaModelChanged>(this);
 }
 
 BoxModel::BoxModel(const Scene* scene, const Limiter& limiter)
-    : ModelObject{scene}
+    : GeometryModel{scene}
     , m_limiter{limiter}
 {
     this->setLimiter(m_limiter); // to get it validated
 
-    this->connectModelObjectChanged();
+    limiterChanged.connect<ThanuvaModel, &ThanuvaModel::emitThanuvaModelChanged>(this);
 }
 
 void BoxModel::setLimiter(const Limiter& limiter)
@@ -68,7 +70,7 @@ void BoxModel::setLimiter(const Limiter& limiter)
     limiterChanged.emit_signal(); // emit signal
 }
 
-void BoxModel::loadModel(const boost::property_tree::ptree& modelPropTree)
+void BoxModel::loadGeometryModel(const boost::property_tree::ptree& modelPropTree)
 {
     m_limiter.xlow = modelPropTree.get<double>(kXLowTag);
     m_limiter.xhigh = modelPropTree.get<double>(kXHighTag);
@@ -78,7 +80,7 @@ void BoxModel::loadModel(const boost::property_tree::ptree& modelPropTree)
     m_limiter.zhigh = modelPropTree.get<double>(kZHighTag);
 }
 
-void BoxModel::saveModel(boost::property_tree::ptree& modelPropTree)
+void BoxModel::saveGeometryModel(boost::property_tree::ptree& modelPropTree)
 {
     modelPropTree.put(kXLowTag, m_limiter.xlow);
     modelPropTree.put(kXHighTag, m_limiter.xhigh);
@@ -86,11 +88,6 @@ void BoxModel::saveModel(boost::property_tree::ptree& modelPropTree)
     modelPropTree.put(kYHighTag, m_limiter.yhigh);
     modelPropTree.put(kZLowTag, m_limiter.zlow);
     modelPropTree.put(kZHighTag, m_limiter.zhigh);
-}
-
-void BoxModel::connectModelObjectChanged()
-{
-    limiterChanged.connect<ModelObject, &ModelObject::emitModelObjectChanged>(this);
 }
 
 #ifdef UNIT_TEST

@@ -132,6 +132,14 @@ void Matrix4x4::setColumn(int icolumn, const double* values)
     m_elements[icolumn * kNRows + 3] = values[3];
 }
 
+void Matrix4x4::setColumn(int icolumn, const HPoint& hp)
+{
+    m_elements[icolumn * kNRows] = hp[0];
+    m_elements[icolumn * kNRows + 1] = hp[1];
+    m_elements[icolumn * kNRows + 2] = hp[2];
+    m_elements[icolumn * kNRows + 3] = hp[3];
+}
+
 void Matrix4x4::setColumn(int icolumn, const HVector& hv)
 {
     m_elements[icolumn * kNRows] = hv[0];

@@ -53,6 +53,8 @@ GlogWrapper::~GlogWrapper()
     this->removeOldFiles(infoPaths);
     this->removeOldFiles(warningPaths);
     this->removeOldFiles(errorPaths);
+
+    google::ShutdownGoogleLogging();
 }
 
 fs::path GlogWrapper::logPath() const

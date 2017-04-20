@@ -20,6 +20,12 @@ const char* kZoomLevelTag = "zoomLevel";
 
 namespace Model {
 
+Viewpoint::Viewpoint(const Scene* scene)
+    : ThanuvaModel{scene}
+{
+    zoomLevelChanged.connect<ThanuvaModel, &ThanuvaModel::emitThanuvaModelChanged>(this);
+}
+
 //void Viewpoint::setEyeRotationMatrix(const Core::Matrix3x3& eyeRotationMatrix)
 //{
 //    if (m_eyeRotationMatrix == eyeRotationMatrix)
@@ -29,16 +35,24 @@ namespace Model {
 //    viewpointChanged.emit_signal();
 //}
 
-void Viewpoint::load(const boost::property_tree::ptree& cameraPropTree)
+void Viewpoint::setZoomLevel(double zoomLevel)
 {
-    m_eyeRotationMatrix.set(cameraPropTree.get<std::string>(kEyeRotationMatrixTag));
-    m_zoomLevel = cameraPropTree.get<double>(kZoomLevelTag);
+    if (m_zoomLevel != zoomLevel) {
+        m_zoomLevel = zoomLevel;
+        zoomLevelChanged.emit_signal(); // emit signal so the scene can become changed and so to be saved.
+    }
 }
 
-void Viewpoint::save(boost::property_tree::ptree& cameraPropTree)
+void Viewpoint::loadModel(const boost::property_tree::ptree& modelPropTree)
 {
-    cameraPropTree.put(kEyeRotationMatrixTag, m_eyeRotationMatrix.str());
-    cameraPropTree.put(kZoomLevelTag, m_zoomLevel);
+    m_eyeRotationMatrix.set(modelPropTree.get<std::string>(kEyeRotationMatrixTag));
+    m_zoomLevel = modelPropTree.get<double>(kZoomLevelTag);
+}
+
+void Viewpoint::saveModel(boost::property_tree::ptree& modelPropTree)
+{
+    modelPropTree.put(kEyeRotationMatrixTag, m_eyeRotationMatrix.str());
+    modelPropTree.put(kZoomLevelTag, m_zoomLevel);
 }
 
 } // namespace Model

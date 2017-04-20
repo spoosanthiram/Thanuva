@@ -5,11 +5,10 @@
  * All rights reserved.
  */
 
-#ifndef MODEL_THANUVAAPP_H
-#define MODEL_THANUVAAPP_H
+#ifndef Model_ThanuvaApp_h
+#define Model_ThanuvaApp_h
 
 #include <filesystem>
-#include <list>
 #include <memory>
 #include <string>
 
@@ -73,4 +72,4 @@ private:
 
 } // namespace Model
 
-#endif // MODEL_THANUVAAPP_H
+#endif // Model_ThanuvaApp_h

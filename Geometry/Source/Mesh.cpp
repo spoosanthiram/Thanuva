@@ -18,8 +18,8 @@
 
 namespace Geometry {
 
-Mesh::Mesh(const GeometryContainer* geometryContainer, Model::MeshModel* meshModel)
-    : GeometryObject{geometryContainer, meshModel}
+Mesh::Mesh(const SceneGeometry* sceneGeometry, Model::MeshModel* meshModel)
+    : Geometry{sceneGeometry, meshModel}
 {
     this->initialize();
 
@@ -28,7 +28,7 @@ Mesh::Mesh(const GeometryContainer* geometryContainer, Model::MeshModel* meshMod
 
 void Mesh::initialize()
 {
-    fs::path filePath = static_cast<Model::MeshModel*>(this->modelObject())->filePath();
+    fs::path filePath = static_cast<Model::MeshModel*>(this->thanuvaModel())->filePath();
     auto reader = MeshReader::getInstance(filePath);
     if (!reader)
         return;
@@ -44,7 +44,7 @@ void Mesh::initialize()
     this->updateExtent();
 
     // emit signals
-    geometryObjectChanged.emit_signal();
+    geometryChanged.emit_signal();
     extentChanged.emit_signal();
 }
 

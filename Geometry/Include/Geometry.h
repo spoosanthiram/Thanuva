@@ -5,48 +5,44 @@
  * All rights reserved.
  */
 
-#ifndef GEOMETRY_GEOMETRYOBJECT_H
-#define GEOMETRY_GEOMETRYOBJECT_H
+#ifndef Geometry_GeometryObject_h
+#define Geometry_GeometryObject_h
 
 #include <array>
 #include <memory>
 #include <mutex>
 #include <vector>
 
-#include <nano_signal_slot.hpp>
-
 #include "CoreDef.h"
 #include "Extent.h"
-#include "Matrix4x4.h"
 #include "Point3d.h"
+#include "ThanuvaGeometry.h"
 #include "Vector3d.h"
 
-namespace Model { class ModelObject; }
+namespace Model { class GeometryModel; }
 
 namespace Geometry {
 
-class GeometryContainer;
+class CoordinateSystem;
 
-class GeometryObject
+class Geometry : public ThanuvaGeometry
 {
 public:
     static const int kValuesPerVertex = 3;
     static const int kVerticesPerTriangle = 3;
 
 public:
-    GeometryObject(const GeometryContainer* geometryContainer, Model::ModelObject* modelObject);
-    ~GeometryObject() {}
+    Geometry(const SceneGeometry* sceneGeometry, Model::GeometryModel* geometryModel);
 
-    Model::ModelObject* modelObject() const { return m_modelObject; }
     const std::vector<float>& vertices() const { return m_vertices; }
     const std::vector<float>& normals() const { return m_normals; }
     const std::vector<int>& indices() const { return m_indices; }
-    const Core::Matrix4x4& transformMatrix() const { return m_transformMatrix; }
+    const CoordinateSystem* coordinateSystem() const { return m_coordinateSystem; }
     const Extent& extent() const { return m_extent; }
     const std::vector<Core::Point3d>& probePoints() const { return m_probePoints; }
 
-    bool setTransformMatrix(const Core::Matrix4x4& transformMatrix,
-                            Core::EmitSignal emitSignal = Core::EmitSignal::Emit);
+    void setCoordinateSystem(const CoordinateSystem* coordinateSystem,
+                             Core::EmitSignal emitSignal = Core::EmitSignal::Emit);
     void setExtent(const Extent& extent, Core::EmitSignal emitSignal = Core::EmitSignal::Emit);
 
     bool intersect(const Core::Point3d& nearPoint, const Core::Point3d& farPoint);
@@ -107,8 +103,8 @@ public:
     }
 
 public: // signals
-    Nano::Signal<void()> geometryObjectChanged{};
-    Nano::Signal<void()> transformMatrixChanged{};
+    Nano::Signal<void()> geometryChanged{};
+    Nano::Signal<void()> coordinateSystemChanged{};
     Nano::Signal<void()> extentChanged{};
 
 protected:
@@ -166,7 +162,7 @@ protected:
     void initializeBoundingBox();
 
 private: // slots
-    void updateTransformMatrix();
+    void updateCoordinateSystem();
 
 private:
     void intersectInternal(const Core::Point3d& nearPoint, const Core::Point3d& farPoint,
@@ -195,16 +191,12 @@ private:
     }
 
 private:
-    const GeometryContainer* m_geometryContainer;
-
-    Model::ModelObject* m_modelObject;
-
     std::vector<float> m_vertices{};
     std::vector<float> m_normals{};
     std::vector<int> m_indices{};
 
     Extent m_boundingBox{};
-    Core::Matrix4x4 m_transformMatrix{Core::Matrix4x4::identity()};
+    const CoordinateSystem* m_coordinateSystem;
     Extent m_extent{};
 
     std::array<float, 24> m_boundingBoxVertices{};
@@ -217,4 +209,4 @@ private:
 
 } // namespace Geometry
 
-#endif // GEOMETRY_GEOMETRYOBJECT_H
+#endif // Geometry_GeometryObject_h

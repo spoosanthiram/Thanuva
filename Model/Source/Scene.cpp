@@ -7,6 +7,8 @@
 
 #include "Scene.h"
 
+#include <unordered_map>
+
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <fmt/format.h>
@@ -20,11 +22,14 @@
 
 namespace {
 
-const char* kModelObjectsTag = "modelobjects";
+const char* kCoordinateSystemsTag = "coordinateSystems";
+const char* kGeometryModelsTag = "geometryModels";
+const char* kViewpointsTag = "viewpoints";
 const char* kModelObjectTag = "modelobject";
-const char* kViewpointCameraTag = "viewpoint";
 
 } // anonymous
+
+using boost::property_tree::ptree;
 
 namespace Model {
 
@@ -34,30 +39,34 @@ Scene::Scene(const ThanuvaApp& thanuvaApp)
     : m_thanuvaApp{thanuvaApp}
     , m_name{kDefaultName}
     , m_filePath{}
-    , m_modelObjectList{}
 {
-    m_viewpoint = std::make_unique<Viewpoint>();
+    m_csysModelList.push_back(std::make_unique<CoordinateSystemModel>(this, "world_csys"));
+    m_viewpointList.push_back(std::make_unique<Viewpoint>(this));
 }
 
 Scene::Scene(const ThanuvaApp& thanuvaApp, const fs::path& filePath)
     : m_thanuvaApp{thanuvaApp}
     , m_name{/*m_filePath.stem().string()*/}
     , m_filePath{filePath}
-    , m_modelObjectList{}
 {
     m_name = m_filePath.stem().string();
-    m_viewpoint = std::make_unique<Viewpoint>();
-
     this->read();
 }
 
-intmax_t Scene::index(ModelObject* modelObject)
+intmax_t Scene::geometryModelIndex(GeometryModel* geometryModel) const
 {
-    auto it = std::find_if(m_modelObjectList.cbegin(), m_modelObjectList.cend(),
-        [=](const std::unique_ptr<ModelObject>& ptr) { return ptr.get() == modelObject; });
-    if (it == m_modelObjectList.cend())
+    auto it = std::find_if(m_geometryModelList.cbegin(), m_geometryModelList.cend(),
+            [=](const std::unique_ptr<GeometryModel>& ptr) { return ptr.get() == geometryModel; });
+    if (it == m_geometryModelList.cend())
         return -1;
-    return std::distance(m_modelObjectList.cbegin(), it);
+    return std::distance(m_geometryModelList.cbegin(), it);
+}
+
+const CoordinateSystemModel* Scene::coordinateSystemByName(const std::string& csysName) const
+{
+    auto it = std::find_if(m_csysModelList.cbegin(), m_csysModelList.cend(),
+            [=](const std::unique_ptr<CoordinateSystemModel>& ptr) { return ptr->name() == csysName; });
+    return (it != m_csysModelList.cend()) ? it->get() : nullptr;
 }
 
 void Scene::setFilePath(const fs::path& filePath)
@@ -81,16 +90,18 @@ void Scene::read()
     LOG(INFO) << "Reading the Scene from file.";
 
     try {
-        using boost::property_tree::ptree;
         ptree scenePropTree;
 
         read_json(m_filePath.string(), scenePropTree);
 
-        ptree modelObjectsPropTree = scenePropTree.get_child(kModelObjectsTag);
-        this->loadModelObjectList(modelObjectsPropTree);
+        ptree coordinateSystemsPropTree = scenePropTree.get_child(kCoordinateSystemsTag);
+        this->loadCsysModelList(coordinateSystemsPropTree);
 
-        ptree cameraPropTree = scenePropTree.get_child(kViewpointCameraTag);
-        m_viewpoint->load(cameraPropTree);
+        ptree geometryModelsPropTree = scenePropTree.get_child(kGeometryModelsTag);
+        this->loadGeometryModelList(geometryModelsPropTree);
+
+        ptree viewpointsPropTree = scenePropTree.get_child(kViewpointsTag);
+        this->loadViewpointList(viewpointsPropTree);
     }
     catch (const std::exception& e) {
         LOG(ERROR) << e.what();
@@ -107,16 +118,19 @@ void Scene::write()
     LOG(INFO) << "Writing the Scene to file.";
 
     try {
-        using boost::property_tree::ptree;
         ptree scenePropTree;
 
-        ptree modelObjectsPropTree;
-        this->saveModelObjectList(modelObjectsPropTree);
-        scenePropTree.add_child(kModelObjectsTag, modelObjectsPropTree);
+        ptree coordinateSystemsPropTree;
+        this->saveModelList(m_csysModelList, coordinateSystemsPropTree);
+        scenePropTree.add_child(kCoordinateSystemsTag, coordinateSystemsPropTree);
 
-        ptree cameraPropTree;
-        m_viewpoint->save(cameraPropTree);
-        scenePropTree.add_child(kViewpointCameraTag, cameraPropTree);
+        ptree geometryModelsPropTree;
+        this->saveModelList(m_geometryModelList, geometryModelsPropTree);
+        scenePropTree.add_child(kGeometryModelsTag, geometryModelsPropTree);
+
+        ptree viewpointsPropTree;
+        this->saveModelList(m_viewpointList, viewpointsPropTree);
+        scenePropTree.add_child(kViewpointsTag, viewpointsPropTree);
 
         write_json(m_filePath.string(), scenePropTree);
     }
@@ -128,51 +142,78 @@ void Scene::write()
     this->setSceneChanged(false);
 }
 
-void Scene::add(std::unique_ptr<ModelObject> modelObjectPtr)
+void Scene::add(std::unique_ptr<CoordinateSystemModel> csysModel)
 {
-    ModelObject* modelObject = modelObjectPtr.get();
-    m_modelObjectList.push_back(std::move(modelObjectPtr));
-    modelObjectAdded.emit_signal(modelObject); // emit signal
+    auto rawPtr = csysModel.get();
+    m_csysModelList.push_back(std::move(csysModel));
+    coordinateSystemModelAdded.emit_signal(rawPtr); // emit signal
 
     this->setSceneChanged(true);
 
-    modelObject->modelObjectChanged.connect<Scene, &Scene::handleModelObjectChanged>(this);
+    rawPtr->thanuvaModelChanged.connect<Scene, &Scene::handleModelObjectChanged>(this);
 }
 
-void Scene::loadModelObjectList(const boost::property_tree::ptree& modelObjectsPropTree)
+void Scene::add(std::unique_ptr<GeometryModel> geometryModel)
 {
-    using boost::property_tree::ptree;
+    auto rawPtr = geometryModel.get();
+    m_geometryModelList.push_back(std::move(geometryModel));
+    geometryModelAdded.emit_signal(rawPtr); // emit signal
 
-    static std::function<std::unique_ptr<ModelObject>(Scene*)> modelObjectMaker[] = {
-        [](Scene* scene) -> std::unique_ptr<ModelObject> { return std::make_unique<BoxModel>(scene); },
-        [](Scene* scene) -> std::unique_ptr<ModelObject> { return std::make_unique<MeshModel>(scene); },
-        [](Scene* scene) -> std::unique_ptr<ModelObject> { return std::make_unique<CylinderModel>(scene); },
-        [](Scene* scene) -> std::unique_ptr<ModelObject> { return std::make_unique<ConeModel>(scene); },
-        [](Scene* scene) -> std::unique_ptr<ModelObject> { return std::make_unique<SphereModel>(scene); }
-    };
+    this->setSceneChanged(true);
 
-    for (const auto& it : modelObjectsPropTree) {
+    rawPtr->thanuvaModelChanged.connect<Scene, &Scene::handleModelObjectChanged>(this);
+}
+
+void Scene::add(std::unique_ptr<Viewpoint> viewpoint)
+{
+    auto rawPtr = viewpoint.get();
+    m_viewpointList.push_back(std::move(viewpoint));
+    viewpointAdded.emit_signal(rawPtr); // emit signal
+
+    this->setSceneChanged(true);
+
+    rawPtr->thanuvaModelChanged.connect<Scene, &Scene::handleModelObjectChanged>(this);
+}
+
+void Scene::loadCsysModelList(const ptree& coordinateSystemsPropTree)
+{
+    for (const auto& it : coordinateSystemsPropTree) {
         const ptree& modelObjectPropTree = it.second;
-        unsigned int type = modelObjectPropTree.get<unsigned int>(ModelObject::kTypeTag);
-        if (type >= static_cast<unsigned int>(ModelObject::Type::NTypes))
-            throw ModelException{ModelException::kInvalidType};
-
-        CHECK(type < sizeof(modelObjectMaker) / sizeof(std::function<std::unique_ptr<ModelObject>(Scene*)>));
-        auto modelObject = modelObjectMaker[type](this);
-
-        if (modelObject) {
-            modelObject->load(modelObjectPropTree);
-            this->add(std::move(modelObject));
-        }
+        auto csysModel = std::make_unique<CoordinateSystemModel>(this);
+        csysModel->load(modelObjectPropTree);
+        this->add(std::move(csysModel));
     }
 }
 
-void Scene::saveModelObjectList(boost::property_tree::ptree& modelObjectsPropTree)
+void Scene::loadGeometryModelList(const ptree& geometryModelsPropTree)
 {
-    for (auto& modelObject : m_modelObjectList) {
-        boost::property_tree::ptree modelObjectPropTree;
-        modelObject->save(modelObjectPropTree);
-        modelObjectsPropTree.add_child(kModelObjectTag, modelObjectPropTree);
+    std::unordered_map<std::string, std::function<std::unique_ptr<GeometryModel>(Scene*)>> geometryModelMakerMap;
+    geometryModelMakerMap[BoxModel::kType] = [](Scene* scene) -> std::unique_ptr<GeometryModel> { return std::make_unique<BoxModel>(scene); };
+    geometryModelMakerMap[CylinderModel::kType] = [](Scene* scene) -> std::unique_ptr<GeometryModel> { return std::make_unique<CylinderModel>(scene); };
+    geometryModelMakerMap[ConeModel::kType] = [](Scene* scene) -> std::unique_ptr<GeometryModel> { return std::make_unique<ConeModel>(scene); };
+    geometryModelMakerMap[SphereModel::kType] = [](Scene* scene) -> std::unique_ptr<GeometryModel> { return std::make_unique<SphereModel>(scene); };
+    geometryModelMakerMap[MeshModel::kType] = [](Scene* scene) -> std::unique_ptr<GeometryModel> { return std::make_unique<MeshModel>(scene); };
+
+    for (const auto& it : geometryModelsPropTree) {
+        const ptree& modelObjectPropTree = it.second;
+        std::string type = modelObjectPropTree.get<std::string>(GeometryModel::kTypeTag);
+        auto it = geometryModelMakerMap.find(type);
+        if (it == geometryModelMakerMap.end())
+            throw ModelException{ModelException::kInvalidType};
+
+        auto geometryModel = it->second(this);
+        geometryModel->load(modelObjectPropTree);
+        this->add(std::move(geometryModel));
+    }
+}
+
+void Scene::loadViewpointList(const ptree& viewpointsPropTree)
+{
+    for (const auto& it : viewpointsPropTree) {
+        const ptree& modelObjectPropTree = it.second;
+        auto viewpoint = std::make_unique<Viewpoint>(this);
+        viewpoint->load(modelObjectPropTree);
+        this->add(std::move(viewpoint));
     }
 }
 

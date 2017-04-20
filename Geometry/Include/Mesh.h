@@ -5,19 +5,19 @@
  * All rights reserved.
  */
 
-#ifndef GEOMETRY_MESH_H
-#define GEOMETRY_MESH_H
+#ifndef Geometry_Meesh_h
+#define Geometry_Meesh_h
 
-#include "GeometryObject.h"
+#include "Geometry.h"
 
 namespace Model { class MeshModel; }
 
 namespace Geometry {
 
-class Mesh : public GeometryObject
+class Mesh : public Geometry
 {
 public:
-    Mesh(const GeometryContainer* geometryContainer, Model::MeshModel* meshModel);
+    Mesh(const SceneGeometry* sceneGeometry, Model::MeshModel* meshModel);
 
 private: // slots
     void initialize();
@@ -25,4 +25,4 @@ private: // slots
 
 } // namespace Geometry
 
-#endif // GEOMETRY_MESH_H
+#endif // Geometry_Meesh_h

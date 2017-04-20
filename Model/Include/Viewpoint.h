@@ -5,35 +5,38 @@
  * All rights reserved.
  */
 
-#ifndef MODEL_VIEWPOINT_H
-#define MODEL_VIEWPOINT_H
-
-#include <boost/property_tree/ptree_fwd.hpp>
+#ifndef Model_Viewpoint_h
+#define Model_Viewpoint_h
 
 #include "Matrix3x3.h"
+#include "ThanuvaModel.h"
 
 namespace Model {
 
-class Viewpoint
+class Viewpoint : public ThanuvaModel
 {
 public:
-    Viewpoint() : m_eyeRotationMatrix{Core::Matrix3x3::identity()} {}
+    Viewpoint(const Scene* scene);
 
     const Core::Matrix3x3& eyeRotationMatrix() const { return m_eyeRotationMatrix; }
     Core::Matrix3x3& eyeRotationMatrix() { return m_eyeRotationMatrix; }
     double zoomLevel() const { return m_zoomLevel; }
 
     //void setEyeRotationMatrix(const Core::Matrix3x3& eyeRotationMatrix);
-    void setZoomLevel(double zoomLevel) { m_zoomLevel = zoomLevel; }
+    void setZoomLevel(double zoomLevel);
 
-    void load(const boost::property_tree::ptree& cameraPropTree);
-    void save(boost::property_tree::ptree& cameraPropTree);
+public:
+    Nano::Signal<void()> zoomLevelChanged{};
+
+protected:
+    void loadModel(const boost::property_tree::ptree& modelPropTree);
+    void saveModel(boost::property_tree::ptree& modelPropTree);
 
 private:
-    Core::Matrix3x3 m_eyeRotationMatrix{};
+    Core::Matrix3x3 m_eyeRotationMatrix{Core::Matrix3x3::identity()};
     double m_zoomLevel{1.0};
 };
 
 } // namespace Model
 
-#endif // MODEL_VIEWPOINT_H
+#endif // Model_Viewpoint_h

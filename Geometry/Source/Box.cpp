@@ -13,8 +13,8 @@
 
 namespace Geometry {
 
-Box::Box(const GeometryContainer* geometryContainer, Model::BoxModel* boxModel)
-    : GeometryObject{geometryContainer, boxModel}
+Box::Box(const SceneGeometry* sceneGeometry, Model::BoxModel* boxModel)
+    : Geometry{sceneGeometry, boxModel}
 {
     this->initialize();
 
@@ -29,9 +29,9 @@ void Box::initialize()
                          std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity(),
                          std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity()});
 
-    this->reserve(24 * GeometryObject::kValuesPerVertex, 24 * GeometryObject::kValuesPerVertex, 36);
+    this->reserve(24 * Geometry::kValuesPerVertex, 24 * Geometry::kValuesPerVertex, 36);
 
-    auto boxModel = dynamic_cast<Model::BoxModel*>(this->modelObject());
+    auto boxModel = dynamic_cast<Model::BoxModel*>(this->thanuvaModel());
     const Model::BoxModel::Limiter& limiter = boxModel->limiter();
 
     Core::Point3d a{limiter.xlow, limiter.ylow, limiter.zlow};
@@ -56,7 +56,7 @@ void Box::initialize()
     this->updateExtent();
 
     // emit signals
-    geometryObjectChanged.emit_signal();
+    geometryChanged.emit_signal();
     extentChanged.emit_signal();
 }
 
