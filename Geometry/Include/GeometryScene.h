@@ -5,8 +5,8 @@
  * All rights reserved.
  */
 
-#ifndef Geometry_SceneGeometry_h
-#define Geometry_SceneGeometry_h
+#ifndef Geometry_GeometryScene_h
+#define Geometry_GeometryScene_h
 
 #include <memory>
 #include <vector>
@@ -24,14 +24,14 @@ class Scene;
 
 namespace Geometry {
 
-class SceneGeometry
+class GeometryScene
 {
 public:
-    SceneGeometry(Model::Scene* scene);
-    SceneGeometry(const SceneGeometry& other) = delete;
-    ~SceneGeometry();
+    GeometryScene(Model::Scene* scene);
+    GeometryScene(const GeometryScene& other) = delete;
+    ~GeometryScene();
 
-    SceneGeometry& operator=(const SceneGeometry& other) = delete;
+    GeometryScene& operator=(const GeometryScene& other) = delete;
 
     const std::vector<std::unique_ptr<CoordinateSystem>>& coordinateSystemList() const
     {
@@ -63,4 +63,4 @@ private:
 
 } // namespace Geometry
 
-#endif // Geometry_SceneGeometry_h
+#endif // Geometry_GeometryScene_h

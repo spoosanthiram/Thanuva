@@ -17,7 +17,7 @@ namespace Geometry {
 
 class CoordinateSystem : public ThanuvaGeometry {
 public:
-    CoordinateSystem(const SceneGeometry* sceneGeometry, Model::CoordinateSystemModel* csysModel);
+    CoordinateSystem(const GeometryScene* geometryScene, Model::CoordinateSystemModel* csysModel);
 
     const Core::Matrix4x4& transformMatrix() const { return m_transformMatrix; }
 

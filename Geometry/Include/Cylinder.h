@@ -17,7 +17,7 @@ namespace Geometry {
 class Cylinder : public Geometry
 {
 public:
-    Cylinder(const SceneGeometry* sceneGeometry, Model::CylinderModel* cylinderModel);
+    Cylinder(const GeometryScene* geometryScene, Model::CylinderModel* cylinderModel);
 
 private: // slots
     void initialize();

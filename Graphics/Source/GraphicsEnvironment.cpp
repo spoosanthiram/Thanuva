@@ -35,33 +35,33 @@ GraphicsEnvironment::GraphicsEnvironment()
 
 void GraphicsEnvironment::activate(Model::Scene* scene)
 {
-    CHECK(!m_sceneGeometry) << "GraphicsEnvironment::activate: old one still active!";
+    CHECK(!m_geometryScene) << "GraphicsEnvironment::activate: old one still active!";
 
     LOG(INFO) << "Activating GraphicsEnvironment with Model::Scene.";
 
-    m_sceneGeometry = std::make_unique<Geometry::SceneGeometry>(scene);
+    m_geometryScene = std::make_unique<Geometry::GeometryScene>(scene);
 
-    for (auto& geometry : m_sceneGeometry->geometryObjectList())
+    for (auto& geometry : m_geometryScene->geometryObjectList())
         this->add(geometry.get());
 
     m_viewpointCamera.setViewpoint(scene->viewpointList().front().get());
 
     this->handleExtentChanged();
 
-    m_sceneGeometry->geometryAdded.connect<GraphicsEnvironment, &GraphicsEnvironment::add>(this);
-    m_sceneGeometry->extentChanged.connect<GraphicsEnvironment, &GraphicsEnvironment::handleExtentChanged>(this);
+    m_geometryScene->geometryAdded.connect<GraphicsEnvironment, &GraphicsEnvironment::add>(this);
+    m_geometryScene->extentChanged.connect<GraphicsEnvironment, &GraphicsEnvironment::handleExtentChanged>(this);
 }
 
 void GraphicsEnvironment::deactivate()
 {
     LOG(INFO) << "Deactivating GraphicsEnvironment.";
 
-    m_sceneGeometry->geometryAdded.disconnect<GraphicsEnvironment, &GraphicsEnvironment::add>(this);
-    m_sceneGeometry->extentChanged.disconnect<GraphicsEnvironment, &GraphicsEnvironment::handleExtentChanged>(this);
+    m_geometryScene->geometryAdded.disconnect<GraphicsEnvironment, &GraphicsEnvironment::add>(this);
+    m_geometryScene->extentChanged.disconnect<GraphicsEnvironment, &GraphicsEnvironment::handleExtentChanged>(this);
 
     m_viewpointCamera.setViewpoint(m_defaultViewpoint.get());
 
-    m_sceneGeometry.release();
+    m_geometryScene.release();
 }
 
 void GraphicsEnvironment::adjustProjection(int width, int height)
@@ -117,7 +117,7 @@ void GraphicsEnvironment::initializeAxisLegend()
 
 void GraphicsEnvironment::render() const
 {
-    if (!m_sceneGeometry)
+    if (!m_geometryScene)
         return;
 
     g_OpenGLFuncs->glUseProgram(m_shaderProgram->handle());
@@ -157,12 +157,12 @@ void GraphicsEnvironment::add(Geometry::Geometry* geometry)
 
 void GraphicsEnvironment::handleExtentChanged()
 {
-    CHECK(m_sceneGeometry);
+    CHECK(m_geometryScene);
 
-    m_light0Position[1] = m_sceneGeometry->extent().maxLength();
-    m_light0Position[2] = m_sceneGeometry->extent().maxLength() * kViewpointTranslationMultiplier;
+    m_light0Position[1] = m_geometryScene->extent().maxLength();
+    m_light0Position[2] = m_geometryScene->extent().maxLength() * kViewpointTranslationMultiplier;
 
-    m_viewpointCamera.setViewpointTranslation(m_sceneGeometry->extent().maxLength() * kViewpointTranslationMultiplier);
+    m_viewpointCamera.setViewpointTranslation(m_geometryScene->extent().maxLength() * kViewpointTranslationMultiplier);
     this->updateProjectionMatrix();
 
     this->emitViewChanged();
@@ -170,11 +170,11 @@ void GraphicsEnvironment::handleExtentChanged()
 
 void GraphicsEnvironment::updateProjectionMatrix()
 {
-    if (!m_sceneGeometry)
+    if (!m_geometryScene)
         return;
 
     m_projectionMatrix = Core::Matrix4x4::perspective(60.0, m_windowAspect, 0.1,
-            m_sceneGeometry->extent().maxLength() * kFarProjectionMultiplier);
+            m_geometryScene->extent().maxLength() * kFarProjectionMultiplier);
 }
 
 const char* GraphicsEnvironment::kVertexShaderSource =

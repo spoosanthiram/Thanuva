@@ -20,7 +20,7 @@ namespace Geometry {
 class Sphere : public Geometry
 {
 public:
-    Sphere(const SceneGeometry* sceneGeometry, Model::SphereModel* sphereModel);
+    Sphere(const GeometryScene* geometryScene, Model::SphereModel* sphereModel);
 
 private: // slots
     void initialize();

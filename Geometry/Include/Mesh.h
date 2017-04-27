@@ -17,7 +17,7 @@ namespace Geometry {
 class Mesh : public Geometry
 {
 public:
-    Mesh(const SceneGeometry* sceneGeometry, Model::MeshModel* meshModel);
+    Mesh(const GeometryScene* geometryScene, Model::MeshModel* meshModel);
 
 private: // slots
     void initialize();

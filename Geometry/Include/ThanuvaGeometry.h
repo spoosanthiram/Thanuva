@@ -14,21 +14,21 @@ namespace Model { class ThanuvaModel; }
 
 namespace Geometry {
 
-class SceneGeometry;
+class GeometryScene;
 
 class ThanuvaGeometry
 {
 public:
-    ThanuvaGeometry(const SceneGeometry* sceneGeometry, Model::ThanuvaModel* thanuvaModel);
+    ThanuvaGeometry(const GeometryScene* geometryScene, Model::ThanuvaModel* thanuvaModel);
 
-    const SceneGeometry* sceneGeometry() const { return m_sceneGeometry; }
+    const GeometryScene* geometryScene() const { return m_geometryScene; }
     Model::ThanuvaModel* thanuvaModel() const { return m_thanuvaModel; }
 
 public: // signals
     Nano::Signal<void()> thanuvaGeometryChanged{}; // meant for most generic change, should be used sparingly
 
 private:
-    const SceneGeometry* m_sceneGeometry;
+    const GeometryScene* m_geometryScene;
     Model::ThanuvaModel* m_thanuvaModel;
 };
 

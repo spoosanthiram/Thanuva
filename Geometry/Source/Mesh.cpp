@@ -18,8 +18,8 @@
 
 namespace Geometry {
 
-Mesh::Mesh(const SceneGeometry* sceneGeometry, Model::MeshModel* meshModel)
-    : Geometry{sceneGeometry, meshModel}
+Mesh::Mesh(const GeometryScene* geometryScene, Model::MeshModel* meshModel)
+    : Geometry{geometryScene, meshModel}
 {
     this->initialize();
 

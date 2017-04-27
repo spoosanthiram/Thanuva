@@ -11,8 +11,8 @@
 
 namespace Geometry {
 
-Sphere::Sphere(const SceneGeometry* sceneGeometry, Model::SphereModel* sphereModel)
-    : Geometry{sceneGeometry, sphereModel}
+Sphere::Sphere(const GeometryScene* geometryScene, Model::SphereModel* sphereModel)
+    : Geometry{geometryScene, sphereModel}
 {
     this->initialize();
 

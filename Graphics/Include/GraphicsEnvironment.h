@@ -15,7 +15,7 @@
 
 #include "AxisLegend.h"
 #include "GraphicsObject.h"
-#include "SceneGeometry.h"
+#include "GeometryScene.h"
 #include "ShaderProgram.h"
 #include "ViewpointCamera.h"
 
@@ -33,7 +33,7 @@ public:
 public:
     GraphicsEnvironment();
 
-    const std::unique_ptr<Geometry::SceneGeometry>& sceneGeometry() const { return m_sceneGeometry; }
+    const std::unique_ptr<Geometry::GeometryScene>& geometryScene() const { return m_geometryScene; }
     const std::unique_ptr<ShaderProgram>& shaderProgram() const { return m_shaderProgram; }
     const ViewpointCamera& viewpointCamera() const { return m_viewpointCamera; }
     ViewpointCamera& viewpointCamera() { return m_viewpointCamera; }
@@ -67,7 +67,7 @@ private: // slots
 private:
     void updateProjectionMatrix();
 
-    std::unique_ptr<Geometry::SceneGeometry> m_sceneGeometry{};
+    std::unique_ptr<Geometry::GeometryScene> m_geometryScene{};
     std::vector<GraphicsObject*> m_graphicsObjectList{};
 
     std::unique_ptr<ShaderProgram> m_shaderProgram{};

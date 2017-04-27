@@ -12,8 +12,8 @@
 
 namespace Geometry {
 
-Cylinder::Cylinder(const SceneGeometry* sceneGeometry, Model::CylinderModel* cylinderModel)
-    : Geometry{sceneGeometry, cylinderModel}
+Cylinder::Cylinder(const GeometryScene* geometryScene, Model::CylinderModel* cylinderModel)
+    : Geometry{geometryScene, cylinderModel}
 {
     this->initialize();
 

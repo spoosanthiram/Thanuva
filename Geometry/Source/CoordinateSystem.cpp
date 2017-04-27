@@ -13,9 +13,9 @@
 
 namespace Geometry {
 
-CoordinateSystem::CoordinateSystem(const SceneGeometry* sceneGeometry,
+CoordinateSystem::CoordinateSystem(const GeometryScene* geometryScene,
                                    Model::CoordinateSystemModel* csysModel)
-    : ThanuvaGeometry{sceneGeometry, csysModel}
+    : ThanuvaGeometry{geometryScene, csysModel}
 {
     Core::Point3d origin = csysModel->origin();
     Core::Vector3d xAxis = csysModel->xAxis();

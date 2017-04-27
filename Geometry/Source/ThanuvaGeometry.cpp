@@ -13,8 +13,8 @@
 
 namespace Geometry {
 
-ThanuvaGeometry::ThanuvaGeometry(const SceneGeometry* sceneGeometry, Model::ThanuvaModel* thanuvaModel)
-    : m_sceneGeometry{sceneGeometry}
+ThanuvaGeometry::ThanuvaGeometry(const GeometryScene* geometryScene, Model::ThanuvaModel* thanuvaModel)
+    : m_geometryScene{geometryScene}
     , m_thanuvaModel{thanuvaModel}
 {
     CHECK(thanuvaModel);

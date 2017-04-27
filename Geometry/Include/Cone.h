@@ -17,7 +17,7 @@ namespace Geometry {
 class Cone : public Geometry
 {
 public:
-    Cone(const SceneGeometry* sceneGeometry, Model::ConeModel* coneModel);
+    Cone(const GeometryScene* geometryScene, Model::ConeModel* coneModel);
 
 private: // slots
     void initialize();

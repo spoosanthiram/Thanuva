@@ -12,8 +12,8 @@
 
 namespace Geometry {
 
-Cone::Cone(const SceneGeometry* sceneGeometry, Model::ConeModel* coneModel)
-    : Geometry{sceneGeometry, coneModel}
+Cone::Cone(const GeometryScene* geometryScene, Model::ConeModel* coneModel)
+    : Geometry{geometryScene, coneModel}
 {
     this->initialize();
 

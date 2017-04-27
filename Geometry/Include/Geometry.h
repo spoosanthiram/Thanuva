@@ -32,7 +32,7 @@ public:
     static const int kVerticesPerTriangle = 3;
 
 public:
-    Geometry(const SceneGeometry* sceneGeometry, Model::GeometryModel* geometryModel);
+    Geometry(const GeometryScene* geometryScene, Model::GeometryModel* geometryModel);
 
     const std::vector<float>& vertices() const { return m_vertices; }
     const std::vector<float>& normals() const { return m_normals; }

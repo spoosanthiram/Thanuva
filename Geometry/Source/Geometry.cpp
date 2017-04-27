@@ -14,7 +14,7 @@
 
 #include "CoordinateSystem.h"
 #include "GeometryModel.h"
-#include "SceneGeometry.h"
+#include "GeometryScene.h"
 
 namespace {
 
@@ -25,10 +25,10 @@ const std::size_t kTwoThreadSize = 3000000 * 3;
 
 namespace Geometry {
 
-Geometry::Geometry(const SceneGeometry* sceneGeometry, Model::GeometryModel* geometryModel)
-    : ThanuvaGeometry{sceneGeometry, geometryModel}
+Geometry::Geometry(const GeometryScene* geometryScene, Model::GeometryModel* geometryModel)
+    : ThanuvaGeometry{geometryScene, geometryModel}
 {
-    m_coordinateSystem = sceneGeometry->coordinateSystem(geometryModel->coordinateSystemModel());
+    m_coordinateSystem = geometryScene->coordinateSystem(geometryModel->coordinateSystemModel());
 
     geometryModel->coordinateSystemModelChanged.connect<Geometry, &Geometry::updateCoordinateSystem>(this);
 }
@@ -172,7 +172,7 @@ void Geometry::initializeBoundingBox()
 void Geometry::updateCoordinateSystem()
 {
     auto csysModel = dynamic_cast<Model::GeometryModel*>(this->thanuvaModel())->coordinateSystemModel();
-    auto coordinateSystem = this->sceneGeometry()->coordinateSystem(csysModel);
+    auto coordinateSystem = this->geometryScene()->coordinateSystem(csysModel);
     this->setCoordinateSystem(coordinateSystem);
 
     this->updateExtent();
