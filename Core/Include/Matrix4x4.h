@@ -10,6 +10,8 @@
 
 #include <array>
 
+#include "Point3d.h"
+
 namespace Core {
 
 class HPoint;
@@ -93,6 +95,7 @@ public:
     void invert();
     void scale(double x, double y, double z);
     void translate(double x, double y, double z);
+    void translate(const Core::Point3d& p) { this->translate(p.x(), p.y(), p.z()); }
     void rotateAlongX(double angle);
     void rotateAlongY(double angle);
     void rotateAlongZ(double angle);

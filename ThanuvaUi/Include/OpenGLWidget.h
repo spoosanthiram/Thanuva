@@ -5,8 +5,8 @@
  * All rights reserved.
  */
 
-#ifndef THANUVAUI_GLWIDGET_H
-#define THANUVAUI_GLWIDGET_H
+#ifndef ThanuvaUi_OpenGLWidget_h
+#define ThanuvaUi_OpenGLWidget_h
 
 #include <memory>
 #include <vector>
@@ -14,12 +14,15 @@
 #include <QMenu>
 #include <QOpenGLWidget>
 
-#include "GraphicsEnvironment.h"
+#include "AxisLegendScene.h"
+#include "GraphicsScene.h"
 #include "ViewpointCamera.h"
 
 namespace Model { class Scene; }
 
 namespace ThanuvaUi {
+
+class MainWindow;
 
 class OpenGLWidget : public QOpenGLWidget
 {
@@ -40,7 +43,7 @@ public:
     };
 
 public:
-    OpenGLWidget(QWidget* parent);
+    OpenGLWidget(MainWindow* mainWindow);
 
     void activate(Model::Scene* scene);
     void deactivate();
@@ -73,8 +76,9 @@ protected:
     }
 
 private:
-    Graphics::GraphicsEnvironment m_graphicsEnvironment{};
     Model::Scene* m_scene{nullptr};
+    Graphics::GraphicsScene m_graphicsScene{};
+    Graphics::AxisLegendScene m_axisLegendScene;
     int m_width;
     int m_height;
     Location m_currentLocation;
@@ -85,4 +89,4 @@ private:
 
 } // namespace ThanuvaUi
 
-#endif // THANUVAUI_GLWIDGET_H
+#endif // ThanuvaUi_OpenGLWidget_h

@@ -25,6 +25,7 @@
 #include "ConeDialog.h"
 #include "CylinderModel.h"
 #include "CylinderDialog.h"
+#include "MainWindow.h"
 #include "MeshModel.h"
 #include "OpenGLInterface.h"
 #include "Scene.h"
@@ -34,8 +35,9 @@
 
 namespace ThanuvaUi {
 
-OpenGLWidget::OpenGLWidget(QWidget* parent)
-    : QOpenGLWidget{parent}
+OpenGLWidget::OpenGLWidget(MainWindow* mainWindow)
+    : QOpenGLWidget{mainWindow}
+    , m_axisLegendScene{mainWindow->app()}
     , m_width{0}
     , m_height{0}
     , m_currentLocation{}
@@ -68,20 +70,19 @@ void OpenGLWidget::activate(Model::Scene* scene)
     LOG(INFO) << "Activating GLWidget for: " << scene->name();
 
     m_scene = scene;
-    m_graphicsEnvironment.activate(m_scene);
+    m_graphicsScene.activate(m_scene);
 
-    connect(&m_graphicsEnvironment, &Graphics::GraphicsEnvironment::viewChanged,
-            this, &OpenGLWidget::handleViewChanged);
+    m_graphicsScene.graphicsSceneChanged.connect<OpenGLWidget, &OpenGLWidget::handleViewChanged>(this);
 }
 
 void OpenGLWidget::deactivate()
 {
     LOG(INFO) << "Deactivating GLWidget for: " << m_scene->name();
 
-    m_graphicsEnvironment.deactivate();
+    m_graphicsScene.deactivate();
     m_scene = nullptr;
 
-    disconnect(&m_graphicsEnvironment, 0, this, 0);
+    m_graphicsScene.graphicsSceneChanged.disconnect<OpenGLWidget, &OpenGLWidget::handleViewChanged>(this);
 }
 
 void OpenGLWidget::createBox()
@@ -177,7 +178,8 @@ void OpenGLWidget::initializeGL()
 
     LOG(INFO) << "Loading shaders...";
     try {
-        m_graphicsEnvironment.loadShaders();
+        m_graphicsScene.loadShaders();
+        m_axisLegendScene.loadShaders();
     }
     catch (const std::exception& e) {
         LOG(ERROR) << e.what();
@@ -187,7 +189,7 @@ void OpenGLWidget::initializeGL()
         qApp->closeAllWindows();
     }
 
-    m_graphicsEnvironment.initializeAxisLegend();
+    m_axisLegendScene.activateScene();
 }
 
 void OpenGLWidget::resizeGL(int width, int height)
@@ -199,19 +201,22 @@ void OpenGLWidget::resizeGL(int width, int height)
     m_height = height;
 
     LOG(INFO) << "Adjusting Projection and Viewport for window resize.";
-    m_graphicsEnvironment.adjustProjection(m_width, m_height);
+    m_graphicsScene.handleWindowResize(m_width, m_height);
+    m_axisLegendScene.handleWindowResize(m_width, m_height);
     g_OpenGLFuncs->glViewport(0, 0, m_width, m_height);
 
     std::array<int, 4> glViewport;
     g_OpenGLFuncs->glGetIntegerv(GL_VIEWPORT, &glViewport[0]);
-    m_graphicsEnvironment.setViewportTransform(glViewport);
+    m_graphicsScene.setViewportTransform(glViewport);
+    m_axisLegendScene.setViewportTransform(glViewport);
 }
 
 void OpenGLWidget::paintGL()
 {
     g_OpenGLFuncs->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    m_graphicsEnvironment.render();
+    m_graphicsScene.render();
+    m_axisLegendScene.render();
 }
 
 void OpenGLWidget::mouseMoveEvent(QMouseEvent* mouseEvent)
@@ -225,7 +230,8 @@ void OpenGLWidget::mouseMoveEvent(QMouseEvent* mouseEvent)
     Graphics::ViewpointCamera::Location startLoc = this->normalize(m_previousLocation);
     Graphics::ViewpointCamera::Location endLoc = this->normalize(m_currentLocation);
 
-    m_graphicsEnvironment.viewpointCamera().rotate(startLoc, endLoc);
+    m_graphicsScene.viewpointCamera().rotate(startLoc, endLoc);
+    m_axisLegendScene.viewpointCamera().rotate(startLoc, endLoc);
 
     m_previousLocation = m_currentLocation;
 }
@@ -244,17 +250,17 @@ void OpenGLWidget::mouseReleaseEvent(QMouseEvent* mouseEvent)
     m_currentLocation.y = mouseEvent->y();
 
     if (mouseEvent->button() == Qt::RightButton) {
-        auto objects = m_graphicsEnvironment.probe(m_currentLocation.x, m_height - m_currentLocation.y);
-        QString message;
-        for (auto object : objects) {
-            auto points = object->probePoints();
-            for (auto& p : points) {
-                message.append(p.str().c_str());
-                message.append("\n");
-            }
-        }
-        if (message.size() > 0)
-            QMessageBox::information(this, "Probe Points", message);
+        auto objects = m_graphicsScene.probe(m_currentLocation.x, m_height - m_currentLocation.y);
+        //QString message;
+        //for (auto object : objects) {
+        //    auto points = object->probePoints();
+        //    for (auto& p : points) {
+        //        message.append(p.str().c_str());
+        //        message.append("\n");
+        //    }
+        //}
+        //if (message.size() > 0)
+        //    QMessageBox::information(this, "Probe Points", message);
         m_contextMenu->exec(mouseEvent->globalPos());
     }
 
@@ -263,7 +269,7 @@ void OpenGLWidget::mouseReleaseEvent(QMouseEvent* mouseEvent)
 
 void OpenGLWidget::wheelEvent(QWheelEvent* wheelEvent)
 {
-    m_graphicsEnvironment.viewpointCamera().zoom(wheelEvent->delta() / 120);
+    m_graphicsScene.viewpointCamera().zoom(wheelEvent->delta() / 120);
 }
 
 } // namespace ThanuvaUi

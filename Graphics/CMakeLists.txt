@@ -14,19 +14,21 @@ endif()
 add_definitions(-DGLOG_NO_ABBREVIATED_SEVERITIES)
 
 set(SOURCE_FILES
-    ${Graphics_SOURCE_DIR}/Include/AxisLegend.h
-    ${Graphics_SOURCE_DIR}/Include/GraphicsEnvironment.h
+    ${Graphics_SOURCE_DIR}/Include/AbstractGraphicsScene.h
+    ${Graphics_SOURCE_DIR}/Include/AxisLegendScene.h
     ${Graphics_SOURCE_DIR}/Include/GraphicsException.h
     ${Graphics_SOURCE_DIR}/Include/GraphicsObject.h
+    ${Graphics_SOURCE_DIR}/Include/GraphicsScene.h
     ${Graphics_SOURCE_DIR}/Include/OpenGLInterface.h
     ${Graphics_SOURCE_DIR}/Include/Shader.h
     ${Graphics_SOURCE_DIR}/Include/ShaderProgram.h
     ${Graphics_SOURCE_DIR}/Include/ViewpointCamera.h
 
-    ${Graphics_SOURCE_DIR}/Source/AxisLegend.cpp
-    ${Graphics_SOURCE_DIR}/Source/GraphicsEnvironment.cpp
+    ${Graphics_SOURCE_DIR}/Source/AbstractGraphicsScene.cpp
+    ${Graphics_SOURCE_DIR}/Source/AxisLegendScene.cpp
     ${Graphics_SOURCE_DIR}/Source/GraphicsException.cpp
     ${Graphics_SOURCE_DIR}/Source/GraphicsObject.cpp
+    ${Graphics_SOURCE_DIR}/Source/GraphicsScene.cpp
     ${Graphics_SOURCE_DIR}/Source/OpenGLInterface.cpp
     ${Graphics_SOURCE_DIR}/Source/Shader.cpp
     ${Graphics_SOURCE_DIR}/Source/ShaderProgram.cpp

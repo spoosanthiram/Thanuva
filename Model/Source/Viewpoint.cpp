@@ -13,8 +13,9 @@
 
 namespace {
 
-const char* kEyeRotationMatrixTag = "eyeRotationMatrix";
 const char* kZoomLevelTag = "zoomLevel";
+const char* kEyeRotationMatrixTag = "eyeRotationMatrix";
+const char* kTranslationTag = "translation";
 
 } // anonymous
 
@@ -24,16 +25,9 @@ Viewpoint::Viewpoint(const Scene* scene)
     : ThanuvaModel{scene}
 {
     zoomLevelChanged.connect<ThanuvaModel, &ThanuvaModel::emitThanuvaModelChanged>(this);
+    eyeRotationMatrixChanged.connect<ThanuvaModel, &ThanuvaModel::emitThanuvaModelChanged>(this);
+    translationChanged.connect<ThanuvaModel, &ThanuvaModel::emitThanuvaModelChanged>(this);
 }
-
-//void Viewpoint::setEyeRotationMatrix(const Core::Matrix3x3& eyeRotationMatrix)
-//{
-//    if (m_eyeRotationMatrix == eyeRotationMatrix)
-//        return;
-//
-//    m_eyeRotationMatrix = eyeRotationMatrix;
-//    viewpointChanged.emit_signal();
-//}
 
 void Viewpoint::setZoomLevel(double zoomLevel)
 {
@@ -43,16 +37,30 @@ void Viewpoint::setZoomLevel(double zoomLevel)
     }
 }
 
+void Viewpoint::setEyeRotationMatrix(const Core::Matrix3x3& eyeRotationMatrix)
+{
+    m_eyeRotationMatrix = eyeRotationMatrix;
+    eyeRotationMatrixChanged.emit_signal(); // emit signal so the scene can become changed and so to be saved.
+}
+
+void Viewpoint::setTranslation(const Core::Point3d& translation)
+{
+    m_translation = translation;
+    translationChanged.emit_signal(); // // emit signal so the scene can become changed and so to be saved.
+}
+
 void Viewpoint::loadModel(const boost::property_tree::ptree& modelPropTree)
 {
-    m_eyeRotationMatrix.set(modelPropTree.get<std::string>(kEyeRotationMatrixTag));
     m_zoomLevel = modelPropTree.get<double>(kZoomLevelTag);
+    m_eyeRotationMatrix.set(modelPropTree.get<std::string>(kEyeRotationMatrixTag));
+    m_translation.set(modelPropTree.get<std::string>(kTranslationTag));
 }
 
 void Viewpoint::saveModel(boost::property_tree::ptree& modelPropTree)
 {
     modelPropTree.put(kEyeRotationMatrixTag, m_eyeRotationMatrix.str());
     modelPropTree.put(kZoomLevelTag, m_zoomLevel);
+    modelPropTree.put(kTranslationTag, m_translation.str());
 }
 
 } // namespace Model

@@ -10,17 +10,17 @@
 #include <GL/glu.h>
 #include <glog/logging.h>
 
+#include "AbstractGraphicsScene.h"
 #include "CoordinateSystem.h"
 #include "Geometry.h"
-#include "GraphicsEnvironment.h"
 #include "GeometryModel.h"
 #include "Matrix3x3.h"
 #include "ViewpointCamera.h"
 
 namespace Graphics {
 
-GraphicsObject::GraphicsObject(const GraphicsEnvironment& graphicsEnvironment, Geometry::Geometry* geometry)
-    : m_graphicsEnvironment{graphicsEnvironment}
+GraphicsObject::GraphicsObject(const AbstractGraphicsScene& graphicsScene, Geometry::Geometry* geometry)
+    : m_graphicsScene{graphicsScene}
     , m_geometry{geometry}
 {
     CHECK(geometry);
@@ -36,34 +36,35 @@ GraphicsObject::GraphicsObject(const GraphicsEnvironment& graphicsEnvironment, G
     m_geometry->coordinateSystemChanged.connect<GraphicsObject, &GraphicsObject::emitGraphicsObjectChanged>(this);
 }
 
-void GraphicsObject::render(bool useLegendViewMatrix) const
+void GraphicsObject::render() const
 {
     float matrixData[16]; // for passing to opengl (both 3x3 & 4x4 matrix)
-    auto& shaderProgram = m_graphicsEnvironment.shaderProgram();
+    auto& shaderProgram = m_graphicsScene.shaderProgram();
 
-    const ViewpointCamera& camera = m_graphicsEnvironment.viewpointCamera();
-    Core::Matrix4x4 modelViewMatrix = (useLegendViewMatrix ? camera.legendViewMatrix() : camera.viewMatrix()) *
-                                      m_geometry->coordinateSystem()->transformMatrix();
+    const ViewpointCamera& camera = m_graphicsScene.viewpointCamera();
+    Core::Matrix4x4 modelViewMatrix = camera.viewMatrix() * m_geometry->coordinateSystem()->transformMatrix();
     modelViewMatrix.data(matrixData);
-    g_OpenGLFuncs->glUniformMatrix4fv(shaderProgram->modelViewMatrixLocation(), 1, GL_FALSE, matrixData);
+    g_OpenGLFuncs->glUniformMatrix4fv(m_graphicsScene.modelViewMatrixLocation(), 1, GL_FALSE, matrixData);
 
     Core::Matrix3x3 normalMatrix = modelViewMatrix;
     normalMatrix.invert();
     normalMatrix.transpose();
     normalMatrix.data(matrixData);
-    g_OpenGLFuncs->glUniformMatrix3fv(shaderProgram->normalMatrixLocation(), 1, GL_FALSE, matrixData);
+    g_OpenGLFuncs->glUniformMatrix3fv(m_graphicsScene.normalMatrixLocation(), 1, GL_FALSE, matrixData);
 
     const Core::Material& material = dynamic_cast<Model::GeometryModel*>(m_geometry->thanuvaModel())->material();
 
     const Core::Color& diffuseColor = material.diffuseColor();
-    g_OpenGLFuncs->glUniform4f(shaderProgram->diffuseColorLocation(),
+    g_OpenGLFuncs->glUniform4f(m_graphicsScene.diffuseColorLocation(),
                                diffuseColor.r(), diffuseColor.g(), diffuseColor.b(), 1.0f);
 
-    const Core::Color& specularColor = material.specularColor();
-    g_OpenGLFuncs->glUniform4f(shaderProgram->specularColorLocation(),
-                               specularColor.r(), specularColor.g(), specularColor.b(), 1.0f);
+    if (m_graphicsScene.isSpecularColorAvailable()) {
+        const Core::Color& specularColor = material.specularColor();
+        g_OpenGLFuncs->glUniform4f(m_graphicsScene.specularColorLocation(),
+                                   specularColor.r(), specularColor.g(), specularColor.b(), 1.0f);
 
-    g_OpenGLFuncs->glUniform1f(shaderProgram->shininessLocation(), material.shininess());
+        g_OpenGLFuncs->glUniform1f(m_graphicsScene.shininessLocation(), material.shininess());
+    }
 
     g_OpenGLFuncs->glBindVertexArray(m_vaoHandle);
     const std::vector<int>& indices = m_geometry->indices();
@@ -122,25 +123,23 @@ void GraphicsObject::initialize()
 
 Core::Point3d GraphicsObject::glNearPoint(int x, int y) const
 {
-    Core::Matrix4x4 modelViewMatrix = m_graphicsEnvironment.viewpointCamera().viewMatrix() *
+    Core::Matrix4x4 modelViewMatrix = m_graphicsScene.viewpointCamera().viewMatrix() *
                                       m_geometry->coordinateSystem()->transformMatrix();
-    Core::Matrix4x4 projectionMatrix = m_graphicsEnvironment.projectionMatrix();
+    Core::Matrix4x4 projectionMatrix = m_graphicsScene.projectionMatrix();
     double nearPoint[3];
     gluUnProject(x, y, 0.0, modelViewMatrix.data(), projectionMatrix.data(),
-                 m_graphicsEnvironment.viewportTransform().data(),
-                 &nearPoint[0], &nearPoint[1], &nearPoint[2]);
+                 m_graphicsScene.viewportTransform().data(), &nearPoint[0], &nearPoint[1], &nearPoint[2]);
     return Core::Point3d(nearPoint);
 }
 
 Core::Point3d GraphicsObject::glFarPoint(int x, int y) const
 {
-    Core::Matrix4x4 modelViewMatrix = m_graphicsEnvironment.viewpointCamera().viewMatrix() *
+    Core::Matrix4x4 modelViewMatrix = m_graphicsScene.viewpointCamera().viewMatrix() *
                                       m_geometry->coordinateSystem()->transformMatrix();
-    Core::Matrix4x4 projectionMatrix = m_graphicsEnvironment.projectionMatrix();
+    Core::Matrix4x4 projectionMatrix = m_graphicsScene.projectionMatrix();
     double farPoint[3];
     gluUnProject(x, y, 1.0, modelViewMatrix.data(), projectionMatrix.data(),
-                 m_graphicsEnvironment.viewportTransform().data(),
-                 &farPoint[0], &farPoint[1], &farPoint[2]);
+                 m_graphicsScene.viewportTransform().data(), &farPoint[0], &farPoint[1], &farPoint[2]);
     return Core::Point3d(farPoint);
 }
 

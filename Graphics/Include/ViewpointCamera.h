@@ -5,8 +5,8 @@
  * All rights reserved.
  */
 
-#ifndef GRAPHICS_VIEWPOINTCAMERA_H
-#define GRAPHICS_VIEWPOINTCAMERA_H
+#ifndef Graphics_ViewpointCamera_h
+#define Graphics_ViewpointCamera_h
 
 #include <nano_signal_slot.hpp>
 
@@ -16,7 +16,7 @@
 
 namespace Graphics {
 
-class GraphicsEnvironment;
+class AbstractGraphicsScene;
 
 class ViewpointCamera
 {
@@ -32,10 +32,9 @@ public:
     };
 
 public:
-    ViewpointCamera(const GraphicsEnvironment& graphicsEnvironment);
+    ViewpointCamera(const AbstractGraphicsScene& graphicsScene);
 
     const Core::Matrix4x4& viewMatrix() const { return m_viewMatrix; }
-    const Core::Matrix4x4& legendViewMatrix() const { return m_legendViewMatrix; }
 
     void setViewpointTranslation(double viewpointTranslation)
     {
@@ -47,10 +46,10 @@ public:
         m_viewpoint = viewpoint;
         this->updateViewMatrix();
     }
-    void adjustLegendTranslation();
 
-    void rotate(const Location& startLocation, const Location& endLocation);
     void zoom(int steps);
+    void rotate(const Location& startLocation, const Location& endLocation);
+    void translate(const Core::Point3d& p);
 
 public: // signals
     Nano::Signal<void()> viewpointCameraChanged{};
@@ -60,19 +59,16 @@ protected: // slots
 
 private:
     Core::Vector3d projectToSphere(const Location& location);
-    Core::Matrix4x4 buildViewMatrix(const Core::Vector3d& eye);
 
-    const GraphicsEnvironment& m_graphicsEnvironment;
+    const AbstractGraphicsScene& m_graphicsScene;
 
     double m_viewpointTranslation{3.0};
     Model::Viewpoint* m_viewpoint;
 
+    Core::Matrix4x4 m_translationMatrix;
     Core::Matrix4x4 m_viewMatrix;
-
-    Core::Matrix4x4 m_legendTranslationMatrix;
-    Core::Matrix4x4 m_legendViewMatrix;
 };
 
 } // namespace Graphics
 
-#endif // GRAPHICS_VIEWPOINTCAMERA_H
+#endif // Graphics_ViewpointCamera_h

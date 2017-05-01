@@ -7,8 +7,6 @@
 
 #include "Shader.h"
 
-#include <fstream>
-
 #include "GraphicsException.h"
 
 namespace Graphics {
@@ -39,9 +37,10 @@ Shader::~Shader()
     //g_OpenGLFuncs->glDeleteShader(m_handle);
 }
 
-void Shader::compile(const char* shaderSource)
+void Shader::compile(const std::string& shaderSource)
 {
-    g_OpenGLFuncs->glShaderSource(m_handle, 1, &shaderSource, NULL);
+    const char* source = shaderSource.c_str();
+    g_OpenGLFuncs->glShaderSource(m_handle, 1, &source, NULL);
 
     g_OpenGLFuncs->glCompileShader(m_handle);
 

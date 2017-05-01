@@ -28,7 +28,7 @@ public:
     GLenum shaderType() const { return m_shaderType; }
     GLuint handle() const { return m_handle; }
 
-    void compile(const char* shaderSource);
+    void compile(const std::string& shaderSource);
 
 protected:
     GLenum m_shaderType;

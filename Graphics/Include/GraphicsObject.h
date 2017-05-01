@@ -19,7 +19,7 @@ namespace Geometry { class Geometry; }
 
 namespace Graphics {
 
-class GraphicsEnvironment;
+class AbstractGraphicsScene;
 
 class GraphicsObject
 {
@@ -34,9 +34,9 @@ public:
     static const int kNormalLocation = 1;
 
 public:
-    GraphicsObject(const GraphicsEnvironment& graphicsEnvironment, Geometry::Geometry* geometry);
+    GraphicsObject(const AbstractGraphicsScene& graphicsScene, Geometry::Geometry* geometry);
 
-    void render(bool useLegendViewMatrix = false) const;
+    void render() const;
     bool probe(int x, int y) const;
     const std::vector<Core::Point3d>& probePoints() const;
 
@@ -51,7 +51,7 @@ private:
     Core::Point3d glNearPoint(int x, int y) const;
     Core::Point3d glFarPoint(int x, int y) const;
 
-    const GraphicsEnvironment& m_graphicsEnvironment;
+    const AbstractGraphicsScene& m_graphicsScene;
     Geometry::Geometry* m_geometry;
     GLuint m_vaoHandle{0};
     GLuint m_bufferHandle[kBufferSize];

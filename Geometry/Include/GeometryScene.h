@@ -17,9 +17,9 @@
 #include "Geometry.h"
 
 namespace Model {
-class CoordinateSystemModel;
-class GeometryModel;
-class Scene;
+    class CoordinateSystemModel;
+    class GeometryModel;
+    class Scene;
 }
 
 namespace Geometry {

@@ -11,20 +11,6 @@
 
 namespace Graphics {
 
-const char* ShaderProgram::kAmbientLightUniformName = "ambientLight";
-
-const char* ShaderProgram::kLight0PositionUniformName = "light0Position";
-const char* ShaderProgram::kLight0DiffuseColorUniformName = "light0DiffuseColor";
-const char* ShaderProgram::kLight0SpecularColorUniformName = "light0SpecularColor";
-
-const char* ShaderProgram::kProjectionMatrixUniformName = "projectionMatrix";
-const char* ShaderProgram::kModelViewMatrixUniformName = "modelViewMatrix";
-const char* ShaderProgram::kNormalMatrixUniformName = "normalMatrix";
-
-const char* ShaderProgram::kDiffuseColorUniformName = "diffuseColor";
-const char* ShaderProgram::kSpecularColorUniformName = "specularColor";
-const char* ShaderProgram::kShininessUniformName = "shininess";
-
 ShaderProgram::ShaderProgram()
 {
     m_handle = g_OpenGLFuncs->glCreateProgram();
@@ -67,34 +53,6 @@ void ShaderProgram::link()
 
         throw GraphicsException{std::string{GraphicsException::kLinkProgram} + log};
     }
-
-    this->updateLocations();
-}
-
-void ShaderProgram::updateLocations()
-{
-    m_projectionMatrixLocation = g_OpenGLFuncs->glGetUniformLocation(
-                                    m_handle, kProjectionMatrixUniformName);
-    m_modelViewMatrixLocation = g_OpenGLFuncs->glGetUniformLocation(
-                                    m_handle, kModelViewMatrixUniformName);
-    m_normalMatrixLocation = g_OpenGLFuncs->glGetUniformLocation(
-                                 m_handle, kNormalMatrixUniformName);
-
-    m_ambientLightLocation = g_OpenGLFuncs->glGetUniformLocation(
-                                 m_handle, kAmbientLightUniformName);
-
-    m_light0PositionLocation = g_OpenGLFuncs->glGetUniformLocation(
-                                   m_handle, kLight0PositionUniformName);
-    m_light0DiffuseColorLocation = g_OpenGLFuncs->glGetUniformLocation(
-                                       m_handle, kLight0DiffuseColorUniformName);
-    m_light0SpecularColorLocation = g_OpenGLFuncs->glGetUniformLocation(
-                                        m_handle, kLight0SpecularColorUniformName);
-
-    m_diffuseColorLocation = g_OpenGLFuncs->glGetUniformLocation(m_handle,
-                                                                 kDiffuseColorUniformName);
-    m_specularColorLocation = g_OpenGLFuncs->glGetUniformLocation(m_handle,
-                                                                  kSpecularColorUniformName);
-    m_shininessLocation = g_OpenGLFuncs->glGetUniformLocation(m_handle, kShininessUniformName);
 }
 
 } // namespace Graphics

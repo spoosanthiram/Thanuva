@@ -7,7 +7,6 @@
 
 #include "ViewpointCamera.h"
 
-#include "GraphicsEnvironment.h"
 #include "Quaternion.h"
 #include "Vector3d.h"
 
@@ -15,20 +14,17 @@ namespace Graphics {
 
 const double ViewpointCamera::kZoomIncrement = 0.02;
 
-ViewpointCamera::ViewpointCamera(const GraphicsEnvironment& graphicsEnvironment)
-    : m_graphicsEnvironment{graphicsEnvironment}
+ViewpointCamera::ViewpointCamera(const AbstractGraphicsScene& graphicsScene)
+    : m_graphicsScene{graphicsScene}
+    , m_translationMatrix{Core::Matrix4x4::identity()}
     , m_viewMatrix{Core::Matrix4x4::identity()}
-    , m_legendTranslationMatrix{Core::Matrix4x4::identity()}
-    , m_legendViewMatrix{Core::Matrix4x4::identity()}
 {
 }
 
-void ViewpointCamera::adjustLegendTranslation()
+void ViewpointCamera::zoom(int steps)
 {
-    m_legendTranslationMatrix.makeIdentity();
-    double halfFar = GraphicsEnvironment::kLegendFarProjection / 2.0;
-    m_legendTranslationMatrix.translate(-(halfFar * m_graphicsEnvironment.windowAspect() - halfFar * 0.1),
-                                        -(halfFar - halfFar * 0.1), 0.0);
+    m_viewpoint->setZoomLevel(m_viewpoint->zoomLevel() + steps * kZoomIncrement);
+    this->updateViewMatrix();
 }
 
 void ViewpointCamera::rotate(const Location& startLocation, const Location& endLocation)
@@ -42,14 +38,19 @@ void ViewpointCamera::rotate(const Location& startLocation, const Location& endL
     Core::Vector3d axis = startLocOnSphere.cross(endLocOnSphere);
     axis.normalize();
 
-    m_viewpoint->eyeRotationMatrix().rotate(Core::Quaternion{axis, -angle});
+    Core::Matrix3x3 eyeRotMatrix = m_viewpoint->eyeRotationMatrix();
+    eyeRotMatrix.rotate(Core::Quaternion{axis, -angle});
 
+    m_viewpoint->setEyeRotationMatrix(eyeRotMatrix);
     this->updateViewMatrix();
 }
 
-void ViewpointCamera::zoom(int steps)
+void ViewpointCamera::translate(const Core::Point3d& p)
 {
-    m_viewpoint->setZoomLevel(m_viewpoint->zoomLevel() + steps * kZoomIncrement);
+    m_viewpoint->setTranslation(p);
+
+    m_translationMatrix.makeIdentity();
+    m_translationMatrix.translate(m_viewpoint->translation());
 
     this->updateViewMatrix();
 }
@@ -59,10 +60,23 @@ void ViewpointCamera::updateViewMatrix()
     Core::Vector3d eye = m_viewpoint->eyeRotationMatrix() *
                          Core::Vector3d{0.0, 0.0, m_viewpointTranslation};
     eye.scale(m_viewpoint->zoomLevel());
-    m_viewMatrix = this->buildViewMatrix(eye);
 
-    eye = m_viewpoint->eyeRotationMatrix() * Core::Vector3d{0.0, 0.0, GraphicsEnvironment::kLegendFarProjection / 2.0};
-    m_legendViewMatrix = m_legendTranslationMatrix * this->buildViewMatrix(eye);
+    Core::Vector3d w = eye;
+    w.normalize();
+
+    Core::Vector3d upVector = m_viewpoint->eyeRotationMatrix() * Core::Vector3d{0.0, 1.0, 0.0};
+
+    Core::Vector3d u = upVector.cross(w);
+    u.normalize();
+
+    Core::Vector3d v = w.cross(u);
+
+    Core::Vector3d negativeEye{-eye.x(), -eye.y(), -eye.z()};
+
+    m_viewMatrix = m_translationMatrix * Core::Matrix4x4{u.x(), v.x(), w.x(), 0.0,
+        u.y(), v.y(), w.y(), 0.0,
+        u.z(), v.z(), w.z(), 0.0,
+        negativeEye.dot(u), negativeEye.dot(v), negativeEye.dot(w), 1.0};
 
     viewpointCameraChanged.emit_signal(); // emit signal
 }
@@ -83,8 +97,8 @@ Core::Vector3d ViewpointCamera::projectToSphere(const Location& location)
     else
         locOnSphere.setZ(std::sqrt(1.0 - norm * norm));
 
-    Core::Vector3d eye = /*m_eyeRotationMatrix **/ Core::Vector3d{0.0, 0.0, m_viewpointTranslation}; // - center
-    Core::Vector3d up = /*m_eyeRotationMatrix **/ Core::Vector3d{0.0, 1.0, 0.0};
+    Core::Vector3d eye = Core::Vector3d{0.0, 0.0, m_viewpointTranslation}; // - center
+    Core::Vector3d up = Core::Vector3d{0.0, 1.0, 0.0};
 
     Core::Vector3d side = up.cross(eye);
 
@@ -93,26 +107,6 @@ Core::Vector3d ViewpointCamera::projectToSphere(const Location& location)
     eye.setNorm(locOnSphere.z());
 
     return up + side + eye;
-}
-
-Core::Matrix4x4 ViewpointCamera::buildViewMatrix(const Core::Vector3d& eye)
-{
-    Core::Vector3d w = eye;
-    w.normalize();
-
-    Core::Vector3d upVector = m_viewpoint->eyeRotationMatrix() * Core::Vector3d{0.0, 1.0, 0.0};
-
-    Core::Vector3d u = upVector.cross(w);
-    u.normalize();
-
-    Core::Vector3d v = w.cross(u);
-
-    Core::Vector3d negativeEye{-eye.x(), -eye.y(), -eye.z()};
-
-    return Core::Matrix4x4{u.x(), v.x(), w.x(), 0.0,
-        u.y(), v.y(), w.y(), 0.0,
-        u.z(), v.z(), w.z(), 0.0,
-        negativeEye.dot(u), negativeEye.dot(v), negativeEye.dot(w), 1.0};
 }
 
 } // namespace Graphics
