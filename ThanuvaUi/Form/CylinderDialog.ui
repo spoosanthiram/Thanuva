@@ -7,13 +7,26 @@
     <x>0</x>
     <y>0</y>
     <width>563</width>
-    <height>253</height>
+    <height>256</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Cylinder</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="m_errorLabel">
+     <property name="styleSheet">
+      <string notr="true">color:rgb(170, 0, 0)</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
    <item>
     <layout class="QGridLayout" name="gridLayout">
      <item row="2" column="7">
@@ -240,19 +253,6 @@
       </widget>
      </item>
     </layout>
-   </item>
-   <item>
-    <widget class="QLabel" name="m_errorLabel">
-     <property name="styleSheet">
-      <string notr="true">color:rgb(170, 0, 0)</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
    </item>
    <item>
     <spacer name="verticalSpacer">
