@@ -40,7 +40,7 @@ Scene::Scene(const ThanuvaApp& thanuvaApp)
     , m_name{kDefaultName}
     , m_filePath{}
 {
-    m_csysModelList.push_back(std::make_unique<CoordinateSystemModel>(this, "world_csys"));
+    m_coordinateSystemModelList.push_back(std::make_unique<CoordinateSystemModel>(this, "world_csys"));
     m_viewpointList.push_back(std::make_unique<Viewpoint>(this));
 }
 
@@ -53,20 +53,11 @@ Scene::Scene(const ThanuvaApp& thanuvaApp, const fs::path& filePath)
     this->read();
 }
 
-intmax_t Scene::geometryModelIndex(GeometryModel* geometryModel) const
-{
-    auto it = std::find_if(m_geometryModelList.cbegin(), m_geometryModelList.cend(),
-            [=](const std::unique_ptr<GeometryModel>& ptr) { return ptr.get() == geometryModel; });
-    if (it == m_geometryModelList.cend())
-        return -1;
-    return std::distance(m_geometryModelList.cbegin(), it);
-}
-
 const CoordinateSystemModel* Scene::coordinateSystemByName(const std::string& csysName) const
 {
-    auto it = std::find_if(m_csysModelList.cbegin(), m_csysModelList.cend(),
+    auto it = std::find_if(m_coordinateSystemModelList.cbegin(), m_coordinateSystemModelList.cend(),
             [=](const std::unique_ptr<CoordinateSystemModel>& ptr) { return ptr->name() == csysName; });
-    return (it != m_csysModelList.cend()) ? it->get() : nullptr;
+    return (it != m_coordinateSystemModelList.cend()) ? it->get() : nullptr;
 }
 
 void Scene::setFilePath(const fs::path& filePath)
@@ -121,7 +112,7 @@ void Scene::write()
         ptree scenePropTree;
 
         ptree coordinateSystemsPropTree;
-        this->saveModelList(m_csysModelList, coordinateSystemsPropTree);
+        this->saveModelList(m_coordinateSystemModelList, coordinateSystemsPropTree);
         scenePropTree.add_child(kCoordinateSystemsTag, coordinateSystemsPropTree);
 
         ptree geometryModelsPropTree;
@@ -145,7 +136,7 @@ void Scene::write()
 void Scene::add(std::unique_ptr<CoordinateSystemModel> csysModel)
 {
     auto rawPtr = csysModel.get();
-    m_csysModelList.push_back(std::move(csysModel));
+    m_coordinateSystemModelList.push_back(std::move(csysModel));
     coordinateSystemModelAdded.emit_signal(rawPtr); // emit signal
 
     this->setSceneChanged(true);

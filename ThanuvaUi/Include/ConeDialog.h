@@ -5,50 +5,46 @@
  * All rights reserved.
  */
 
-#ifndef THANUVAUI_CONEDIALOG_H
-#define THANUVAUI_CONEDIALOG_H
+#ifndef ThanuvaUi_ConeDialog_h
+#define ThanuvaUi_ConeDialog_h
 
 #include "GeometryDialog.h"
-#include "ui_ConeWidget.h"
+#include "ui_ConeDialog.h"
 
 namespace Model { class ConeModel; }
 
 namespace ThanuvaUi {
 
-class ConeWidget : public QWidget, public Ui::ConeWidget
-{
-public:
-    ConeWidget(QWidget* parent)
-        : QWidget{parent}
-    {
-        this->setupUi(this);
-    }
-};
-
-class ConeDialog : public GeometryDialog
+class ConeDialog : public GeometryDialog, private Ui::ConeDialog
 {
     Q_OBJECT
 
 public:
     ConeDialog(QWidget* parent, Model::ConeModel* coneModel);
 
+
+protected:
+    QLabel* errorLabel() override { return m_errorLabel; }
+    QLineEdit* nameLineEdit() override { return m_nameLineEdit; }
+    QComboBox* csysComboBox() override { return m_csysComboBox; }
+    QPushButton* doneButton() override { return m_doneButton; }
+
 private slots:
-    void updateApex();
-    void updateCenter();
-    void updateRadius();
-    void updateNumFacets();
+    void updateModelApex();
+    void updateModelCenter();
+    void updateModelRadius();
+    void updateModelNumFacets();
 
 private: // slots
-    void initApex();
-    void initCenter();
-    void initRadius();
-    void initNumFacets();
+    void updateUiApex();
+    void updateUiCenter();
+    void updateUiRadius();
+    void updateUiNumFacets();
 
 private:
     Model::ConeModel* m_coneModel;
-    ConeWidget* m_coneWidget{nullptr};
 };
 
 } // namespace ThanuvaUi
 
-#endif // THANUVAUI_CONEDIALOG_H
+#endif // ThanuvaUi_ConeDialog_h

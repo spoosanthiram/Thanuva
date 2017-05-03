@@ -44,12 +44,24 @@ public:
     bool isSceneChanged() const { return m_sceneChanged; }
     const std::vector<std::unique_ptr<CoordinateSystemModel>>& coordinateSystemModelList() const
     {
-        return m_csysModelList;
+        return m_coordinateSystemModelList;
     }
-    const std::vector<std::unique_ptr<GeometryModel>>& geometryModelList() const { return m_geometryModelList; }
+    const std::vector<std::unique_ptr<GeometryModel>>& geometryModelList() const
+    {
+        return m_geometryModelList;
+    }
     const std::vector<std::unique_ptr<Viewpoint>>& viewpointList() const { return m_viewpointList; }
 
-    intmax_t geometryModelIndex(GeometryModel* geometryModel) const;
+    intmax_t csysModelIndex(const CoordinateSystemModel* csysModel) const
+    {
+        return this->modelIndex<std::vector<std::unique_ptr<CoordinateSystemModel>>, CoordinateSystemModel>(
+                m_coordinateSystemModelList, csysModel);
+    }
+    intmax_t geometryModelIndex(const GeometryModel* geometryModel) const
+    {
+        return this->modelIndex<std::vector<std::unique_ptr<GeometryModel>>, GeometryModel>(
+                m_geometryModelList, geometryModel);
+    }
     const CoordinateSystemModel* coordinateSystemByName(const std::string& csysName) const;
 
     void setFilePath(const fs::path& filePath);
@@ -59,7 +71,8 @@ public:
     {
         LOG(INFO) << "Create ThanuvaModel and Add to the list";
 
-        std::unique_ptr<ModelObjectType> modelObjectPtr = std::make_unique<ModelObjectType>(this, std::forward<Args>(args)...);
+        std::unique_ptr<ModelObjectType> modelObjectPtr = std::make_unique<ModelObjectType>(
+                                                                this, std::forward<Args>(args)...);
         ModelObjectType* modelObject = modelObjectPtr.get();
         this->add(std::move(modelObjectPtr));
         return modelObject;
@@ -95,11 +108,21 @@ private:
         }
     }
 
+    template<typename ModelListType, typename ModelType>
+    intmax_t modelIndex(const ModelListType& modelList, const ModelType* model) const
+    {
+        auto it = std::find_if(modelList.cbegin(), modelList.cend(),
+                               [=](const std::unique_ptr<ModelType>& ptr) { return ptr.get() == model; });
+        if (it == modelList.cend())
+            return -1;
+        return std::distance(modelList.cbegin(), it);
+    }
+
     const ThanuvaApp& m_thanuvaApp;
     std::string m_name;
     fs::path m_filePath;
     bool m_sceneChanged{false};
-    std::vector<std::unique_ptr<CoordinateSystemModel>> m_csysModelList{};
+    std::vector<std::unique_ptr<CoordinateSystemModel>> m_coordinateSystemModelList{};
     std::vector<std::unique_ptr<GeometryModel>> m_geometryModelList{};
     std::vector<std::unique_ptr<Viewpoint>> m_viewpointList{};
 };

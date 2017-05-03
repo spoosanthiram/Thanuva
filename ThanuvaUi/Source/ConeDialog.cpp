@@ -15,84 +15,84 @@ ConeDialog::ConeDialog(QWidget* parent, Model::ConeModel* coneModel)
     : GeometryDialog{parent, coneModel}
     , m_coneModel{coneModel}
 {
-    m_coneWidget = new ConeWidget{this};
-    this->geometryPlaceHolderLayout()->addWidget(m_coneWidget);
+    this->setupUi(this);
+    this->initialize(); // initialize GeometryDialog
 
-    this->initApex();
-    this->initCenter();
-    this->initRadius();
-    this->initNumFacets();
+    this->updateUiApex();
+    this->updateUiCenter();
+    this->updateUiRadius();
+    this->updateUiNumFacets();
 
-    m_coneModel->apexChanged.connect<ConeDialog, &ConeDialog::initApex>(this);
-    m_coneModel->centerChanged.connect<ConeDialog, &ConeDialog::initCenter>(this);
-    m_coneModel->radiusChanged.connect<ConeDialog, &ConeDialog::initRadius>(this);
-    m_coneModel->numFacetsChanged.connect<ConeDialog, &ConeDialog::initNumFacets>(this);
+    m_coneModel->apexChanged.connect<ConeDialog, &ConeDialog::updateUiApex>(this);
+    m_coneModel->centerChanged.connect<ConeDialog, &ConeDialog::updateUiCenter>(this);
+    m_coneModel->radiusChanged.connect<ConeDialog, &ConeDialog::updateUiRadius>(this);
+    m_coneModel->numFacetsChanged.connect<ConeDialog, &ConeDialog::updateUiNumFacets>(this);
 
-    connect(m_coneWidget->apexXLineEdit, &QLineEdit::editingFinished, this, &ConeDialog::updateApex);
-    connect(m_coneWidget->apexYLineEdit, &QLineEdit::editingFinished, this, &ConeDialog::updateApex);
-    connect(m_coneWidget->apexZLineEdit, &QLineEdit::editingFinished, this, &ConeDialog::updateApex);
+    connect(m_apexXLineEdit, &QLineEdit::editingFinished, this, &ConeDialog::updateModelApex);
+    connect(m_apexYLineEdit, &QLineEdit::editingFinished, this, &ConeDialog::updateModelApex);
+    connect(m_apexZLineEdit, &QLineEdit::editingFinished, this, &ConeDialog::updateModelApex);
 
-    connect(m_coneWidget->centerXLineEdit, &QLineEdit::editingFinished, this, &ConeDialog::updateCenter);
-    connect(m_coneWidget->centerYLineEdit, &QLineEdit::editingFinished, this, &ConeDialog::updateCenter);
-    connect(m_coneWidget->centerZLineEdit, &QLineEdit::editingFinished, this, &ConeDialog::updateCenter);
+    connect(m_centerXLineEdit, &QLineEdit::editingFinished, this, &ConeDialog::updateModelCenter);
+    connect(m_centerYLineEdit, &QLineEdit::editingFinished, this, &ConeDialog::updateModelCenter);
+    connect(m_centerZLineEdit, &QLineEdit::editingFinished, this, &ConeDialog::updateModelCenter);
 
-    connect(m_coneWidget->radiusLineEdit, &QLineEdit::editingFinished, this, &ConeDialog::updateRadius);
+    connect(m_radiusLineEdit, &QLineEdit::editingFinished, this, &ConeDialog::updateModelRadius);
 
-    connect(m_coneWidget->numFacetsLineEdit, &QLineEdit::editingFinished, this, &ConeDialog::updateNumFacets);
+    connect(m_numFacetsLineEdit, &QLineEdit::editingFinished, this, &ConeDialog::updateModelNumFacets);
 }
 
-void ConeDialog::updateApex()
+void ConeDialog::updateModelApex()
 {
     Core::Point3d point{};
-    point.setX(m_coneWidget->apexXLineEdit->text().toDouble());
-    point.setY(m_coneWidget->apexYLineEdit->text().toDouble());
-    point.setZ(m_coneWidget->apexZLineEdit->text().toDouble());
+    point.setX(m_apexXLineEdit->text().toDouble());
+    point.setY(m_apexYLineEdit->text().toDouble());
+    point.setZ(m_apexZLineEdit->text().toDouble());
     m_coneModel->setApex(point);
 }
 
-void ConeDialog::updateCenter()
+void ConeDialog::updateModelCenter()
 {
     Core::Point3d point{};
-    point.setX(m_coneWidget->centerXLineEdit->text().toDouble());
-    point.setY(m_coneWidget->centerYLineEdit->text().toDouble());
-    point.setZ(m_coneWidget->centerZLineEdit->text().toDouble());
+    point.setX(m_centerXLineEdit->text().toDouble());
+    point.setY(m_centerYLineEdit->text().toDouble());
+    point.setZ(m_centerZLineEdit->text().toDouble());
     m_coneModel->setCenter(point);
 }
 
-void ConeDialog::updateRadius()
+void ConeDialog::updateModelRadius()
 {
-    m_coneModel->setRadius(m_coneWidget->radiusLineEdit->text().toDouble());
+    m_coneModel->setRadius(m_radiusLineEdit->text().toDouble());
 }
 
-void ConeDialog::updateNumFacets()
+void ConeDialog::updateModelNumFacets()
 {
-    m_coneModel->setNumFacets(m_coneWidget->numFacetsLineEdit->text().toDouble());
+    m_coneModel->setNumFacets(m_numFacetsLineEdit->text().toDouble());
 }
 
-void ConeDialog::initApex()
+void ConeDialog::updateUiApex()
 {
     auto& point = m_coneModel->apex();
-    m_coneWidget->apexXLineEdit->setText(QString::number(point.x()));
-    m_coneWidget->apexYLineEdit->setText(QString::number(point.y()));
-    m_coneWidget->apexZLineEdit->setText(QString::number(point.z()));
+    m_apexXLineEdit->setText(QString::number(point.x()));
+    m_apexYLineEdit->setText(QString::number(point.y()));
+    m_apexZLineEdit->setText(QString::number(point.z()));
 }
 
-void ConeDialog::initCenter()
+void ConeDialog::updateUiCenter()
 {
     auto& point = m_coneModel->center();
-    m_coneWidget->centerXLineEdit->setText(QString::number(point.x()));
-    m_coneWidget->centerYLineEdit->setText(QString::number(point.y()));
-    m_coneWidget->centerZLineEdit->setText(QString::number(point.z()));
+    m_centerXLineEdit->setText(QString::number(point.x()));
+    m_centerYLineEdit->setText(QString::number(point.y()));
+    m_centerZLineEdit->setText(QString::number(point.z()));
 }
 
-void ConeDialog::initRadius()
+void ConeDialog::updateUiRadius()
 {
-    m_coneWidget->radiusLineEdit->setText(QString::number(m_coneModel->radius()));
+    m_radiusLineEdit->setText(QString::number(m_coneModel->radius()));
 }
 
-void ConeDialog::initNumFacets()
+void ConeDialog::updateUiNumFacets()
 {
-    m_coneWidget->numFacetsLineEdit->setText(QString::number(m_coneModel->numFacets()));
+    m_numFacetsLineEdit->setText(QString::number(m_coneModel->numFacets()));
 }
 
 } // namespace ThanuvaUi

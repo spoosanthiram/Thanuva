@@ -5,44 +5,39 @@
  * All rights reserved.
  */
 
-#ifndef THANUVAUI_BOXDIALOG_H
-#define THANUVAUI_BOXDIALOG_H
+#ifndef ThanuvaUi_BoxDialog_h
+#define ThanuvaUi_BoxDialog_h
 
 #include "GeometryDialog.h"
-#include "ui_BoxWidget.h"
+#include "ui_BoxDialog.h"
 
 namespace Model { class BoxModel; }
 
 namespace ThanuvaUi {
 
-class BoxWidget : public QWidget, public Ui::BoxWidget
-{
-public:
-    BoxWidget(QWidget* parent)
-        : QWidget{parent}
-    {
-        this->setupUi(this);
-    }
-};
-
-class BoxDialog : public GeometryDialog
+class BoxDialog : public GeometryDialog, private Ui::BoxDialog
 {
     Q_OBJECT
 
 public:
     BoxDialog(QWidget* parent, Model::BoxModel* boxModel);
 
+protected:
+    QLabel* errorLabel() override { return m_errorLabel; }
+    QLineEdit* nameLineEdit() override { return m_nameLineEdit; }
+    QComboBox* csysComboBox() override { return m_csysComboBox; }
+    QPushButton* doneButton() override { return m_doneButton; }
+
 private slots:
-    void update();
+    void updateModelLimiter();
 
 private: // slots
-    void initialize();
+    void updateUiLimiter();
 
 private:
     Model::BoxModel* m_boxModel;
-    BoxWidget* m_boxWidget{nullptr};
 };
 
 } // namespace ThanuvaUi
 
-#endif // THANUVAUI_BOXDIALOG_H
+#endif // ThanuvaUi_BoxDialog_h

@@ -35,8 +35,8 @@ GeometryScene::GeometryScene(Model::Scene* scene)
     for (auto& csysModel : m_scene->coordinateSystemModelList())
         this->add(csysModel.get());
 
-    for (auto& modelObject : m_scene->geometryModelList())
-        this->add(modelObject.get());
+    for (auto& geometryModel : m_scene->geometryModelList())
+        this->add(geometryModel.get());
 
     m_scene->coordinateSystemModelAdded.connect<GeometryScene, &GeometryScene::add>(this);
     m_scene->geometryModelAdded.connect<GeometryScene, &GeometryScene::add>(this);

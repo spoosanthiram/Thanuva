@@ -5,48 +5,43 @@
  * All rights reserved.
  */
 
-#ifndef THANUVAUI_SPHEREDIALOG_H
-#define THANUVAUI_SPHEREDIALOG_H
+#ifndef ThanuvaUi_SphereDialog_h
+#define ThanuvaUi_SphereDialog_h
 
 #include "GeometryDialog.h"
-#include "ui_SphereWidget.h"
+#include "ui_SphereDialog.h"
 
 namespace Model { class SphereModel; }
 
 namespace ThanuvaUi {
 
-class SphereWidget : public QWidget, public Ui::SphereWidget
-{
-public:
-    SphereWidget(QWidget* parent)
-        : QWidget{parent}
-    {
-        this->setupUi(this);
-    }
-};
-
-class SphereDialog : public GeometryDialog
+class SphereDialog : public GeometryDialog, private Ui::SphereDialog
 {
     Q_OBJECT
 
 public:
     SphereDialog(QWidget* parent, Model::SphereModel* sphereModel);
 
+protected:
+    QLabel* errorLabel() override { return m_errorLabel; }
+    QLineEdit* nameLineEdit() override { return m_nameLineEdit; }
+    QComboBox* csysComboBox() override { return m_csysComboBox; }
+    QPushButton* doneButton() override { return m_doneButton; }
+
 private slots:
-    void updateCenter();
-    void updateRadius();
-    void updateSubdivisions();
+    void updateModelCenter();
+    void updateModelRadius();
+    void updateModelSubdivisions();
 
 private: // slots
-    void initCenter();
-    void initRadius();
-    void initSubdivisions();
+    void updateUiCenter();
+    void updateUiRadius();
+    void updateUiSubdivisions();
 
 private:
     Model::SphereModel* m_sphereModel;
-    SphereWidget* m_sphereWidget{nullptr};
 };
 
 } // namespace ThanuvaUi
 
-#endif // THANUVAUI_SPHEREDIALOG_H
+#endif // ThanuvaUi_SphereDialog_h

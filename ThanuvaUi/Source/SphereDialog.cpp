@@ -15,64 +15,64 @@ SphereDialog::SphereDialog(QWidget* parent, Model::SphereModel* sphereModel)
     : GeometryDialog{parent, sphereModel}
     , m_sphereModel{sphereModel}
 {
-    m_sphereWidget = new SphereWidget{this};
+    this->setupUi(this);
+    this->initialize(); // initialize GeometryDialog
+
     for (int i = 0; i < Model::SphereModel::kMaxSubdivisions; ++i)
-        m_sphereWidget->subdivisionsComboBox->addItem(QString::number(i));
+        m_subdivisionsComboBox->addItem(QString::number(i));
 
-    this->geometryPlaceHolderLayout()->addWidget(m_sphereWidget);
+    this->updateUiCenter();
+    this->updateUiRadius();
+    this->updateUiSubdivisions();
 
-    this->initCenter();
-    this->initRadius();
-    this->initSubdivisions();
+    m_sphereModel->centerChanged.connect<SphereDialog, &SphereDialog::updateUiCenter>(this);
+    m_sphereModel->radiusChanged.connect<SphereDialog, &SphereDialog::updateUiRadius>(this);
+    m_sphereModel->subdivisionsChanged.connect<SphereDialog, &SphereDialog::updateUiSubdivisions>(this);
 
-    m_sphereModel->centerChanged.connect<SphereDialog, &SphereDialog::initCenter>(this);
-    m_sphereModel->radiusChanged.connect<SphereDialog, &SphereDialog::initRadius>(this);
-    m_sphereModel->subdivisionsChanged.connect<SphereDialog, &SphereDialog::initSubdivisions>(this);
+    connect(m_centerXLineEdit, &QLineEdit::editingFinished, this, &SphereDialog::updateModelCenter);
+    connect(m_centerYLineEdit, &QLineEdit::editingFinished, this, &SphereDialog::updateModelCenter);
+    connect(m_centerZLineEdit, &QLineEdit::editingFinished, this, &SphereDialog::updateModelCenter);
 
-    connect(m_sphereWidget->centerXLineEdit, &QLineEdit::editingFinished, this, &SphereDialog::updateCenter);
-    connect(m_sphereWidget->centerYLineEdit, &QLineEdit::editingFinished, this, &SphereDialog::updateCenter);
-    connect(m_sphereWidget->centerZLineEdit, &QLineEdit::editingFinished, this, &SphereDialog::updateCenter);
+    connect(m_radiusLineEdit, &QLineEdit::editingFinished, this, &SphereDialog::updateModelRadius);
 
-    connect(m_sphereWidget->radiusLineEdit, &QLineEdit::editingFinished, this, &SphereDialog::updateRadius);
-
-    connect(m_sphereWidget->subdivisionsComboBox, SIGNAL(activated(int)), this, SLOT(updateSubdivisions()));
+    connect(m_subdivisionsComboBox, SIGNAL(activated(int)), this, SLOT(updateModelSubdivisions()));
 }
 
-void SphereDialog::updateCenter()
+void SphereDialog::updateModelCenter()
 {
     Core::Point3d point{};
-    point.setX(m_sphereWidget->centerXLineEdit->text().toDouble());
-    point.setY(m_sphereWidget->centerYLineEdit->text().toDouble());
-    point.setZ(m_sphereWidget->centerZLineEdit->text().toDouble());
+    point.setX(m_centerXLineEdit->text().toDouble());
+    point.setY(m_centerYLineEdit->text().toDouble());
+    point.setZ(m_centerZLineEdit->text().toDouble());
     m_sphereModel->setCenter(point);
 }
 
-void SphereDialog::updateRadius()
+void SphereDialog::updateModelRadius()
 {
-    m_sphereModel->setRadius(m_sphereWidget->radiusLineEdit->text().toDouble());
+    m_sphereModel->setRadius(m_radiusLineEdit->text().toDouble());
 }
 
-void SphereDialog::updateSubdivisions()
+void SphereDialog::updateModelSubdivisions()
 {
-    m_sphereModel->setSubdivisions(m_sphereWidget->subdivisionsComboBox->currentIndex());
+    m_sphereModel->setSubdivisions(m_subdivisionsComboBox->currentIndex());
 }
 
-void SphereDialog::initCenter()
+void SphereDialog::updateUiCenter()
 {
     auto& point = m_sphereModel->center();
-    m_sphereWidget->centerXLineEdit->setText(QString::number(point.x()));
-    m_sphereWidget->centerYLineEdit->setText(QString::number(point.y()));
-    m_sphereWidget->centerZLineEdit->setText(QString::number(point.z()));
+    m_centerXLineEdit->setText(QString::number(point.x()));
+    m_centerYLineEdit->setText(QString::number(point.y()));
+    m_centerZLineEdit->setText(QString::number(point.z()));
 }
 
-void SphereDialog::initRadius()
+void SphereDialog::updateUiRadius()
 {
-    m_sphereWidget->radiusLineEdit->setText(QString::number(m_sphereModel->radius()));
+    m_radiusLineEdit->setText(QString::number(m_sphereModel->radius()));
 }
 
-void SphereDialog::initSubdivisions()
+void SphereDialog::updateUiSubdivisions()
 {
-    m_sphereWidget->subdivisionsComboBox->setCurrentIndex(m_sphereModel->subdivisions());
+    m_subdivisionsComboBox->setCurrentIndex(m_sphereModel->subdivisions());
 }
 
 } // namespace ThanuvaUi

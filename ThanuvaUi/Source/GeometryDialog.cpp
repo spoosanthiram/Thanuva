@@ -11,6 +11,7 @@
 
 #include "AppSettings.h"
 #include "GeometryModel.h"
+#include "Scene.h"
 
 namespace ThanuvaUi {
 
@@ -20,28 +21,29 @@ GeometryDialog::GeometryDialog(QWidget* parent, Model::GeometryModel* geometryMo
 {
     CHECK(m_geometryModel);
 
-    this->setupUi(this);
     this->setWindowOpacity(AppSettings().windowOpacity());
+}
 
+void GeometryDialog::initialize()
+{
     this->updateUiName();
-    this->updateUiTransform();
+    this->updateUiCoordnateSystemList();
+    this->updateUiCoordnateSystem();
 
     m_geometryModel->nameChanged.connect<GeometryDialog, &GeometryDialog::updateUiName>(this);
-    //m_geometryModel->transformChanged.connect<GeometryDialog, &GeometryDialog::updateUiTransform>(this);
+    m_geometryModel->coordinateSystemModelChanged.connect<GeometryDialog, &GeometryDialog::updateUiCoordnateSystem>(this);
 
-    connect(m_nameLineEdit, &QLineEdit::editingFinished, this, &GeometryDialog::updateModelName);
-    connect(m_translateXLineEdit, &QLineEdit::editingFinished, this, &GeometryDialog::updateModelTransform);
-    connect(m_translateYLineEdit, &QLineEdit::editingFinished, this, &GeometryDialog::updateModelTransform);
-    connect(m_translateZLineEdit, &QLineEdit::editingFinished, this, &GeometryDialog::updateModelTransform);
+    connect(this->nameLineEdit(), &QLineEdit::editingFinished, this, &GeometryDialog::updateModelName);
+    connect(this->csysComboBox(), SIGNAL(activated(int)), this, SLOT(updateModelCoordnateSystem(int)));
 
-    connect(m_doneButton, &QPushButton::clicked, this, &GeometryDialog::done);
+    connect(this->doneButton(), &QPushButton::clicked, this, &GeometryDialog::done);
 }
 
 bool GeometryDialog::updateModelName()
 {
     bool retval = true;
     try {
-        m_geometryModel->setName(m_nameLineEdit->text().toStdString());
+        m_geometryModel->setName(this->nameLineEdit()->text().toStdString());
         this->setErrorText(QString{});
     }
     catch (const std::exception& e) {
@@ -51,14 +53,14 @@ bool GeometryDialog::updateModelName()
     return retval;
 }
 
-void GeometryDialog::updateModelTransform()
+void GeometryDialog::updateModelCoordnateSystem(int index)
 {
-    //Model::ModelObject::Transform xform;
-    //xform.translateX = m_translateXLineEdit->text().toDouble();
-    //xform.translateY = m_translateYLineEdit->text().toDouble();
-    //xform.translateZ = m_translateZLineEdit->text().toDouble();
+    if (index == -1)
+        return;
 
-    //m_modelObject->setTransform(xform);
+    auto& csysList = m_geometryModel->scene()->coordinateSystemModelList();
+    if (index < csysList.size())
+        m_geometryModel->setCoordinateSystemModel(csysList[index].get());
 }
 
 void GeometryDialog::done()
@@ -72,16 +74,22 @@ void GeometryDialog::done()
 
 void GeometryDialog::updateUiName()
 {
-    m_nameLineEdit->setText(m_geometryModel->name().c_str());
+    this->nameLineEdit()->setText(m_geometryModel->name().c_str());
 }
 
-void GeometryDialog::updateUiTransform()
+void GeometryDialog::updateUiCoordnateSystemList()
 {
-    //auto xform = m_modelObject->transform();
+    QComboBox* csysComboBox = this->csysComboBox();
+    csysComboBox->clear();
+    for (auto& csys : m_geometryModel->scene()->coordinateSystemModelList())
+        csysComboBox->addItem(csys->name().c_str());
+}
 
-    //m_translateXLineEdit->setText(QString::number(xform.translateX));
-    //m_translateYLineEdit->setText(QString::number(xform.translateY));
-    //m_translateZLineEdit->setText(QString::number(xform.translateZ));
+void GeometryDialog::updateUiCoordnateSystem()
+{
+    auto index = m_geometryModel->scene()->csysModelIndex(m_geometryModel->coordinateSystemModel());
+    if (index != -1)
+        this->csysComboBox()->setCurrentIndex(index);
 }
 
 } // namespace ThanuvaUi

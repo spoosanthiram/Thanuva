@@ -5,52 +5,47 @@
  * All rights reserved.
  */
 
-#ifndef THANUVAUI_CYLINDERDIALOG_H
-#define THANUVAUI_CYLINDERDIALOG_H
+#ifndef ThanuvaUi_CylinderDialog_h
+#define ThanuvaUi_CylinderDialog_h
 
 #include "GeometryDialog.h"
-#include "ui_CylinderWidget.h"
+#include "ui_CylinderDialog.h"
 
 namespace Model { class CylinderModel; }
 
 namespace ThanuvaUi {
 
-class CylinderWidget : public QWidget, public Ui::CylinderWidget
-{
-public:
-    CylinderWidget(QWidget* parent)
-        : QWidget{parent}
-    {
-        this->setupUi(this);
-    }
-};
-
-class CylinderDialog : public GeometryDialog
+class CylinderDialog : public GeometryDialog, private Ui::CylinderDialog
 {
     Q_OBJECT
 
 public:
     CylinderDialog(QWidget* parent, Model::CylinderModel* cylinderModel);
 
+protected:
+    QLabel* errorLabel() override { return m_errorLabel; }
+    QLineEdit* nameLineEdit() override { return m_nameLineEdit; }
+    QComboBox* csysComboBox() override { return m_csysComboBox; }
+    QPushButton* doneButton() override { return m_doneButton; }
+
 private slots:
-    void updateEndpoint1();
-    void updateRadius1();
-    void updateEndpoint2();
-    void updateRadius2();
-    void updateNumFacets();
+    void updateModelEndpoint1();
+    void updateModelRadius1();
+    void updateModelEndpoint2();
+    void updateModelRadius2();
+    void updateModelNumFacets();
 
 private: // slots
-    void initEndpoint1();
-    void initRadius1();
-    void initEndpoint2();
-    void initRadius2();
-    void initNumFacets();
+    void updateUiEndpoint1();
+    void updateUiRadius1();
+    void updateUiEndpoint2();
+    void updateUiRadius2();
+    void updateUiNumFacets();
 
 private:
     Model::CylinderModel* m_cylinderModel;
-    CylinderWidget* m_cylinderWidget{nullptr};
 };
 
 } // namespace ThanuvaUi
 
-#endif // THANUVAUI_CYLINDERDIALOG_H
+#endif // ThanuvaUi_CylinderDialog_h

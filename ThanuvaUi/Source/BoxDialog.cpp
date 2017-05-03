@@ -15,29 +15,29 @@ BoxDialog::BoxDialog(QWidget* parent, Model::BoxModel* boxModel)
     : GeometryDialog{parent, boxModel}
     , m_boxModel{boxModel}
 {
-    m_boxWidget = new BoxWidget{this};
-    this->geometryPlaceHolderLayout()->addWidget(m_boxWidget);
+    this->setupUi(this);
+    this->initialize(); // initialize GeometryDialog
 
-    this->initialize();
+    this->updateUiLimiter();
 
-    m_boxModel->limiterChanged.connect<BoxDialog, &BoxDialog::initialize>(this);
+    m_boxModel->limiterChanged.connect<BoxDialog, &BoxDialog::updateUiLimiter>(this);
 
-    connect(m_boxWidget->xLowLineEdit, &QLineEdit::editingFinished, this, &BoxDialog::update);
-    connect(m_boxWidget->xHighLineEdit, &QLineEdit::editingFinished, this, &BoxDialog::update);
-    connect(m_boxWidget->yLowLineEdit, &QLineEdit::editingFinished, this, &BoxDialog::update);
-    connect(m_boxWidget->yHighLineEdit, &QLineEdit::editingFinished, this, &BoxDialog::update);
-    connect(m_boxWidget->zLowLineEdit, &QLineEdit::editingFinished, this, &BoxDialog::update);
-    connect(m_boxWidget->zHighLineEdit, &QLineEdit::editingFinished, this, &BoxDialog::update);
+    connect(m_xLowLineEdit, &QLineEdit::editingFinished, this, &BoxDialog::updateModelLimiter);
+    connect(m_xHighLineEdit, &QLineEdit::editingFinished, this, &BoxDialog::updateModelLimiter);
+    connect(m_yLowLineEdit, &QLineEdit::editingFinished, this, &BoxDialog::updateModelLimiter);
+    connect(m_yHighLineEdit, &QLineEdit::editingFinished, this, &BoxDialog::updateModelLimiter);
+    connect(m_zLowLineEdit, &QLineEdit::editingFinished, this, &BoxDialog::updateModelLimiter);
+    connect(m_zHighLineEdit, &QLineEdit::editingFinished, this, &BoxDialog::updateModelLimiter);
 }
 
-void BoxDialog::update()
+void BoxDialog::updateModelLimiter()
 {
-    double xlow = m_boxWidget->xLowLineEdit->text().toDouble();
-    double xhigh = m_boxWidget->xHighLineEdit->text().toDouble();
-    double ylow = m_boxWidget->yLowLineEdit->text().toDouble();
-    double yhigh = m_boxWidget->yHighLineEdit->text().toDouble();
-    double zlow = m_boxWidget->zLowLineEdit->text().toDouble();
-    double zhigh = m_boxWidget->zHighLineEdit->text().toDouble();
+    double xlow = m_xLowLineEdit->text().toDouble();
+    double xhigh = m_xHighLineEdit->text().toDouble();
+    double ylow = m_yLowLineEdit->text().toDouble();
+    double yhigh = m_yHighLineEdit->text().toDouble();
+    double zlow = m_zLowLineEdit->text().toDouble();
+    double zhigh = m_zHighLineEdit->text().toDouble();
 
     try {
         m_boxModel->setLimiter(Model::BoxModel::Limiter(xlow, xhigh, ylow, yhigh, zlow, zhigh));
@@ -48,15 +48,16 @@ void BoxDialog::update()
     }
 }
 
-void BoxDialog::initialize()
+void BoxDialog::updateUiLimiter()
 {
     Model::BoxModel::Limiter limiter = m_boxModel->limiter();
-    m_boxWidget->xLowLineEdit->setText(QString::number(limiter.xlow));
-    m_boxWidget->xHighLineEdit->setText(QString::number(limiter.xhigh));
-    m_boxWidget->yLowLineEdit->setText(QString::number(limiter.ylow));
-    m_boxWidget->yHighLineEdit->setText(QString::number(limiter.yhigh));
-    m_boxWidget->zLowLineEdit->setText(QString::number(limiter.zlow));
-    m_boxWidget->zHighLineEdit->setText(QString::number(limiter.zhigh));
+
+    m_xLowLineEdit->setText(QString::number(limiter.xlow));
+    m_xHighLineEdit->setText(QString::number(limiter.xhigh));
+    m_yLowLineEdit->setText(QString::number(limiter.ylow));
+    m_yHighLineEdit->setText(QString::number(limiter.yhigh));
+    m_zLowLineEdit->setText(QString::number(limiter.zlow));
+    m_zHighLineEdit->setText(QString::number(limiter.zhigh));
 }
 
 } // namespace ThanuvaUi

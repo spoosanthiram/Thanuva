@@ -41,11 +41,10 @@ set(SOURCE_FILES
 )
 
 qt5_wrap_ui(UI_FILES
-    ${ThanuvaUi_SOURCE_DIR}/Form/BoxWidget.ui
-    ${ThanuvaUi_SOURCE_DIR}/Form/ConeWidget.ui
-    ${ThanuvaUi_SOURCE_DIR}/Form/CylinderWidget.ui
-    ${ThanuvaUi_SOURCE_DIR}/Form/GeometryDialog.ui
-    ${ThanuvaUi_SOURCE_DIR}/Form/SphereWidget.ui
+    ${ThanuvaUi_SOURCE_DIR}/Form/BoxDialog.ui
+    ${ThanuvaUi_SOURCE_DIR}/Form/ConeDialog.ui
+    ${ThanuvaUi_SOURCE_DIR}/Form/CylinderDialog.ui
+    ${ThanuvaUi_SOURCE_DIR}/Form/SphereDialog.ui
     ${ThanuvaUi_SOURCE_DIR}/Form/StartUpPage.ui
 )
 
