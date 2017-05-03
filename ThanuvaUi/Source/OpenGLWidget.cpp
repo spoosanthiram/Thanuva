@@ -13,7 +13,6 @@
 #include <glog/logging.h>
 
 #include <QDir>
-#include <QFileDialog>
 #include <QMessageBox>
 #include <QMouseEvent>
 #include <QOpenGLContext>
@@ -27,6 +26,7 @@
 #include "CylinderDialog.h"
 #include "MainWindow.h"
 #include "MeshModel.h"
+#include "MeshDialog.h"
 #include "OpenGLInterface.h"
 #include "Scene.h"
 #include "SphereModel.h"
@@ -135,24 +135,12 @@ void OpenGLWidget::createSphere()
 
 void OpenGLWidget::importMesh()
 {
-    QString caption{"Import Mesh"};
-    QString filePath = QFileDialog::getOpenFileName(this, caption,
-                                                    m_scene->thanuvaApp().recentDirPath().string().c_str(),
-                                                    "Mesh Files (*.off *.stl)");
-    if (filePath.isEmpty())
-        return;
-
     LOG(INFO) << "Creating Mesh object with chosen file, adding it to Model::Project.";
 
     this->makeCurrent();
 
-    try {
-        auto meshModel = m_scene->newModelObject<Model::MeshModel>(filePath.toStdString());
-    }
-    catch (const std::exception& e) {
-        LOG(ERROR) << e.what();
-        QMessageBox::critical(this, caption, tr(e.what()));
-    }
+    auto meshModel = m_scene->newModelObject<Model::MeshModel>();
+    MeshDialog{this, meshModel}.exec();
 
     this->doneCurrent();
 }

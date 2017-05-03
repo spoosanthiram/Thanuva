@@ -23,6 +23,7 @@ set(SOURCE_FILES
     ${ThanuvaUi_SOURCE_DIR}/Include/GeometryDialog.h
     ${ThanuvaUi_SOURCE_DIR}/Include/GeometryListUiModel.h
     ${ThanuvaUi_SOURCE_DIR}/Include/MainWindow.h
+    ${ThanuvaUi_SOURCE_DIR}/Include/MeshDialog.h
     ${ThanuvaUi_SOURCE_DIR}/Include/OpenGLWidget.h
     ${ThanuvaUi_SOURCE_DIR}/Include/SphereDialog.h
     ${ThanuvaUi_SOURCE_DIR}/Include/StartUpPage.h
@@ -35,6 +36,7 @@ set(SOURCE_FILES
     ${ThanuvaUi_SOURCE_DIR}/Source/GeometryListUiModel.cpp
     ${ThanuvaUi_SOURCE_DIR}/Source/main.cpp
     ${ThanuvaUi_SOURCE_DIR}/Source/MainWindow.cpp
+    ${ThanuvaUi_SOURCE_DIR}/Source/MeshDialog.cpp
     ${ThanuvaUi_SOURCE_DIR}/Source/OpenGLWidget.cpp
     ${ThanuvaUi_SOURCE_DIR}/Source/SphereDialog.cpp
     ${ThanuvaUi_SOURCE_DIR}/Source/StartUpPage.cpp
@@ -44,6 +46,7 @@ qt5_wrap_ui(UI_FILES
     ${ThanuvaUi_SOURCE_DIR}/Form/BoxDialog.ui
     ${ThanuvaUi_SOURCE_DIR}/Form/ConeDialog.ui
     ${ThanuvaUi_SOURCE_DIR}/Form/CylinderDialog.ui
+    ${ThanuvaUi_SOURCE_DIR}/Form/MeshDialog.ui
     ${ThanuvaUi_SOURCE_DIR}/Form/SphereDialog.ui
     ${ThanuvaUi_SOURCE_DIR}/Form/StartUpPage.ui
 )
