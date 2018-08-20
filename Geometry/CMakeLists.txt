@@ -43,8 +43,9 @@ include_directories(
     ${Thanuva_SOURCE_DIR}/Core/Include
     ${Thanuva_SOURCE_DIR}/Model/Include
     ${Thanuva_SOURCE_DIR}/../Algorithms/Include
-    ${Thanuva_SOURCE_DIR}/../3rdParty/boost
-    ${Thanuva_SOURCE_DIR}/../3rdParty/glog/src/windows
+    /usr/local/boost/include
+    # ${Thanuva_SOURCE_DIR}/../3rdParty/glog/src/windows
+    ${Thanuva_SOURCE_DIR}/../3rdParty/glog
     ${Thanuva_SOURCE_DIR}/../3rdParty/nano-signal-slot
 )
 

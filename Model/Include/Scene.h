@@ -8,12 +8,12 @@
 #ifndef Model_Scene_h
 #define Model_Scene_h
 
-#include <filesystem>
+#include <experimental/filesystem>
 #include <memory>
 #include <string>
 #include <vector>
 
-#include <boost/property_tree/ptree_fwd.hpp>
+#include <boost/property_tree/ptree.hpp>
 #include <glog/logging.h>
 #include <nano_signal_slot.hpp>
 
@@ -29,9 +29,6 @@ class ThanuvaApp;
 
 class Scene
 {
-public:
-    static const char* kDefaultName;
-
 public:
     Scene(const ThanuvaApp& thanuvaApp);
     Scene(const ThanuvaApp& thanuvaApp, const fs::path& filePath);
@@ -102,7 +99,7 @@ private:
     void saveModelList(const ModelListType& modelList, boost::property_tree::ptree& modelsPropTree)
     {
         for (auto& model : modelList) {
-            ptree modelObjectPropTree;
+            boost::property_tree::ptree modelObjectPropTree;
             model->save(modelObjectPropTree);
             modelsPropTree.add_child(kModelObjectTag, modelObjectPropTree);
         }
@@ -117,6 +114,10 @@ private:
             return -1;
         return std::distance(modelList.cbegin(), it);
     }
+
+public:
+    static const char* kDefaultName;
+    static constexpr const char* kModelObjectTag = "modelobject";
 
     const ThanuvaApp& m_thanuvaApp;
     std::string m_name;

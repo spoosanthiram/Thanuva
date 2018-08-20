@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0)
 
 project(Thanuva CXX)
 
-if(!WIN32)
+if(NOT WIN32)
     add_compile_options(-Wall -std=c++17)
 endif()
 

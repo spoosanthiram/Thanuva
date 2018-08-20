@@ -7,6 +7,8 @@
 
 #include "AbstractGraphicsScene.h"
 
+#include <memory>
+
 #include <glog/logging.h>
 
 namespace Graphics {

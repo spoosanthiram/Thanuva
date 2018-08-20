@@ -10,7 +10,6 @@
 #include "ConeModel.h"
 #include "CylinderModel.h"
 #include "GeometryScene.h"
-#include "Scene.h"
 
 namespace Graphics {
 

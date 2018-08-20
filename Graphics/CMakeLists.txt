@@ -1,5 +1,9 @@
 project(Graphics CXX)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 set(CMAKE_PREFIX_PATH $ENV{QTDIR})
 set(CMAKE_INCLUDE_CURRENT_DIR ON) # to inclue moc files
 set(CMAKE_AUTOMOC ON)
@@ -36,13 +40,15 @@ set(SOURCE_FILES
 )
 
 include_directories(
+    /usr/local/cuda-8.0/extras/CUPTI/include
     ${Graphics_SOURCE_DIR}/Include
     ${Thanuva_SOURCE_DIR}/Core/Include
     ${Thanuva_SOURCE_DIR}/Model/Include
     ${Thanuva_SOURCE_DIR}/Geometry/Include
     ${Thanuva_SOURCE_DIR}/../Algorithms/Include
-    ${Thanuva_SOURCE_DIR}/../3rdParty/boost
-    ${Thanuva_SOURCE_DIR}/../3rdParty/glog/src/windows
+    /usr/local/boost/include
+    # ${Thanuva_SOURCE_DIR}/../3rdParty/glog/src/windows
+    ${Thanuva_SOURCE_DIR}/../3rdParty/glog
     ${Thanuva_SOURCE_DIR}/../3rdParty/nano-signal-slot
 )
 

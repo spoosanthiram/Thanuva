@@ -40,9 +40,10 @@ include_directories(
     ${Model_SOURCE_DIR}/Include
     ${Thanuva_SOURCE_DIR}/Core/Include
     ${Thanuva_SOURCE_DIR}/../Algorithms/Include
-    ${Thanuva_SOURCE_DIR}/../3rdParty/boost
-    ${Thanuva_SOURCE_DIR}/../3rdParty/fmt
-    ${Thanuva_SOURCE_DIR}/../3rdParty/glog/src/windows
+    /usr/local/boost/include
+    ${Thanuva_SOURCE_DIR}/../3rdParty/fmt/include
+    # ${Thanuva_SOURCE_DIR}/../3rdParty/glog/src/windows
+    ${Thanuva_SOURCE_DIR}/../3rdParty/glog
     ${Thanuva_SOURCE_DIR}/../3rdParty/GSL
     ${Thanuva_SOURCE_DIR}/../3rdParty/nano-signal-slot
 )
@@ -68,10 +69,11 @@ else()
 target_link_libraries(ModelTest
     Core
     ${Thanuva_SOURCE_DIR}/../Algorithms/libAlgo.a
-    ${Thanuva_SOURCE_DIR}/../3rdParty/fmt/fmt/libfmt.a
+    ${Thanuva_SOURCE_DIR}/../3rdParty/fmt/libfmt.a
     ${Thanuva_SOURCE_DIR}/../3rdParty/glog/libglog.a
     ${Thanuva_SOURCE_DIR}/../3rdParty/googletest/googletest/libgtest.a
     pthread
+    stdc++fs
     stdc++
 )
 endif()

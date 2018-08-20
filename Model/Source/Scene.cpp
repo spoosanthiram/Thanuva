@@ -9,7 +9,6 @@
 
 #include <unordered_map>
 
-#include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <fmt/format.h>
 
@@ -25,7 +24,6 @@ namespace {
 const char* kCoordinateSystemsTag = "coordinateSystems";
 const char* kGeometryModelsTag = "geometryModels";
 const char* kViewpointsTag = "viewpoints";
-const char* kModelObjectTag = "modelobject";
 
 } // anonymous
 
@@ -188,11 +186,11 @@ void Scene::loadGeometryModelList(const ptree& geometryModelsPropTree)
     for (const auto& it : geometryModelsPropTree) {
         const ptree& modelObjectPropTree = it.second;
         std::string type = modelObjectPropTree.get<std::string>(GeometryModel::kTypeTag);
-        auto it = geometryModelMakerMap.find(type);
-        if (it == geometryModelMakerMap.end())
+        auto it2 = geometryModelMakerMap.find(type);
+        if (it2 == geometryModelMakerMap.end())
             throw ModelException{ModelException::kInvalidType};
 
-        auto geometryModel = it->second(this);
+        auto geometryModel = it2->second(this);
         geometryModel->load(modelObjectPropTree);
         this->add(std::move(geometryModel));
     }

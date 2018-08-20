@@ -57,6 +57,8 @@ fs::path ThanuvaApp::appPath() const
     if (m_appPath.empty()) {
         m_appPath = this->homePath();
         m_appPath /= fs::path{std::string{"."} + Core::toLower(m_name)};
+        if (!fs::exists(m_appPath))
+            fs::create_directory(m_appPath);
     }
     return m_appPath;
 }

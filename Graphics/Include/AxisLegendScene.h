@@ -9,9 +9,9 @@
 #define Graphics_AxisLegendScene_h
 
 #include "AbstractGraphicsScene.h"
+#include "Scene.h"
 
 namespace Model {
-    class Scene;
     class ThanuvaApp;
 }
 

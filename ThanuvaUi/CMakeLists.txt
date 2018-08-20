@@ -1,5 +1,9 @@
 project(ThanuvaUi CXX)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 set(CMAKE_PREFIX_PATH $ENV{QTDIR})
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON) # to inclue moc and ui files
@@ -58,9 +62,10 @@ include_directories(
     ${Thanuva_SOURCE_DIR}/Geometry/Include
     ${Thanuva_SOURCE_DIR}/Graphics/Include
     ${Thanuva_SOURCE_DIR}/../Algorithms/Include
-    ${Thanuva_SOURCE_DIR}/../3rdParty/boost
-    ${Thanuva_SOURCE_DIR}/../3rdParty/fmt
-    ${Thanuva_SOURCE_DIR}/../3rdParty/glog/src/windows
+    /usr/local/boost/include
+    ${Thanuva_SOURCE_DIR}/../3rdParty/fmt/include
+    # ${Thanuva_SOURCE_DIR}/../3rdParty/glog/src/windows
+    ${Thanuva_SOURCE_DIR}/../3rdParty/glog
     ${Thanuva_SOURCE_DIR}/../3rdParty/nano-signal-slot
 )
 
@@ -80,12 +85,15 @@ else()
 target_link_libraries(ThanuvaUi
     Graphics Geometry Model Core
     ${Thanuva_SOURCE_DIR}/../Algorithms/libAlgo.a
-    ${Thanuva_SOURCE_DIR}/../3rdParty/fmt/fmt/libfmt.a
+    ${Thanuva_SOURCE_DIR}/../3rdParty/fmt/libfmt.a
     ${Thanuva_SOURCE_DIR}/../3rdParty/glog/libglog.a
     Qt5::Widgets
     Qt5::Gui
     Qt5::Core
-    GLU
+    /usr/lib/x86_64-linux-gnu/libGLU.so.1
+    /usr/lib/nvidia-384/libGL.so
+    pthread
+    stdc++fs
     stdc++
 )
 endif()

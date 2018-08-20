@@ -1,4 +1,5 @@
-Build
+.build.debug.gnu
+.vscode
 CMakeLists.txt.user*
 MSVC
 x64
